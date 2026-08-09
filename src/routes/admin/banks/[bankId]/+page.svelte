@@ -1,10 +1,17 @@
 <script lang="ts">
+	import {
+		Collapsible,
+		Dialog,
+		Portal
+	} from '@skeletonlabs/skeleton-svelte';
+
 	import type {
 		PageProps
 	} from './$types';
 
 	import BankForm
 		from '$lib/components/admin/BankForm.svelte';
+	import { toaster } from '$lib/ui/toaster';
 
 	let {
 		data,
@@ -21,6 +28,20 @@
 		description:
 			form?.values?.description ??
 			data.bank.description ?? ''
+	});
+
+	let updateToastShown = $state(false);
+
+	$effect(() => {
+		if (form?.updated && !updateToastShown) {
+			toaster.success({
+				title: '題庫已更新',
+				description: '題庫資料已成功儲存。'
+			});
+			updateToastShown = true;
+		} else if (!form?.updated) {
+			updateToastShown = false;
+		}
 	});
 </script>
 
@@ -101,15 +122,6 @@
 		</article>
 	</section>
 
-	{#if form?.updated}
-		<div
-			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
-			role="status"
-		>
-			題庫資料已更新。
-		</div>
-	{/if}
-
 	<section
 		class="card preset-outlined p-5 md:p-6"
 	>
@@ -134,21 +146,19 @@
 			刪除題庫會透過資料庫 cascade 一併刪除題目、選項、此題庫的練習進度，以及相關錯題紀錄，且無法復原。
 		</p>
 
-		<details
-			class="mt-5 rounded-lg border border-error-500/40 p-4"
-		>
-			<summary
-				class="cursor-pointer font-medium text-error-700-300"
+		<Collapsible class="mt-5">
+			<Collapsible.Trigger
+				class="btn preset-tonal-error"
 			>
 				我要刪除這個題庫
-			</summary>
+			</Collapsible.Trigger>
 
-			<div class="mt-4 space-y-4">
+			<Collapsible.Content class="mt-4 space-y-4">
 				<div
 					class="card preset-tonal-error-500 p-4 text-sm"
 				>
 					<p class="font-semibold">
-						確認刪除「{data.bank.name}」？
+						刪除「{data.bank.name}」將影響：
 					</p>
 
 					<ul class="mt-2 list-disc space-y-1 pl-5">
@@ -164,19 +174,61 @@
 					</ul>
 				</div>
 
-				<form
-					method="POST"
-					action="?/delete"
-					class="flex justify-end"
-				>
-					<button
-						type="submit"
-						class="btn preset-filled-error-500"
-					>
-						確認刪除題庫
-					</button>
-				</form>
-			</div>
-		</details>
+				<div class="flex justify-end">
+					<Dialog role="alertdialog">
+						<Dialog.Trigger
+							class="btn preset-filled-error-500"
+						>
+							確認刪除題庫
+						</Dialog.Trigger>
+
+						<Portal>
+							<Dialog.Backdrop
+								class="fixed inset-0 z-50 bg-black/60"
+							/>
+							<Dialog.Positioner
+								class="fixed inset-0 z-50 flex items-center justify-center p-4"
+							>
+								<Dialog.Content
+									class="card w-full max-w-lg bg-surface-50-950 p-6 shadow-xl"
+								>
+									<Dialog.Title
+										class="text-xl font-bold text-error-700-300"
+									>
+										永久刪除「{data.bank.name}」？
+									</Dialog.Title>
+
+									<Dialog.Description
+										class="mt-3 text-sm opacity-70"
+									>
+										此操作無法復原，題目、選項、練習進度與錯題紀錄都會一併刪除。
+									</Dialog.Description>
+
+									<form
+										method="POST"
+										action="?/delete"
+										class="mt-6 flex justify-end gap-3"
+									>
+										<Dialog.CloseTrigger
+											type="button"
+											class="btn preset-tonal"
+										>
+											取消
+										</Dialog.CloseTrigger>
+
+										<button
+											type="submit"
+											class="btn preset-filled-error-500"
+										>
+											永久刪除題庫
+										</button>
+									</form>
+								</Dialog.Content>
+							</Dialog.Positioner>
+						</Portal>
+					</Dialog>
+				</div>
+			</Collapsible.Content>
+		</Collapsible>
 	</section>
 </div>
