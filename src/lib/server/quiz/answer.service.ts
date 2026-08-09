@@ -36,7 +36,7 @@ export class PracticeAnswerError extends Error {
 }
 
 
-async function checkAnswer(
+export async function checkQuestionAnswer(
 	bankId: string,
 	questionId: string,
 	selectedOptionId: string
@@ -119,7 +119,7 @@ export async function answerGuestPracticeQuestion(
 	questionId: string,
 	selectedOptionId: string
 ): Promise<QuizAnswerResult> {
-	return checkAnswer(
+	return checkQuestionAnswer(
 		bankId,
 		questionId,
 		selectedOptionId
@@ -187,7 +187,7 @@ export async function answerUserPracticeQuestion(
 	}
 
 	const result =
-		await checkAnswer(
+		await checkQuestionAnswer(
 			bankId,
 			questionId,
 			selectedOptionId
