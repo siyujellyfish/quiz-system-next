@@ -76,7 +76,9 @@ export async function replacePracticeProgress(
 			userId,
 			bankId,
 			questionsState,
-			currentIndex: 0
+			currentIndex: 0,
+			answeredCount: 0,
+			correctCount: 0
 		})
 		.onConflictDoUpdate({
 			target: [
@@ -86,7 +88,9 @@ export async function replacePracticeProgress(
 
 			set: {
 				questionsState,
-				currentIndex: 0
+				currentIndex: 0,
+				answeredCount: 0,
+				correctCount: 0
 			}
 		});
 }
@@ -176,6 +180,12 @@ export async function getPracticeProgressesByUser(
 
 			currentIndex:
 				practiceProgress.currentIndex,
+
+			answeredCount:
+				practiceProgress.answeredCount,
+
+			correctCount:
+				practiceProgress.correctCount,
 
 			questionsState:
 				practiceProgress.questionsState
