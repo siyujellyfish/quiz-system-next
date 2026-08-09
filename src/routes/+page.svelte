@@ -135,24 +135,35 @@
 		class="mb-8 flex flex-wrap gap-2"
 		aria-label="刷題模式"
 	>
-		{#each [
-			['practice', '練習'],
-			['wrong', '錯題'],
-			['exam', '考試練習']
-		] as mode}
-			<button
-				type="button"
-				class={getModeClass(
-					mode[0] as QuizMode
-				)}
-				onclick={() => {
-					activeMode =
-						mode[0] as QuizMode;
-				}}
-			>
-				{mode[1]}
-			</button>
-		{/each}
+		<button
+			type="button"
+			class={getModeClass('practice')}
+			onclick={() => {
+				activeMode = 'practice';
+			}}
+		>
+			練習
+		</button>
+
+		<button
+			type="button"
+			class={getModeClass('wrong')}
+			onclick={() => {
+				activeMode = 'wrong';
+			}}
+		>
+			錯題
+		</button>
+
+		<button
+			type="button"
+			class={getModeClass('exam')}
+			onclick={() => {
+				activeMode = 'exam';
+			}}
+		>
+			考試練習
+		</button>
 	</nav>
 
 
@@ -474,14 +485,22 @@
 					</ul>
 
 					<div class="mt-6 flex justify-end">
-						<a
-							href={`/exam/${bank.slug}`}
-							class="btn preset-filled-primary-500"
-							class:opacity-50={bank.questionCount === 0}
-							aria-disabled={bank.questionCount === 0}
-						>
-							開始考試
-						</a>
+						{#if bank.questionCount > 0}
+							<a
+								href={`/exam/${bank.slug}`}
+								class="btn preset-filled-primary-500"
+							>
+								開始考試
+							</a>
+						{:else}
+							<button
+								type="button"
+								class="btn preset-tonal"
+								disabled
+							>
+								沒有可用題目
+							</button>
+						{/if}
 					</div>
 				</section>
 			{/each}
