@@ -119,6 +119,53 @@ export async function getPracticeProgress(
 	return progress ?? null;
 }
 
+
+export async function setPracticeCurrentIndex(
+	userId: string,
+	bankId: string,
+	currentIndex: number
+): Promise<void> {
+	await db
+		.update(practiceProgress)
+		.set({
+			currentIndex
+		})
+		.where(
+			and(
+				eq(
+					practiceProgress.userId,
+					userId
+				),
+				eq(
+					practiceProgress.bankId,
+					bankId
+				)
+			)
+		);
+}
+
+
+export async function deletePracticeProgress(
+	userId: string,
+	bankId: string
+): Promise<void> {
+	await db
+		.delete(practiceProgress)
+		.where(
+			and(
+				eq(
+					practiceProgress.userId,
+					userId
+				),
+				eq(
+					practiceProgress.bankId,
+					bankId
+				)
+			)
+		);
+}
+
+
 export async function getPracticeProgressesByUser(
 	userId: string
 ) {
