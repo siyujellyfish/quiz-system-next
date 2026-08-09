@@ -33,6 +33,11 @@ import {
 } from '$lib/server/quiz/practice.service';
 
 
+import {
+	getWrongQuestionCountsByUser
+} from '$lib/server/quiz/wrong.repository';
+
+
 function parseCoverage(
 	value: FormDataEntryValue | null
 ): PracticeCoverage | null {
@@ -61,16 +66,23 @@ export const load: PageServerLoad =
 				banks: banks.map(
 					(bank) => ({
 						...bank,
-						progress: null
+						progress: null,
+						wrongCount: null
 					})
-				)
 			};
 		}
 
-		const progresses =
-			await getPracticeProgressesByUser(
+		const [
+			progresses,
+			wrongCounts
+		] = await Promise.all([
+			getPracticeProgressesByUser(
 				locals.user.id
-			);
+			),
+			getWrongQuestionCountsByUser(
+				locals.user.id
+			)
+		]);
 
 		const progressMap =
 			new Map(
@@ -78,6 +90,16 @@ export const load: PageServerLoad =
 					(progress) => [
 						progress.bankId,
 						progress
+					]
+				)
+			);
+
+		const wrongCountMap =
+			new Map(
+				wrongCounts.map(
+					(item) => [
+						item.bankId,
+						Number(item.wrongCount)
 					]
 				)
 			);
@@ -90,10 +112,16 @@ export const load: PageServerLoad =
 							bank.id
 						);
 
+					const wrongCount =
+						wrongCountMap.get(
+							bank.id
+						) ?? 0;
+
 					if (!progress) {
 						return {
 							...bank,
-							progress: null
+							progress: null,
+							wrongCount
 						};
 					}
 
@@ -111,6 +139,7 @@ export const load: PageServerLoad =
 
 					return {
 						...bank,
+						wrongCount,
 
 						progress: {
 							completedQuestions,
@@ -194,12 +223,6 @@ export const actions: Actions = {
 				optionOrder === 'random'
 		};
 
-		/*
-		 * Logged-in User
-		 *
-		 * 建立 practice_progress，
-		 * 接著 redirect。
-		 */
 		if (locals.user) {
 			try {
 				await startPractice(
@@ -228,13 +251,6 @@ export const actions: Actions = {
 			);
 		}
 
-		/*
-		 * Guest
-		 *
-		 * 不寫入 DB。
-		 * 將產生的 state 回傳給 client，
-		 * 由 sessionStorage 暫存。
-		 */
 		try {
 			const questionsState =
 				await generatePracticeState(
