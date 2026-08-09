@@ -102,7 +102,8 @@ export async function getSessionUser(
 			expiresAt: userSessions.expiresAt,
 
 			userId: users.id,
-			username: users.username
+			username: users.username,
+			isAdmin: users.isAdmin
 		})
 		.from(userSessions)
 		.innerJoin(
@@ -156,7 +157,8 @@ export async function getSessionUser(
 
 	return {
 		id: result.userId,
-		username: result.username
+		username: result.username,
+		isAdmin: result.isAdmin
 	};
 }
 
