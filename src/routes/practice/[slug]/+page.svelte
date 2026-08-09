@@ -1,5 +1,10 @@
 <script lang="ts">
 	import {
+		invalidateAll,
+		goto
+	} from '$app/navigation';
+
+	import {
 		onMount
 	} from 'svelte';
 
@@ -10,8 +15,9 @@
 
 
 	import type {
-		PracticeQuestionsState,
-		PublicQuizQuestion
+		GuestPracticeSession,
+		PublicQuizQuestion,
+		QuizAnswerResult
 	} from '$lib/types/quiz';
 
 
@@ -25,7 +31,7 @@
 
 
 	import {
-		isPracticeQuestionsState
+		parseGuestPracticeSession
 	} from '$lib/quiz/practice-state';
 
 
@@ -46,15 +52,32 @@
 			null
 		);
 
-
 	let guestInitialized =
 		$state(false);
-
 
 	let errorMessage =
 		$state<string | null>(
 			null
 		);
+
+	let selectedOptionId =
+		$state<string | null>(
+			null
+		);
+
+	let answerResult =
+		$state<QuizAnswerResult | null>(
+			null
+		);
+
+	let submitting =
+		$state(false);
+
+	let loadingNext =
+		$state(false);
+
+	let practiceCompleted =
+		$state(false);
 
 
 	let practice =
@@ -63,13 +86,11 @@
 				data.practice
 		);
 
-
 	let question =
 		$derived(
 			practice?.question ??
 				null
 		);
-
 
 	let currentIndex =
 		$derived(
@@ -77,18 +98,21 @@
 				0
 		);
 
-
 	let totalQuestions =
 		$derived(
 			practice?.totalQuestions ??
 				0
 		);
 
-
 	let loading =
 		$derived(
 			data.practice === null &&
 			!guestInitialized
+		);
+
+	let isGuest =
+		$derived(
+			data.practice === null
 		);
 
 
@@ -101,18 +125,49 @@
 	});
 
 
-	async function loadGuestPractice() {
-		const key =
-			getGuestPracticeStorageKey(
-				data.bank.slug
-			);
+	function getGuestStorageKey(): string {
+		return getGuestPracticeStorageKey(
+			data.bank.slug
+		);
+	}
 
+
+	function readGuestSession():
+		GuestPracticeSession | null {
 		const raw =
 			sessionStorage.getItem(
-				key
+				getGuestStorageKey()
 			);
 
 		if (!raw) {
+			return null;
+		}
+
+		try {
+			return parseGuestPracticeSession(
+				JSON.parse(raw)
+			);
+		} catch {
+			return null;
+		}
+	}
+
+
+	function writeGuestSession(
+		session: GuestPracticeSession
+	): void {
+		sessionStorage.setItem(
+			getGuestStorageKey(),
+			JSON.stringify(session)
+		);
+	}
+
+
+	async function loadGuestPractice() {
+		const session =
+			readGuestSession();
+
+		if (!session) {
 			setGuestError(
 				'找不到進行中的練習，請重新開始。'
 			);
@@ -120,38 +175,9 @@
 			return;
 		}
 
-		let parsed: unknown;
-
-		try {
-			parsed =
-				JSON.parse(raw);
-		} catch {
-			setGuestError(
-				'練習資料格式錯誤，請重新開始。'
-			);
-
-			return;
-		}
-
 		if (
-			!isPracticeQuestionsState(
-				parsed
-			)
-		) {
-			setGuestError(
-				'練習資料已失效，請重新開始。'
-			);
-
-			return;
-		}
-
-		const state:
-			PracticeQuestionsState =
-				parsed;
-
-		if (
-			state.questions.length ===
-			0
+			session.questionsState
+				.questions.length === 0
 		) {
 			setGuestError(
 				'這份練習沒有可顯示的題目。'
@@ -161,96 +187,255 @@
 		}
 
 		try {
-			for (
-				let index = 0;
-				index < state.questions.length;
-				index++
-			) {
-				const questionState =
-					state.questions[index];
+			const loaded =
+				await loadGuestQuestion(
+					session
+				);
 
-				if (!questionState) {
-					continue;
-				}
-
-				const response =
-					await fetch(
-						`/practice/${encodeURIComponent(
-							data.bank.slug
-						)}/question`,
-						{
-							method:
-								'POST',
-
-							headers: {
-								'content-type':
-									'application/json'
-							},
-
-							body:
-								JSON.stringify({
-									questionId:
-										questionState
-											.questionId,
-
-									optionIds:
-										questionState
-											.optionIds
-								})
-						}
-					);
-
-				if (
-					response.status === 404
-				) {
-					continue;
-				}
-
-				if (!response.ok) {
-					throw new Error(
-						'Failed to load question'
-					);
-				}
-
-				const result =
-					await response.json() as {
-						question:
-							PublicQuizQuestion;
-					};
-
-				localPractice = {
-					currentIndex:
-						index,
-					totalQuestions:
-						state.questions.length,
-					question:
-						result.question
-				};
-
-				return;
+			if (!loaded) {
+				practiceCompleted = true;
 			}
-
-			setGuestError(
-				'這份練習的題目已全部失效，請重新開始。'
-			);
 		} catch {
 			errorMessage =
 				'無法載入題目，請重新開始練習。';
 		} finally {
-			guestInitialized =
-				true;
+			guestInitialized = true;
 		}
+	}
+
+
+	async function loadGuestQuestion(
+		session: GuestPracticeSession
+	): Promise<boolean> {
+		for (
+			let index = session.currentIndex;
+			index <
+				session.questionsState
+					.questions.length;
+			index++
+		) {
+			const questionState =
+				session.questionsState
+					.questions[index];
+
+			if (!questionState) {
+				continue;
+			}
+
+			const response =
+				await fetch(
+					`/practice/${encodeURIComponent(
+						data.bank.slug
+					)}/question`,
+					{
+						method: 'POST',
+						headers: {
+							'content-type':
+								'application/json'
+						},
+						body:
+							JSON.stringify({
+								questionId:
+									questionState.questionId,
+								optionIds:
+									questionState.optionIds
+							})
+					}
+				);
+
+			if (response.status === 404) {
+				continue;
+			}
+
+			if (!response.ok) {
+				throw new Error(
+					'Failed to load question'
+				);
+			}
+
+			const result =
+				await response.json() as {
+					question:
+						PublicQuizQuestion;
+				};
+
+			const nextSession = {
+				...session,
+				currentIndex: index
+			};
+
+			writeGuestSession(
+				nextSession
+			);
+
+			localPractice = {
+				currentIndex: index,
+				totalQuestions:
+					session.questionsState
+						.questions.length,
+				question:
+					result.question
+			};
+
+			return true;
+		}
+
+		return false;
+	}
+
+
+	async function submitAnswer(
+		optionId: string
+	) {
+		if (
+			submitting ||
+			answerResult ||
+			!question
+		) {
+			return;
+		}
+
+		selectedOptionId = optionId;
+		submitting = true;
+		errorMessage = null;
+
+		try {
+			const response =
+				await fetch(
+					`/practice/${encodeURIComponent(
+						data.bank.slug
+					)}/answer`,
+					{
+						method: 'POST',
+						headers: {
+							'content-type':
+								'application/json'
+						},
+						body:
+							JSON.stringify({
+								questionId:
+									question.id,
+								selectedOptionId:
+									optionId
+							})
+					}
+				);
+
+			if (!response.ok) {
+				throw new Error(
+					'Failed to submit answer'
+				);
+			}
+
+			const result =
+				await response.json() as
+					QuizAnswerResult;
+
+			if (isGuest) {
+				const session =
+					readGuestSession();
+
+				if (!session) {
+					throw new Error(
+						'Guest practice state missing'
+					);
+				}
+
+				const nextIndex =
+					currentIndex + 1;
+
+				const completed =
+					nextIndex >=
+					session.questionsState
+						.questions.length;
+
+				writeGuestSession({
+					...session,
+					currentIndex:
+						nextIndex
+				});
+
+				answerResult = {
+					...result,
+					completed
+				};
+			} else {
+				answerResult = result;
+			}
+		} catch {
+			selectedOptionId = null;
+			errorMessage =
+				'答案送出失敗，請再試一次。';
+		} finally {
+			submitting = false;
+		}
+	}
+
+
+	async function nextQuestion() {
+		if (
+			!answerResult ||
+			answerResult.completed ||
+			loadingNext
+		) {
+			return;
+		}
+
+		loadingNext = true;
+		errorMessage = null;
+
+		try {
+			if (isGuest) {
+				const session =
+					readGuestSession();
+
+				if (!session) {
+					setGuestError(
+						'找不到進行中的練習，請重新開始。'
+					);
+					return;
+				}
+
+				const loaded =
+					await loadGuestQuestion(
+						session
+					);
+
+				if (!loaded) {
+					practiceCompleted = true;
+				}
+			} else {
+				localPractice = null;
+				await invalidateAll();
+			}
+
+			selectedOptionId = null;
+			answerResult = null;
+		} catch {
+			errorMessage =
+				'無法載入下一題，請再試一次。';
+		} finally {
+			loadingNext = false;
+		}
+	}
+
+
+	async function finishPractice() {
+		if (isGuest) {
+			sessionStorage.removeItem(
+				getGuestStorageKey()
+			);
+		}
+
+		await goto('/');
 	}
 
 
 	function setGuestError(
 		message: string
 	) {
-		errorMessage =
-			message;
-
-		guestInitialized =
-			true;
+		errorMessage = message;
+		guestInitialized = true;
 	}
 </script>
 
@@ -263,50 +448,24 @@
 
 
 <div
-	class="
-		mx-auto
-		w-full
-		max-w-3xl
-		p-4
-		md:p-6
-	"
+	class="mx-auto w-full max-w-3xl p-4 md:p-6"
 >
 	<header
-		class="
-			mb-6
-			flex
-			items-start
-			justify-between
-			gap-4
-		"
+		class="mb-6 flex items-start justify-between gap-4"
 	>
 		<div>
-			<p
-				class="
-					text-sm
-					opacity-60
-				"
-			>
+			<p class="text-sm opacity-60">
 				練習模式
 			</p>
 
-			<h1
-				class="
-					mt-1
-					text-2xl
-					font-bold
-				"
-			>
+			<h1 class="mt-1 text-2xl font-bold">
 				{data.bank.name}
 			</h1>
 		</div>
 
 		<a
 			href="/"
-			class="
-				btn
-				preset-tonal
-			"
+			class="btn preset-tonal"
 		>
 			結束練習
 		</a>
@@ -315,66 +474,57 @@
 
 	{#if loading}
 		<section
-			class="
-				card
-				preset-outlined
-				p-8
-				text-center
-			"
+			class="card preset-outlined p-8 text-center"
 		>
 			<p class="opacity-60">
 				正在載入題目...
 			</p>
 		</section>
 
-	{:else if errorMessage}
+	{:else if practiceCompleted}
 		<section
-			class="
-				card
-				preset-outlined
-				p-8
-				text-center
-			"
+			class="card preset-outlined p-8 text-center"
 		>
-			<h2
-				class="
-					text-lg
-					font-semibold
-				"
+			<h2 class="text-2xl font-bold">
+				練習完成
+			</h2>
+
+			<p class="mt-2 opacity-60">
+				本次練習已全部作答完成。
+			</p>
+
+			<button
+				type="button"
+				class="btn preset-filled-primary-500 mt-6"
+				onclick={finishPractice}
 			>
+				返回首頁
+			</button>
+		</section>
+
+	{:else if !question}
+		<section
+			class="card preset-outlined p-8 text-center"
+		>
+			<h2 class="text-lg font-semibold">
 				無法繼續練習
 			</h2>
 
-			<p
-				class="
-					mt-2
-					opacity-60
-				"
-			>
-				{errorMessage}
+			<p class="mt-2 opacity-60">
+				{errorMessage ?? '找不到目前題目。'}
 			</p>
 
 			<a
 				href="/"
-				class="
-					btn
-					preset-filled-primary-500
-					mt-6
-				"
+				class="btn preset-filled-primary-500 mt-6"
 			>
 				返回首頁
 			</a>
 		</section>
 
-	{:else if question}
+	{:else}
 		<div
-			class="
-				mb-4
-				flex
-				items-center
-				justify-between
-				text-sm
-			"
+			class="mb-4 flex items-center justify-between text-sm"
 		>
 			<span class="opacity-60">
 				題目
@@ -389,24 +539,13 @@
 
 
 		<div
-			class="
-				mb-6
-				h-2
-				overflow-hidden
-				rounded-full
-				bg-surface-200-800
-			"
+			class="mb-6 h-2 overflow-hidden rounded-full bg-surface-200-800"
 		>
 			<div
-				class="
-					h-full
-					bg-primary-500
-					transition-[width]
-				"
+				class="h-full bg-primary-500 transition-[width]"
 				style:width={`${(
 					(
-						currentIndex +
-						1
+						currentIndex + 1
 					) /
 					totalQuestions
 				) * 100}%`}
@@ -416,6 +555,55 @@
 
 		<QuestionCard
 			{question}
+			{answerResult}
+			{selectedOptionId}
+			{submitting}
+			onSelect={submitAnswer}
 		/>
+
+
+		{#if answerResult}
+			<div
+				class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+			>
+				<p
+					class:font-semibold={true}
+					class:text-success-700-300={answerResult.correct}
+					class:text-error-700-300={!answerResult.correct}
+				>
+					{answerResult.correct
+						? '✓ 回答正確'
+						: '✕ 回答錯誤'}
+				</p>
+
+				{#if answerResult.completed}
+					<button
+						type="button"
+						class="btn preset-filled-primary-500"
+						onclick={finishPractice}
+					>
+						完成練習
+					</button>
+				{:else}
+					<button
+						type="button"
+						class="btn preset-filled-primary-500"
+						disabled={loadingNext}
+						onclick={nextQuestion}
+					>
+						{loadingNext
+							? '載入中...'
+							: '下一題'}
+					</button>
+				{/if}
+			</div>
+		{:else if errorMessage}
+			<p
+				class="mt-4 text-sm text-error-700-300"
+				role="alert"
+			>
+				{errorMessage}
+			</p>
+		{/if}
 	{/if}
 </div>
