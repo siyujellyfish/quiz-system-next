@@ -100,6 +100,8 @@ export const actions: Actions = {
 			});
 		}
 
+		let practiceProgressReset = false;
+
 		try {
 			const result =
 				await updateValidatedAdminQuestion(
@@ -108,16 +110,8 @@ export const actions: Actions = {
 					validation
 				);
 
-			return {
-				updated: true,
-				practiceProgressReset:
-					result.practiceProgressReset,
-				values: validation.values,
-				errors: undefined,
-				message: result.practiceProgressReset
-					? '題目已更新；因選項數量改變，此題庫進行中的 Practice 已重置。'
-					: '題目已更新。'
-			};
+			practiceProgressReset =
+				result.practiceProgressReset;
 		} catch (caughtError) {
 			if (
 				caughtError instanceof
@@ -139,6 +133,22 @@ export const actions: Actions = {
 
 			throw caughtError;
 		}
+
+		const searchParams = new URLSearchParams({
+			updated: '1'
+		});
+
+		if (practiceProgressReset) {
+			searchParams.set(
+				'practiceProgressReset',
+				'1'
+			);
+		}
+
+		redirect(
+			303,
+			`/admin/banks/${params.bankId}/questions?${searchParams.toString()}`
+		);
 	},
 
 	delete: async ({
