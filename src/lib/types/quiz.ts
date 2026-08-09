@@ -26,9 +26,17 @@ export type PracticeQuestionsState = {
 };
 
 
+export type PracticeStats = {
+	answeredCount: number;
+	correctCount: number;
+};
+
+
 export type GuestPracticeSession = {
 	questionsState: PracticeQuestionsState;
 	currentIndex: number;
+	answeredCount: number;
+	correctCount: number;
 };
 
 
