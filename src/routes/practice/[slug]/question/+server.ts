@@ -42,13 +42,23 @@ export const POST: RequestHandler =
 			);
 		}
 
-		const body =
-			await request.json() as
-				QuestionRequest;
+		let body: QuestionRequest;
+
+		try {
+			body =
+				await request.json() as
+					QuestionRequest;
+		} catch {
+			error(
+				400,
+				'請求內容不是有效的 JSON'
+			);
+		}
 
 		if (
 			typeof body.questionId !==
-			'string'
+			'string' ||
+			body.questionId.length === 0
 		) {
 			error(
 				400,
@@ -60,10 +70,12 @@ export const POST: RequestHandler =
 			!Array.isArray(
 				body.optionIds
 			) ||
+			body.optionIds.length === 0 ||
 			!body.optionIds.every(
 				(optionId) =>
 					typeof optionId ===
-					'string'
+						'string' &&
+					optionId.length > 0
 			)
 		) {
 			error(
@@ -72,11 +84,15 @@ export const POST: RequestHandler =
 			);
 		}
 
+		const optionIds = [
+			...new Set(body.optionIds)
+		];
+
 		const question =
 			await getPublicPracticeQuestion(
 				bank.id,
 				body.questionId,
-				body.optionIds as string[]
+				optionIds
 			);
 
 		if (!question) {
