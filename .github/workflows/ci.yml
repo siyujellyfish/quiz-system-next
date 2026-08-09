@@ -21,6 +21,9 @@ jobs:
     name: Quality checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      CI: true
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/quiz_ci
 
     steps:
       - name: Checkout repository
@@ -33,7 +36,7 @@ jobs:
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
