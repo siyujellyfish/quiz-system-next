@@ -181,6 +181,14 @@ export const practiceProgress = pgTable(
 
 		currentIndex: integer('current_index')
 			.notNull()
+			.default(0),
+
+		answeredCount: integer('answered_count')
+			.notNull()
+			.default(0),
+
+		correctCount: integer('correct_count')
+			.notNull()
 			.default(0)
 	},
 	(table) => [
