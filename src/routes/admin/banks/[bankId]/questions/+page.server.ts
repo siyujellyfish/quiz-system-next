@@ -39,5 +39,6 @@ export const load: PageServerLoad = async ({
 				correctOptionCount:
 					Number(question.correctOptionCount)
 			})
+		)
 	};
 };
