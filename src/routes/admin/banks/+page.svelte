@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
+	import {
+		Menu,
+		Portal
+	} from '@skeletonlabs/skeleton-svelte';
+
 	import type {
 		PageProps
 	} from './$types';
@@ -6,6 +13,24 @@
 	let {
 		data
 	}: PageProps = $props();
+
+	async function handleBankAction(
+		bankId: string,
+		value: string
+	): Promise<void> {
+		if (value === 'edit') {
+			await goto(
+				`/admin/banks/${bankId}`
+			);
+			return;
+		}
+
+		if (value === 'export') {
+			window.location.assign(
+				`/admin/banks/${bankId}/export`
+			);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -133,19 +158,42 @@
 								管理題目
 							</a>
 
-							<a
-								href={`/admin/banks/${bank.id}/export`}
-								class="btn preset-tonal"
+							<Menu
+								positioning={{ placement: 'bottom-end' }}
+								onSelect={(details) =>
+									handleBankAction(
+										bank.id,
+										details.value
+									)}
 							>
-								匯出 JSON
-							</a>
+								<Menu.Trigger
+									class="btn preset-tonal"
+								>
+									更多
+								</Menu.Trigger>
 
-							<a
-								href={`/admin/banks/${bank.id}`}
-								class="btn preset-tonal-primary"
-							>
-								編輯題庫
-							</a>
+								<Portal>
+									<Menu.Positioner class="z-50">
+										<Menu.Content
+											class="card w-40 bg-surface-50-950 p-1 shadow-xl"
+										>
+											<Menu.Item
+												value="edit"
+												class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
+											>
+												<Menu.ItemText>編輯題庫</Menu.ItemText>
+											</Menu.Item>
+
+											<Menu.Item
+												value="export"
+												class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
+											>
+												<Menu.ItemText>匯出 JSON</Menu.ItemText>
+											</Menu.Item>
+										</Menu.Content>
+									</Menu.Positioner>
+								</Portal>
+							</Menu>
 						</div>
 					</div>
 				</article>
