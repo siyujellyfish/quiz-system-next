@@ -1,7 +1,11 @@
 <script lang="ts">
 	import MoonIcon from '@lucide/svelte/icons/moon';
 	import SunIcon from '@lucide/svelte/icons/sun';
-	import { Switch } from '@skeletonlabs/skeleton-svelte';
+	import {
+		Portal,
+		Switch,
+		Tooltip
+	} from '@skeletonlabs/skeleton-svelte';
 	import { onMount } from 'svelte';
 
 	type Mode =
@@ -97,24 +101,39 @@
 	};
 </script>
 
-<span
-	class="inline-flex items-center"
-	title={checked ? '切換為亮色模式' : '切換為暗色模式'}
->
-	<Switch {checked} {onCheckedChange}>
-		<Switch.Control>
-			<Switch.Thumb>
-				<Switch.Context>
-					{#snippet children(switch_)}
-						{#if switch_().checked}
-							<MoonIcon class="size-3" />
-						{:else}
-							<SunIcon class="size-3" />
-						{/if}
-					{/snippet}
-				</Switch.Context>
-			</Switch.Thumb>
-		</Switch.Control>
-		<Switch.HiddenInput />
-	</Switch>
-</span>
+<Tooltip positioning={{ placement: 'bottom' }}>
+	<Tooltip.Trigger>
+		{#snippet element(attributes)}
+			<span {...attributes} class="inline-flex items-center">
+				<Switch {checked} {onCheckedChange}>
+					<Switch.Control>
+						<Switch.Thumb>
+							<Switch.Context>
+								{#snippet children(switch_)}
+									{#if switch_().checked}
+										<MoonIcon class="size-3" />
+									{:else}
+										<SunIcon class="size-3" />
+									{/if}
+								{/snippet}
+							</Switch.Context>
+						</Switch.Thumb>
+					</Switch.Control>
+					<Switch.HiddenInput />
+				</Switch>
+			</span>
+		{/snippet}
+	</Tooltip.Trigger>
+
+	<Portal>
+		<Tooltip.Positioner class="z-50">
+			<Tooltip.Content
+				class="card preset-filled-surface-950-50 p-2 text-xs shadow-xl"
+			>
+				{checked
+					? '切換為亮色模式'
+					: '切換為暗色模式'}
+			</Tooltip.Content>
+		</Tooltip.Positioner>
+	</Portal>
+</Tooltip>
