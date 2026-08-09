@@ -3,3 +3,10 @@ export function getGuestPracticeStorageKey(
 ): string {
 	return `quiz:guest-practice:${slug}`;
 }
+
+
+export function getExamStorageKey(
+	slug: string
+): string {
+	return `quiz:exam:${slug}`;
+}
