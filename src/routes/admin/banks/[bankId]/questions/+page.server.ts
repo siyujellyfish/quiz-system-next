@@ -29,6 +29,9 @@ export const load: PageServerLoad = async ({
 	const questions = await getAdminQuestions(
 		bank.id
 	);
+	const rawImportedCount = Number(
+		url.searchParams.get('importedCount') ?? 0
+	);
 
 	return {
 		bank,
@@ -38,6 +41,13 @@ export const load: PageServerLoad = async ({
 			url.searchParams.get(
 				'practiceProgressReset'
 			) === '1',
+		imported:
+			url.searchParams.get('imported') === '1',
+		importedCount:
+			Number.isInteger(rawImportedCount) &&
+			rawImportedCount >= 0
+				? rawImportedCount
+				: 0,
 		questions: questions.map(
 			(question) => ({
 				...question,
