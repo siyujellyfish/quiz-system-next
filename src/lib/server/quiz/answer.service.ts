@@ -196,6 +196,13 @@ export async function answerUserPracticeQuestion(
 	const nextIndex =
 		progress.currentIndex + 1;
 
+	const answeredCount =
+		progress.answeredCount + 1;
+
+	const correctCount =
+		progress.correctCount +
+		(result.correct ? 1 : 0);
+
 	const completed =
 		nextIndex >=
 		progress.questionsState
@@ -239,7 +246,9 @@ export async function answerUserPracticeQuestion(
 			await tx
 				.update(practiceProgress)
 				.set({
-					currentIndex: nextIndex
+					currentIndex: nextIndex,
+					answeredCount,
+					correctCount
 				})
 				.where(
 					and(
