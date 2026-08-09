@@ -26,6 +26,12 @@ export type PracticeQuestionsState = {
 };
 
 
+export type GuestPracticeSession = {
+	questionsState: PracticeQuestionsState;
+	currentIndex: number;
+};
+
+
 export type PublicQuestionOption = {
 	id: string;
 	content: string;
@@ -43,4 +49,5 @@ export type QuizAnswerResult = {
 	selectedOptionId: string;
 	correct: boolean;
 	correctOptionIds: string[];
+	completed: boolean;
 };
