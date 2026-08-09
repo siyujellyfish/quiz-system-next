@@ -180,13 +180,13 @@
 
 				{#if resultLabel}
 					<span
-						class="shrink-0 text-sm font-semibold"
-						class:text-success-700-300={
+						class="badge shrink-0 text-sm font-semibold"
+						class:preset-tonal-success={
 							isCorrectOption(
 								option.id
 							)
 						}
-						class:text-error-700-300={
+						class:preset-tonal-error={
 							isIncorrectSelection(
 								option.id
 							)
