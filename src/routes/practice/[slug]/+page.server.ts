@@ -131,6 +131,10 @@ export const load: PageServerLoad =
 				practice: {
 					currentIndex,
 					totalQuestions,
+					answeredCount:
+						progress.answeredCount,
+					correctCount:
+						progress.correctCount,
 					question
 				}
 			};
