@@ -97,6 +97,7 @@ export async function importAdminQuestionBank(
 						isCorrect: option.isCorrect,
 						position
 					})
+				)
 		);
 
 		for (const rows of chunk(optionRows, 500)) {
