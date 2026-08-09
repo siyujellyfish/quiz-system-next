@@ -103,3 +103,51 @@ export async function getQuestionBankBySlug(
 
 	return bank ?? null;
 }
+
+
+export async function getQuestionBankWithCountBySlug(
+	slug: string
+) {
+	const [bank] = await db
+		.select({
+			id: questionBanks.id,
+			slug: questionBanks.slug,
+			name: questionBanks.name,
+			description:
+				questionBanks.description,
+			questionCount:
+				countDistinct(
+					questionOptions.questionId
+				)
+		})
+		.from(questionBanks)
+		.leftJoin(
+			questions,
+			eq(
+				questions.bankId,
+				questionBanks.id
+			)
+		)
+		.leftJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id
+			)
+		)
+		.where(
+			eq(
+				questionBanks.slug,
+				slug
+			)
+		)
+		.groupBy(
+			questionBanks.id,
+			questionBanks.slug,
+			questionBanks.name,
+			questionBanks.description
+		)
+		.limit(1);
+
+	return bank ?? null;
+}
