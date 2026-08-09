@@ -59,22 +59,22 @@
 </script>
 
 <AppBar
-	class="sticky top-0 z-40 border-b border-surface-200-800 bg-surface-50-950"
+	class="sticky top-0 z-30 border-b border-surface-200-800 bg-surface-50-950"
 >
 	<AppBar.Toolbar
-		class="mx-auto grid h-16 w-full max-w-6xl grid-cols-[1fr_auto] px-4 md:px-6"
+		class="mx-auto grid h-14 min-h-0 w-full max-w-6xl grid-cols-[1fr_auto] px-4 py-0 md:px-6"
 	>
 		<AppBar.Headline>
 			<a
 				href="/"
-				class="text-lg font-bold tracking-tight no-underline md:text-xl"
+				class="text-lg font-bold tracking-tight no-underline"
 				aria-label="返回首頁"
 			>
 				Quiz System
 			</a>
 		</AppBar.Headline>
 
-		<AppBar.Trail class="justify-end gap-3">
+		<AppBar.Trail class="justify-end gap-2">
 			<LightSwitch />
 
 			{#if user}
@@ -84,10 +84,10 @@
 						handleMenuSelect(details.value)}
 				>
 					<Menu.Trigger
-						class="flex items-center gap-2 rounded-lg p-1.5 transition hover:bg-surface-100-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+						class="flex items-center gap-2 rounded-lg p-1 transition hover:bg-surface-100-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
 						aria-label="開啟使用者選單"
 					>
-						<Avatar class="size-9">
+						<Avatar class="size-8">
 							<Avatar.Fallback
 								class="preset-filled-primary-500 font-semibold"
 							>
@@ -110,9 +110,9 @@
 					</Menu.Trigger>
 
 					<Portal>
-						<Menu.Positioner class="z-50">
+						<Menu.Positioner class="z-[80] pt-2">
 							<Menu.Content
-								class="card w-52 bg-surface-50-950 p-1 shadow-xl"
+								class="card w-52 border border-surface-200-800 bg-surface-50-950 p-1 shadow-xl"
 							>
 								<Menu.ItemGroup>
 									<Menu.ItemGroupLabel
