@@ -109,7 +109,9 @@ export const actions: Actions = {
 				return fail(400, {
 					errors: {
 					currentPassword:
-						caughtError.message
+						caughtError.message,
+					newPassword: undefined,
+					confirmPassword: undefined
 				},
 				message: '目前密碼驗證失敗'
 				});
@@ -120,8 +122,12 @@ export const actions: Actions = {
 				AccountPasswordConflictError
 			) {
 				return fail(409, {
-					errors: undefined,
-					message: caughtError.message
+					errors: {
+					currentPassword: undefined,
+					newPassword: undefined,
+					confirmPassword: undefined
+				},
+				message: caughtError.message
 				});
 			}
 
