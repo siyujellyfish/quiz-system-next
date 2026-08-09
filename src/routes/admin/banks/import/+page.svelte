@@ -1,4 +1,8 @@
 <script lang="ts">
+	import FileIcon
+		from '@lucide/svelte/icons/file';
+	import { FileUpload } from '@skeletonlabs/skeleton-svelte';
+
 	import type {
 		ActionData
 	} from './$types';
@@ -137,26 +141,78 @@
 			>{values.description}</textarea>
 		</div>
 
-		<div>
-			<label
-				for="questionFile"
-				class="label"
-			>
-				<span class="label-text">題庫 JSON</span>
-			</label>
+		<FileUpload
+			name="questionFile"
+			accept={{
+				'application/json': ['.json']
+			}}
+			maxFileSize={5 * 1024 * 1024}
+			maxFiles={1}
+			required
+		>
+			<FileUpload.Label class="label-text">
+				題庫 JSON
+			</FileUpload.Label>
 
-			<input
-				id="questionFile"
-				name="questionFile"
-				type="file"
-				accept=".json,application/json"
-				class="input"
-			/>
+			<FileUpload.Dropzone
+				class="mt-2 flex min-h-40 flex-col items-center justify-center gap-3 rounded-container border border-dashed border-surface-300-700 p-6 text-center"
+			>
+				<FileIcon class="size-9 opacity-60" />
+				<div>
+					<p class="font-medium">
+						拖放 JSON 檔案到這裡
+					</p>
+					<p class="mt-1 text-sm opacity-60">
+						或從裝置選擇檔案
+					</p>
+				</div>
+				<FileUpload.Trigger
+					class="btn preset-tonal-primary"
+				>
+					選擇檔案
+				</FileUpload.Trigger>
+				<FileUpload.HiddenInput />
+			</FileUpload.Dropzone>
+
+			<FileUpload.ItemGroup class="mt-3">
+				<FileUpload.Context>
+					{#snippet children(fileUpload)}
+						{#each fileUpload().acceptedFiles as file (file.name)}
+							<FileUpload.Item
+								{file}
+								class="card preset-tonal flex items-center gap-3 p-3"
+							>
+								<div class="min-w-0 flex-1">
+									<FileUpload.ItemName
+										class="truncate text-sm font-medium"
+									>
+										{file.name}
+									</FileUpload.ItemName>
+									<FileUpload.ItemSizeText
+										class="text-xs opacity-60"
+									>
+										{file.size} bytes
+									</FileUpload.ItemSizeText>
+								</div>
+								<FileUpload.ItemDeleteTrigger
+									class="btn preset-tonal"
+								/>
+							</FileUpload.Item>
+						{/each}
+					{/snippet}
+				</FileUpload.Context>
+			</FileUpload.ItemGroup>
+
+			<FileUpload.ClearTrigger
+				class="btn preset-tonal mt-3"
+			>
+				清除檔案
+			</FileUpload.ClearTrigger>
 
 			<p class="mt-2 text-sm opacity-60">
 				最大 5 MB。最外層必須是題目陣列，每題至少 2 個選項，且只能有 1 個正確答案。
 			</p>
-		</div>
+		</FileUpload>
 
 		<div class="flex flex-wrap justify-end gap-3">
 			<a
