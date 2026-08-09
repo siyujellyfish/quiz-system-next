@@ -1,9 +1,31 @@
 <!doctype html>
-<html lang="zh-Hant" data-theme="cerberus" data-mode="dark">
+<html lang="zh-Hant" data-theme="cerberus">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
+		<script>
+			(() => {
+				const storedMode =
+					localStorage.getItem('mode');
+
+				const mode =
+					storedMode === 'light' ||
+					storedMode === 'dark'
+						? storedMode
+						: matchMedia(
+							'(prefers-color-scheme: dark)'
+						).matches
+							? 'dark'
+							: 'light';
+
+				document.documentElement
+					.setAttribute(
+						'data-mode',
+						mode
+					);
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
