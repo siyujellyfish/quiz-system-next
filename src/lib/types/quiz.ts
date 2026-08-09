@@ -25,6 +25,7 @@ export type PracticeQuestionsState = {
 	questions: PracticeQuestionState[];
 };
 
+
 export type PublicQuestionOption = {
 	id: string;
 	content: string;
@@ -35,4 +36,11 @@ export type PublicQuizQuestion = {
 	id: string;
 	prompt: string;
 	options: PublicQuestionOption[];
+};
+
+
+export type QuizAnswerResult = {
+	selectedOptionId: string;
+	correct: boolean;
+	correctOptionIds: string[];
 };
