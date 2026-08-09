@@ -69,7 +69,7 @@ export const load: PageServerLoad =
 						progress: null,
 						wrongCount: null
 					})
-			};
+			)};
 		}
 
 		const [
