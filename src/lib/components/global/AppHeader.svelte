@@ -1,10 +1,17 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import ChevronDownIcon
 		from '@lucide/svelte/icons/chevron-down';
+	import {
+		AppBar,
+		Avatar,
+		Menu,
+		Portal
+	} from '@skeletonlabs/skeleton-svelte';
 
 	import LightSwitch
 		from '$lib/components/global/LightSwitch.svelte';
-
 	import type {
 		SessionUser
 	} from '$lib/types/auth';
@@ -25,37 +32,68 @@
 				.toUpperCase() ||
 				'?'
 		);
+
+	async function handleMenuSelect(
+		value: string
+	): Promise<void> {
+		if (value === 'profile') {
+			await goto('/profile');
+			return;
+		}
+
+		if (value === 'admin') {
+			await goto('/admin');
+			return;
+		}
+
+		if (value === 'logout') {
+			const form = document.getElementById(
+				'global-logout-form'
+			);
+
+			if (form instanceof HTMLFormElement) {
+				form.requestSubmit();
+			}
+		}
+	}
 </script>
 
-<header
-	class="sticky top-0 z-40 h-16 border-b border-surface-200-800 bg-surface-50-950"
+<AppBar
+	class="sticky top-0 z-40 border-b border-surface-200-800 bg-surface-50-950"
 >
-	<div
-		class="mx-auto flex h-full w-full max-w-6xl items-center justify-between gap-4 px-4 md:px-6"
+	<AppBar.Toolbar
+		class="mx-auto grid h-16 w-full max-w-6xl grid-cols-[1fr_auto] px-4 md:px-6"
 	>
-		<a
-			href="/"
-			class="text-lg font-bold tracking-tight no-underline md:text-xl"
-			aria-label="返回首頁"
-		>
-			Quiz System
-		</a>
+		<AppBar.Headline>
+			<a
+				href="/"
+				class="text-lg font-bold tracking-tight no-underline md:text-xl"
+				aria-label="返回首頁"
+			>
+				Quiz System
+			</a>
+		</AppBar.Headline>
 
-		<div class="flex items-center gap-3">
+		<AppBar.Trail class="justify-end gap-3">
 			<LightSwitch />
 
 			{#if user}
-				<details class="relative">
-					<summary
-						class="flex cursor-pointer list-none items-center gap-2 rounded-lg p-1.5 transition hover:bg-surface-100-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+				<Menu
+					positioning={{ placement: 'bottom-end' }}
+					onSelect={(details) =>
+						handleMenuSelect(details.value)}
+				>
+					<Menu.Trigger
+						class="flex items-center gap-2 rounded-lg p-1.5 transition hover:bg-surface-100-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
 						aria-label="開啟使用者選單"
 					>
-						<span
-							class="preset-filled-primary-500 flex size-9 items-center justify-center rounded-full font-semibold"
-							aria-hidden="true"
-						>
-							{avatarLabel}
-						</span>
+						<Avatar class="size-9">
+							<Avatar.Fallback
+								class="preset-filled-primary-500 font-semibold"
+							>
+								{avatarLabel}
+							</Avatar.Fallback>
+						</Avatar>
 
 						<span
 							class="hidden max-w-40 truncate text-sm font-medium sm:block"
@@ -63,62 +101,69 @@
 							{user.username}
 						</span>
 
-						<ChevronDownIcon
-							class="hidden size-4 opacity-60 sm:block"
-							aria-hidden="true"
-						/>
-					</summary>
+						<Menu.Indicator>
+							<ChevronDownIcon
+								class="hidden size-4 opacity-60 sm:block"
+								aria-hidden="true"
+							/>
+						</Menu.Indicator>
+					</Menu.Trigger>
 
-					<div
-						class="absolute right-0 mt-2 w-52 overflow-hidden rounded-container border border-surface-200-800 bg-surface-50-950 p-1 shadow-xl"
-					>
-						<div
-							class="border-b border-surface-200-800 px-3 py-2"
-						>
-							<p class="truncate text-sm font-semibold">
-								{user.username}
-							</p>
-
-							<p class="mt-0.5 text-xs opacity-60">
-								{user.isAdmin
-									? '管理員帳號'
-									: '使用者帳號'}
-							</p>
-						</div>
-
-						<a
-							href="/profile"
-							class="block rounded-lg px-3 py-2 text-sm no-underline transition hover:bg-surface-100-900"
-						>
-							個人資料
-						</a>
-
-						{#if user.isAdmin}
-							<a
-								href="/admin"
-								class="block rounded-lg px-3 py-2 text-sm no-underline transition hover:bg-surface-100-900"
+					<Portal>
+						<Menu.Positioner class="z-50">
+							<Menu.Content
+								class="card w-52 bg-surface-50-950 p-1 shadow-xl"
 							>
-								管理後台
-							</a>
-						{/if}
+								<Menu.ItemGroup>
+									<Menu.ItemGroupLabel
+										class="border-b border-surface-200-800 px-3 py-2"
+									>
+										<p class="truncate text-sm font-semibold">
+											{user.username}
+										</p>
+										<p class="mt-0.5 text-xs opacity-60">
+											{user.isAdmin
+												? '管理員帳號'
+												: '使用者帳號'}
+										</p>
+									</Menu.ItemGroupLabel>
 
-						<div
-							class="my-1 border-t border-surface-200-800"
-						></div>
+									<Menu.Item
+										value="profile"
+										class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
+									>
+										<Menu.ItemText>個人資料</Menu.ItemText>
+									</Menu.Item>
 
-						<form
-							method="POST"
-							action="/logout"
-						>
-							<button
-								type="submit"
-								class="w-full rounded-lg px-3 py-2 text-left text-sm transition hover:bg-error-500/10 hover:text-error-700-300"
-							>
-								登出
-							</button>
-						</form>
-					</div>
-				</details>
+									{#if user.isAdmin}
+										<Menu.Item
+											value="admin"
+											class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
+										>
+											<Menu.ItemText>管理後台</Menu.ItemText>
+										</Menu.Item>
+									{/if}
+								</Menu.ItemGroup>
+
+								<Menu.Separator />
+
+								<Menu.Item
+									value="logout"
+									class="rounded-lg px-3 py-2 text-sm hover:bg-error-500/10 hover:text-error-700-300"
+								>
+									<Menu.ItemText>登出</Menu.ItemText>
+								</Menu.Item>
+							</Menu.Content>
+						</Menu.Positioner>
+					</Portal>
+				</Menu>
+
+				<form
+					id="global-logout-form"
+					method="POST"
+					action="/logout"
+					class="hidden"
+				></form>
 			{:else}
 				<a
 					href="/login"
@@ -127,12 +172,6 @@
 					登入
 				</a>
 			{/if}
-		</div>
-	</div>
-</header>
-
-<style>
-	summary::-webkit-details-marker {
-		display: none;
-	}
-</style>
+		</AppBar.Trail>
+	</AppBar.Toolbar>
+</AppBar>
