@@ -68,12 +68,12 @@
 	function getOptionClass(
 		optionId: string
 	): string {
-		const base = [
+		const classes = [
 			'card',
 			'preset-outlined',
 			'flex',
 			'w-full',
-			'items-start',
+			'items-center',
 			'gap-3',
 			'p-4',
 			'text-left',
@@ -82,33 +82,55 @@
 		];
 
 		if (isCorrectOption(optionId)) {
-			base.push(
+			classes.push(
 				'border-success-500',
-				'bg-success-500/10'
+				'bg-success-500/20',
+				'ring-1',
+				'ring-success-500/40'
 			);
 		} else if (
 			isIncorrectSelection(optionId)
 		) {
-			base.push(
+			classes.push(
 				'border-error-500',
-				'bg-error-500/10'
+				'bg-error-500/20',
+				'ring-1',
+				'ring-error-500/40'
 			);
 		} else if (
 			submitting &&
 			selectedOptionId === optionId
 		) {
-			base.push(
+			classes.push(
 				'border-primary-500',
 				'bg-primary-500/10'
 			);
 		} else if (!disabled) {
-			base.push(
+			classes.push(
 				'hover:border-primary-500',
 				'hover:bg-primary-500/5'
 			);
 		}
 
-		return base.join(' ');
+		return classes.join(' ');
+	}
+
+
+	function getResultLabel(
+		optionId: string
+	): string | null {
+		if (isCorrectOption(optionId)) {
+			return answerResult?.selectedOptionId ===
+				optionId
+				? '✓ 正確'
+				: '✓ 正確答案';
+		}
+
+		if (isIncorrectSelection(optionId)) {
+			return '✕ 你的答案';
+		}
+
+		return null;
 	}
 </script>
 
@@ -128,6 +150,9 @@
 			question.options as option, index
 			(option.id)
 		}
+			{@const resultLabel =
+				getResultLabel(option.id)}
+
 			<button
 				type="button"
 				class={getOptionClass(
@@ -151,19 +176,21 @@
 					{option.content}
 				</span>
 
-				{#if isCorrectOption(option.id)}
+				{#if resultLabel}
 					<span
-						class="shrink-0 font-semibold text-success-700-300"
-						aria-label="正確答案"
+						class="shrink-0 text-sm font-semibold"
+						class:text-success-700-300={
+							isCorrectOption(
+								option.id
+							)
+						}
+						class:text-error-700-300={
+							isIncorrectSelection(
+								option.id
+							)
+						}
 					>
-						✓
-					</span>
-				{:else if isIncorrectSelection(option.id)}
-					<span
-						class="shrink-0 font-semibold text-error-700-300"
-						aria-label="你的答案錯誤"
-					>
-						✕
+						{resultLabel}
 					</span>
 				{/if}
 			</button>
