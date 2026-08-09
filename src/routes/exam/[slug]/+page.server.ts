@@ -9,14 +9,14 @@ import type {
 
 
 import {
-	getQuestionBankBySlug
+	getQuestionBankWithCountBySlug
 } from '$lib/server/quiz/bank.repository';
 
 
 export const load: PageServerLoad =
 	async ({ params }) => {
 		const bank =
-			await getQuestionBankBySlug(
+			await getQuestionBankWithCountBySlug(
 				params.slug
 			);
 
