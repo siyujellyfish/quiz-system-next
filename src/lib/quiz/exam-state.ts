@@ -1,5 +1,4 @@
 import type {
-	ExamResult,
 	ExamSession,
 	PublicQuizQuestion
 } from '$lib/types/quiz';
@@ -50,74 +49,6 @@ function isPublicQuizQuestion(
 }
 
 
-function isExamResult(
-	value: unknown
-): value is ExamResult {
-	if (
-		typeof value !== 'object' ||
-		value === null
-	) {
-		return false;
-	}
-
-	const result =
-		value as Record<string, unknown>;
-
-	const numericKeys = [
-		'totalQuestions',
-		'answeredCount',
-		'unansweredCount',
-		'correctCount',
-		'incorrectCount',
-		'accuracy',
-		'elapsedSeconds'
-	];
-
-	if (
-		!numericKeys.every(
-			(key) =>
-				typeof result[key] ===
-					'number'
-		) ||
-		!Array.isArray(result.questions)
-	) {
-		return false;
-	}
-
-	return result.questions.every(
-		(question) => {
-			if (
-				typeof question !== 'object' ||
-				question === null
-			) {
-				return false;
-			}
-
-			const item =
-				question as Record<string, unknown>;
-
-			return (
-				typeof item.questionId === 'string' &&
-				(
-					item.selectedOptionId === null ||
-					typeof item.selectedOptionId ===
-						'string'
-				) &&
-				Array.isArray(
-					item.correctOptionIds
-				) &&
-				item.correctOptionIds.every(
-					(optionId) =>
-						typeof optionId ===
-							'string'
-				) &&
-				typeof item.correct === 'boolean'
-			);
-		}
-	);
-}
-
-
 export function parseExamSession(
 	value: unknown
 ): ExamSession | null {
@@ -147,7 +78,8 @@ export function parseExamSession(
 			session.questions.length ||
 		typeof session.answers !== 'object' ||
 		session.answers === null ||
-		Array.isArray(session.answers)
+		Array.isArray(session.answers) ||
+		session.result !== null
 	) {
 		return null;
 	}
@@ -169,13 +101,6 @@ export function parseExamSession(
 		answers[questionId] = optionId;
 	}
 
-	if (
-		session.result !== null &&
-		!isExamResult(session.result)
-	) {
-		return null;
-	}
-
 	return {
 		version: 1,
 		startedAt: session.startedAt,
@@ -183,7 +108,6 @@ export function parseExamSession(
 		questions:
 			session.questions as PublicQuizQuestion[],
 		answers,
-		result:
-			session.result as ExamResult | null
+		result: null
 	};
 }

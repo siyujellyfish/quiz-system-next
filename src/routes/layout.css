@@ -15,3 +15,11 @@ body {
 body {
 	margin: 0;
 }
+
+[role='dialog'].card {
+	@apply bg-surface-50 shadow-xl;
+}
+
+[data-mode='dark'] [role='dialog'].card {
+	@apply bg-surface-950;
+}
