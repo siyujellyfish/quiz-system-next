@@ -54,7 +54,7 @@ export type PublicQuizQuestion = {
 
 
 export type QuizAnswerResult = {
-	selectedOptionId: string;
+	selectedOptionId: string | null;
 	correct: boolean;
 	correctOptionIds: string[];
 	completed: boolean;
@@ -65,3 +65,39 @@ export type WrongAnswerResult =
 	QuizAnswerResult & {
 		remainingCount: number;
 	};
+
+
+export type ExamAnswers = Record<
+	string,
+	string | null
+>;
+
+
+export type ExamQuestionResult = {
+	questionId: string;
+	selectedOptionId: string | null;
+	correctOptionIds: string[];
+	correct: boolean;
+};
+
+
+export type ExamResult = {
+	totalQuestions: number;
+	answeredCount: number;
+	unansweredCount: number;
+	correctCount: number;
+	incorrectCount: number;
+	accuracy: number;
+	elapsedSeconds: number;
+	questions: ExamQuestionResult[];
+};
+
+
+export type ExamSession = {
+	version: 1;
+	startedAt: number;
+	currentIndex: number;
+	questions: PublicQuizQuestion[];
+	answers: ExamAnswers;
+	result: ExamResult | null;
+};
