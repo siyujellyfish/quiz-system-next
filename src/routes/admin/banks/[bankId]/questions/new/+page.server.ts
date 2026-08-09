@@ -93,15 +93,9 @@ export const actions: Actions = {
 		}
 
 		try {
-			const question =
-				await createValidatedAdminQuestion(
-					bank.id,
-					validation
-				);
-
-			redirect(
-				303,
-				`/admin/banks/${bank.id}/questions/${question.id}`
+			await createValidatedAdminQuestion(
+				bank.id,
+				validation
 			);
 		} catch (caughtError) {
 			if (
@@ -117,5 +111,10 @@ export const actions: Actions = {
 
 			throw caughtError;
 		}
+
+		redirect(
+			303,
+			`/admin/banks/${bank.id}/questions`
+		);
 	}
 };
