@@ -79,17 +79,34 @@ export function isPracticeQuestionsState(
 }
 
 
+function parseCount(
+	value: unknown
+): number | null {
+	if (
+		typeof value !== 'number' ||
+		!Number.isInteger(value) ||
+		value < 0
+	) {
+		return null;
+	}
+
+	return value;
+}
+
+
 export function parseGuestPracticeSession(
 	value: unknown
 ): GuestPracticeSession | null {
 	/*
-	 * 舊 phase 曾直接把 PracticeQuestionsState
-	 * 存入 sessionStorage。保留向後相容並自動視為 index 0。
+	 * 舊版本直接把 PracticeQuestionsState 存入
+	 * sessionStorage。保留相容性，統計從 0 開始。
 	 */
 	if (isPracticeQuestionsState(value)) {
 		return {
 			questionsState: value,
-			currentIndex: 0
+			currentIndex: 0,
+			answeredCount: 0,
+			correctCount: 0
 		};
 	}
 
@@ -114,16 +131,42 @@ export function parseGuestPracticeSession(
 		return null;
 	}
 
-	if (
-		typeof session.currentIndex !==
-			'number' ||
-		!Number.isInteger(
+	const currentIndex =
+		parseCount(
 			session.currentIndex
-		) ||
-		session.currentIndex < 0 ||
-		session.currentIndex >
+		);
+
+	if (
+		currentIndex === null ||
+		currentIndex >
 			session.questionsState
 				.questions.length
+	) {
+		return null;
+	}
+
+	/*
+	 * 相容上一個 phase 已有 currentIndex、
+	 * 但尚未保存正確率統計的 Guest session。
+	 */
+	const answeredCount =
+		session.answeredCount === undefined
+			? 0
+			: parseCount(
+				session.answeredCount
+			);
+
+	const correctCount =
+		session.correctCount === undefined
+			? 0
+			: parseCount(
+				session.correctCount
+			);
+
+	if (
+		answeredCount === null ||
+		correctCount === null ||
+		correctCount > answeredCount
 	) {
 		return null;
 	}
@@ -131,7 +174,8 @@ export function parseGuestPracticeSession(
 	return {
 		questionsState:
 			session.questionsState,
-		currentIndex:
-			session.currentIndex
+		currentIndex,
+		answeredCount,
+		correctCount
 	};
 }
