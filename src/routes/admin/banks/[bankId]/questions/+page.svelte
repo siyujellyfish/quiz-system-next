@@ -7,6 +7,8 @@
 		PageProps
 	} from './$types';
 
+	import { toaster } from '$lib/ui/toaster';
+
 	let {
 		data
 	}: PageProps = $props();
@@ -14,6 +16,22 @@
 	onMount(() => {
 		if (!data.updated && !data.imported) {
 			return;
+		}
+
+		if (data.imported) {
+			toaster.success({
+				title: '題庫已匯入',
+				description:
+					`共新增 ${data.importedCount} 道題目。`
+			});
+		} else if (data.updated) {
+			toaster.success({
+				title: '題目已更新',
+				description:
+					data.practiceProgressReset
+						? '因選項數量改變，此題庫進行中的 Practice 已重置。'
+						: '題目內容已成功儲存。'
+			});
 		}
 
 		const url = new URL(window.location.href);
@@ -72,26 +90,6 @@
 			新增題目
 		</a>
 	</header>
-
-	{#if data.imported}
-		<div
-			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
-			role="status"
-		>
-			題庫已匯入，共新增 {data.importedCount} 道題目。
-		</div>
-	{:else if data.updated}
-		<div
-			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
-			role="status"
-		>
-			{#if data.practiceProgressReset}
-				題目已更新；因選項數量改變，此題庫進行中的 Practice 已重置。
-			{:else}
-				題目已更新。
-			{/if}
-		</div>
-	{/if}
 
 	{#if data.questions.length === 0}
 		<section
