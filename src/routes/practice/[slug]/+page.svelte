@@ -1,115 +1,427 @@
 <script lang="ts">
+	import {
+		onMount
+	} from 'svelte';
+
+
 	import type {
+		PageProps
+	} from './$types';
+
+
+	import type {
+		PracticeQuestionsState,
 		PublicQuizQuestion
 	} from '$lib/types/quiz';
 
 
-	type Props = {
+	import QuestionCard
+		from '$lib/components/quiz/QuestionCard.svelte';
+
+
+	import {
+		getGuestPracticeStorageKey
+	} from '$lib/quiz/storage';
+
+
+	import {
+		isPracticeQuestionsState
+	} from '$lib/quiz/practice-state';
+
+
+	type PracticeView = {
+		currentIndex: number;
+		totalQuestions: number;
 		question: PublicQuizQuestion;
-
-		onSelect?: (
-			optionId: string
-		) => void;
-
-		disabled?: boolean;
 	};
 
 
 	let {
-		question,
-		onSelect = () => {},
-		disabled = false
-	}: Props = $props();
+		data
+	}: PageProps = $props();
 
 
-	function getOptionLabel(
-		index: number
-	): string {
-		return String.fromCharCode(
-			65 + index
+	/*
+	 * Local practice 目前主要給 Guest 使用。
+	 *
+	 * 後續實作「下一題」時，也可以拿來保存
+	 * client-side 當下顯示狀態。
+	 */
+	let localPractice =
+		$state<PracticeView | null>(
+			null
 		);
+
+
+	let guestInitialized =
+		$state(false);
+
+
+	let errorMessage =
+		$state<string | null>(
+			null
+		);
+
+
+	/*
+	 * 登入使用者：
+	 * data.practice
+	 *
+	 * Guest：
+	 * localPractice
+	 */
+	let practice =
+		$derived(
+			localPractice ??
+				data.practice
+		);
+
+
+	let question =
+		$derived(
+			practice?.question ??
+				null
+		);
+
+
+	let currentIndex =
+		$derived(
+			practice?.currentIndex ??
+				0
+		);
+
+
+	let totalQuestions =
+		$derived(
+			practice?.totalQuestions ??
+				0
+		);
+
+
+	let loading =
+		$derived(
+			data.practice === null &&
+			!guestInitialized
+		);
+
+
+	onMount(async () => {
+		/*
+		 * 登入使用者：
+		 * server load 已經提供 practice。
+		 */
+		if (data.practice) {
+			return;
+		}
+
+		await loadGuestPractice();
+	});
+
+
+	async function loadGuestPractice() {
+		const key =
+			getGuestPracticeStorageKey(
+				data.bank.slug
+			);
+
+		const raw =
+			sessionStorage.getItem(
+				key
+			);
+
+		if (!raw) {
+			setGuestError(
+				'找不到進行中的練習，請重新開始。'
+			);
+
+			return;
+		}
+
+		let parsed: unknown;
+
+		try {
+			parsed =
+				JSON.parse(raw);
+		} catch {
+			setGuestError(
+				'練習資料格式錯誤，請重新開始。'
+			);
+
+			return;
+		}
+
+		if (
+			!isPracticeQuestionsState(
+				parsed
+			)
+		) {
+			setGuestError(
+				'練習資料已失效，請重新開始。'
+			);
+
+			return;
+		}
+
+		const state:
+			PracticeQuestionsState =
+				parsed;
+
+		if (
+			state.questions.length ===
+			0
+		) {
+			setGuestError(
+				'這份練習沒有可顯示的題目。'
+			);
+
+			return;
+		}
+
+		const currentIndex = 0;
+
+		const questionState =
+			state.questions[
+				currentIndex
+			];
+
+		if (!questionState) {
+			setGuestError(
+				'找不到目前題目。'
+			);
+
+			return;
+		}
+
+		try {
+			const response =
+				await fetch(
+					`/practice/${encodeURIComponent(
+						data.bank.slug
+					)}/question`,
+					{
+						method:
+							'POST',
+
+						headers: {
+							'content-type':
+								'application/json'
+						},
+
+						body:
+							JSON.stringify({
+								questionId:
+									questionState
+										.questionId,
+
+								optionIds:
+									questionState
+										.optionIds
+							})
+					}
+				);
+
+			if (!response.ok) {
+				throw new Error(
+					'Failed to load question'
+				);
+			}
+
+			const result =
+				await response.json() as {
+					question:
+						PublicQuizQuestion;
+				};
+
+			localPractice = {
+				currentIndex,
+				totalQuestions:
+					state.questions.length,
+				question:
+					result.question
+			};
+		} catch {
+			errorMessage =
+				'無法載入題目，請重新開始練習。';
+		} finally {
+			guestInitialized =
+				true;
+		}
+	}
+
+
+	function setGuestError(
+		message: string
+	) {
+		errorMessage =
+			message;
+
+		guestInitialized =
+			true;
 	}
 </script>
 
 
-<section
+<svelte:head>
+	<title>
+		{data.bank.name} | 練習
+	</title>
+</svelte:head>
+
+
+<div
 	class="
-		card
-		preset-outlined
-		p-5
-		md:p-7
+		mx-auto
+		w-full
+		max-w-3xl
+		p-4
+		md:p-6
 	"
 >
-	<h2
+	<header
 		class="
-			text-lg
-			font-semibold
-			leading-relaxed
-			md:text-xl
+			mb-6
+			flex
+			items-start
+			justify-between
+			gap-4
 		"
 	>
-		{question.prompt}
-	</h2>
-
-
-	<div
-		class="
-			mt-6
-			space-y-3
-		"
-	>
-		{#each
-			question.options as option, index
-			(option.id)
-		}
-			<button
-				type="button"
+		<div>
+			<p
 				class="
-					card
-					preset-outlined
-					flex
-					w-full
-					items-start
-					gap-3
-					p-4
-					text-left
-					transition
-					hover:preset-tonal-primary
-					disabled:cursor-not-allowed
-					disabled:opacity-60
+					text-sm
+					opacity-60
 				"
-				{disabled}
-				onclick={() =>
-					onSelect(
-						option.id
-					)}
 			>
-				<span
-					class="
-						flex
-						size-7
-						shrink-0
-						items-center
-						justify-center
-						rounded-full
-						border
-						text-sm
-						font-semibold
-					"
-				>
-					{getOptionLabel(index)}
-				</span>
+				練習模式
+			</p>
 
-				<span
-					class="
-						min-w-0
-						flex-1
-						leading-relaxed
-					"
-				>
-					{option.content}
-				</span>
-			</button>
-		{/each}
-	</div>
-</section>
+			<h1
+				class="
+					mt-1
+					text-2xl
+					font-bold
+				"
+			>
+				{data.bank.name}
+			</h1>
+		</div>
+
+		<a
+			href="/"
+			class="
+				btn
+				preset-tonal
+			"
+		>
+			結束練習
+		</a>
+	</header>
+
+
+	{#if loading}
+		<section
+			class="
+				card
+				preset-outlined
+				p-8
+				text-center
+			"
+		>
+			<p class="opacity-60">
+				正在載入題目...
+			</p>
+		</section>
+
+	{:else if errorMessage}
+		<section
+			class="
+				card
+				preset-outlined
+				p-8
+				text-center
+			"
+		>
+			<h2
+				class="
+					text-lg
+					font-semibold
+				"
+			>
+				無法繼續練習
+			</h2>
+
+			<p
+				class="
+					mt-2
+					opacity-60
+				"
+			>
+				{errorMessage}
+			</p>
+
+			<a
+				href="/"
+				class="
+					btn
+					preset-filled-primary-500
+					mt-6
+				"
+			>
+				返回首頁
+			</a>
+		</section>
+
+	{:else if question}
+		<div
+			class="
+				mb-4
+				flex
+				items-center
+				justify-between
+				text-sm
+			"
+		>
+			<span class="opacity-60">
+				題目
+			</span>
+
+			<strong>
+				{currentIndex + 1}
+				/
+				{totalQuestions}
+			</strong>
+		</div>
+
+
+		<div
+			class="
+				mb-6
+				h-2
+				overflow-hidden
+				rounded-full
+				bg-surface-200-800
+			"
+		>
+			<div
+				class="
+					h-full
+					bg-primary-500
+					transition-[width]
+				"
+				style:width={`${(
+					(
+						currentIndex +
+						1
+					) /
+					totalQuestions
+				) * 100}%`}
+			></div>
+		</div>
+
+
+		<QuestionCard
+			{question}
+		/>
+	{/if}
+</div>
