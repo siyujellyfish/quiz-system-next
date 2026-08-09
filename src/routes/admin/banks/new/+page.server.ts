@@ -13,8 +13,21 @@ import {
 	validateAdminBankForm
 } from '$lib/server/admin/bank.service';
 
+import {
+	requireAdmin
+} from '$lib/server/auth/admin';
+
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({
+		request,
+		locals,
+		url
+	}) => {
+		requireAdmin(
+			locals.user,
+			url.pathname
+		);
+
 		const formData =
 			await request.formData();
 
@@ -39,31 +52,33 @@ export const actions: Actions = {
 			});
 		}
 
+		let bank;
+
 		try {
-			const bank =
+			bank =
 				await createValidatedAdminBank(
 					validation
 				);
-
-			redirect(
-				303,
-				`/admin/banks/${bank.id}`
-			);
-		} catch (error) {
+		} catch (caughtError) {
 			if (
-				error instanceof
+				caughtError instanceof
 				AdminBankConflictError
 			) {
 				return fail(409, {
 					values: validation.values,
 					errors: {
-						slug: error.message
+						slug: caughtError.message
 					},
-					message: error.message
+					message: caughtError.message
 				});
 			}
 
-			throw error;
+			throw caughtError;
 		}
+
+		redirect(
+			303,
+			`/admin/banks/${bank.id}`
+		);
 	}
 };
