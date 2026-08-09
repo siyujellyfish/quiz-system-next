@@ -74,6 +74,7 @@ export const actions: Actions = {
 					prompt,
 					options: []
 				},
+				errors: undefined,
 				message: '選項資料格式錯誤，請重新整理後再試'
 			});
 		}
@@ -109,6 +110,7 @@ export const actions: Actions = {
 			) {
 				return fail(409, {
 					values: validation.values,
+					errors: undefined,
 					message: caughtError.message
 				});
 			}
