@@ -1,6 +1,6 @@
 import {
 	asc,
-	count,
+	countDistinct,
 	eq
 } from 'drizzle-orm';
 
@@ -12,6 +12,7 @@ import {
 
 import {
 	questionBanks,
+	questionOptions,
 	questions
 } from '$lib/server/db/schema';
 
@@ -25,7 +26,9 @@ export async function getQuestionBanksWithCount() {
 			description: questionBanks.description,
 
 			questionCount:
-				count(questions.id)
+				countDistinct(
+					questionOptions.questionId
+				)
 		})
 		.from(questionBanks)
 		.leftJoin(
@@ -33,6 +36,13 @@ export async function getQuestionBanksWithCount() {
 			eq(
 				questions.bankId,
 				questionBanks.id
+			)
+		)
+		.leftJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id
 			)
 		)
 		.groupBy(
