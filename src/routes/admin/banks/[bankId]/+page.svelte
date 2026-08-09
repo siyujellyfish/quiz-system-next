@@ -42,14 +42,25 @@
 		<span>{data.bank.name}</span>
 	</nav>
 
-	<header class="mb-8">
-		<h1 class="text-3xl font-bold">
-			編輯題庫
-		</h1>
+	<header
+		class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+	>
+		<div>
+			<h1 class="text-3xl font-bold">
+				編輯題庫
+			</h1>
 
-		<p class="mt-2 font-mono text-sm opacity-60">
-			{data.bank.id}
-		</p>
+			<p class="mt-2 font-mono text-sm opacity-60">
+				{data.bank.id}
+			</p>
+		</div>
+
+		<a
+			href={`/admin/banks/${data.bank.id}/questions`}
+			class="btn preset-filled-primary-500"
+		>
+			管理題目
+		</a>
 	</header>
 
 	<section
