@@ -59,22 +59,13 @@
 		</p>
 	</header>
 
-	{#if form?.updated}
-		<div
-			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
-			role="status"
-		>
-			{form.message}
-		</div>
-	{/if}
-
 	<section
 		class="card preset-outlined p-5 md:p-6"
 	>
 		<QuestionForm
 			{values}
 			errors={form?.errors}
-			message={form?.updated ? undefined : form?.message}
+			message={form?.message}
 			submitLabel="儲存變更"
 			cancelHref={`/admin/banks/${data.bank.id}/questions`}
 			formAction="?/update"

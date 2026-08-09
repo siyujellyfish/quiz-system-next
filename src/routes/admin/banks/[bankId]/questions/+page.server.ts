@@ -15,7 +15,8 @@ import {
 } from '$lib/server/admin/question.repository';
 
 export const load: PageServerLoad = async ({
-	params
+	params,
+	url
 }) => {
 	const bank = await getAdminQuestionBankById(
 		params.bankId
@@ -31,6 +32,12 @@ export const load: PageServerLoad = async ({
 
 	return {
 		bank,
+		updated:
+			url.searchParams.get('updated') === '1',
+		practiceProgressReset:
+			url.searchParams.get(
+				'practiceProgressReset'
+			) === '1',
 		questions: questions.map(
 			(question) => ({
 				...question,
