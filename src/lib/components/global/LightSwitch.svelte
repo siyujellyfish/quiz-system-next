@@ -7,6 +7,7 @@
 		Tooltip
 	} from '@skeletonlabs/skeleton-svelte';
 	import { onMount } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	type Mode =
 		| 'light'
@@ -46,6 +47,13 @@
 			);
 
 		checked = mode === 'dark';
+	}
+
+	function asSpanAttributes<T>(
+		attributes: T
+	): HTMLAttributes<HTMLSpanElement> {
+		return attributes as unknown as
+			HTMLAttributes<HTMLSpanElement>;
 	}
 
 	onMount(() => {
@@ -104,7 +112,10 @@
 <Tooltip positioning={{ placement: 'bottom' }}>
 	<Tooltip.Trigger>
 		{#snippet element(attributes)}
-			<span {...attributes} class="inline-flex items-center">
+			<span
+				{...asSpanAttributes(attributes)}
+				class="inline-flex items-center"
+			>
 				<Switch {checked} {onCheckedChange}>
 					<Switch.Control>
 						<Switch.Thumb>
