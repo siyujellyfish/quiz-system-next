@@ -76,7 +76,7 @@ export const actions: Actions = {
 		if (!validation.ok) {
 			return fail(400, {
 				errors: validation.errors,
-				message: '請修正密碼設定'
+				message: undefined
 			});
 		}
 
@@ -113,7 +113,7 @@ export const actions: Actions = {
 					newPassword: undefined,
 					confirmPassword: undefined
 				},
-				message: '目前密碼驗證失敗'
+				message: undefined
 				});
 			}
 
