@@ -1,4 +1,8 @@
 <script lang="ts">
+	import {
+		onMount
+	} from 'svelte';
+
 	import type {
 		PageProps
 	} from './$types';
@@ -6,6 +10,22 @@
 	let {
 		data
 	}: PageProps = $props();
+
+	onMount(() => {
+		if (!data.updated) {
+			return;
+		}
+
+		const url = new URL(window.location.href);
+		url.searchParams.delete('updated');
+		url.searchParams.delete('practiceProgressReset');
+
+		window.history.replaceState(
+			window.history.state,
+			'',
+			`${url.pathname}${url.search}${url.hash}`
+		);
+	});
 </script>
 
 <svelte:head>
@@ -50,6 +70,19 @@
 			新增題目
 		</a>
 	</header>
+
+	{#if data.updated}
+		<div
+			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
+			role="status"
+		>
+			{#if data.practiceProgressReset}
+				題目已更新；因選項數量改變，此題庫進行中的 Practice 已重置。
+			{:else}
+				題目已更新。
+			{/if}
+		</div>
+	{/if}
 
 	{#if data.questions.length === 0}
 		<section
