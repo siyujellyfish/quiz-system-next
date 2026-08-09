@@ -105,12 +105,19 @@
 							{/if}
 						</div>
 
-						<div class="flex shrink-0 gap-2">
+						<div class="flex shrink-0 flex-wrap gap-2">
+							<a
+								href={`/admin/banks/${bank.id}/questions`}
+								class="btn preset-filled-primary-500"
+							>
+								管理題目
+							</a>
+
 							<a
 								href={`/admin/banks/${bank.id}`}
 								class="btn preset-tonal-primary"
 							>
-								編輯
+								編輯題庫
 							</a>
 						</div>
 					</div>
