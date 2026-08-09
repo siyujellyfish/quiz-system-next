@@ -82,6 +82,7 @@ export const actions: Actions = {
 					prompt,
 					options: []
 				},
+				errors: undefined,
 				message: '選項資料格式錯誤，請重新整理後再試'
 			});
 		}
@@ -112,6 +113,7 @@ export const actions: Actions = {
 				practiceProgressReset:
 					result.practiceProgressReset,
 				values: validation.values,
+				errors: undefined,
 				message: result.practiceProgressReset
 					? '題目已更新；因選項數量改變，此題庫進行中的 Practice 已重置。'
 					: '題目已更新。'
@@ -130,6 +132,7 @@ export const actions: Actions = {
 			) {
 				return fail(409, {
 					values: validation.values,
+					errors: undefined,
 					message: caughtError.message
 				});
 			}
