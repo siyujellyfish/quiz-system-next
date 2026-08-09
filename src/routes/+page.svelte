@@ -20,12 +20,9 @@
 		getGuestPracticeStorageKey
 	} from '$lib/quiz/storage';
 
-
-	let {
-		data,
-		form
-	} = $props();
-
+	type QuizMode =
+		| 'practice'
+		| 'wrong';
 
 	type GuestPracticeResult = {
 		guestPractice: {
@@ -34,6 +31,17 @@
 				PracticeQuestionsState;
 		};
 	};
+
+
+	let {
+		data,
+		form
+	} = $props();
+
+	let activeMode =
+		$state<QuizMode>(
+			'practice'
+		);
 
 
 	function isGuestPracticeResult(
@@ -54,46 +62,59 @@
 		);
 	}
 
-const enhanceStart: SubmitFunction =
-	() => {
-		return async ({
-			result
-		}) => {
-			if (
-				result.type ===
-					'success' &&
-				isGuestPracticeResult(
-					result.data
-				)
-			) {
-				const {
-					slug,
-					questionsState
-				} =
-					result.data
-						.guestPractice;
 
-				sessionStorage.setItem(
-					getGuestPracticeStorageKey(
-						slug
-					),
-					JSON.stringify(
-						questionsState
-					)
-				);
+	function getModeClass(
+		mode: QuizMode
+	): string {
+		return activeMode === mode
+			? 'btn preset-filled-primary-500'
+			: 'btn preset-tonal';
+	}
 
-				await goto(
-					`/practice/${slug}`
-				);
 
-				return;
-			}
-
-			await applyAction(
+	const enhanceStart: SubmitFunction =
+		() => {
+			return async ({
 				result
-			);
+			}) => {
+				if (
+					result.type ===
+						'success' &&
+					isGuestPracticeResult(
+						result.data
+					)
+				) {
+					const {
+						slug,
+						questionsState
+					} =
+						result.data
+							.guestPractice;
+
+					sessionStorage.setItem(
+						getGuestPracticeStorageKey(
+							slug
+						),
+						JSON.stringify({
+							questionsState,
+							currentIndex: 0,
+							answeredCount: 0,
+							correctCount: 0
+						})
+					);
+
+					await goto(
+						`/practice/${slug}`
+					);
+
+					return;
+				}
+
+				await applyAction(
+					result
+				);
+			};
 		};
-	};
 </script>
 
 
@@ -102,424 +123,357 @@ const enhanceStart: SubmitFunction =
 </svelte:head>
 
 
-<div class="mx-auto w-full max-w-5xl p-4 md:p-6">
-	<header class="mb-8">
+<div
+	class="mx-auto w-full max-w-5xl p-4 md:p-6"
+>
+	<header class="mb-6">
 		<h1 class="text-3xl font-bold">
-			練習模式
+			刷題模式
 		</h1>
 
-		{#if data.user}
-			<p class="mt-2 opacity-60">
-				選擇題庫並開始練習，進度會自動保存。
-			</p>
-		{:else}
-			<p class="mt-2 opacity-60">
-				目前為訪客模式，練習進度不會永久保存。
-			</p>
-		{/if}
+		<p class="mt-2 opacity-60">
+			選擇模式與題庫開始作答。
+		</p>
 	</header>
 
 
-	{#if data.banks.length === 0}
-		<section
-			class="card preset-outlined-surface-200-800 p-6"
+	<nav
+		class="mb-8 flex flex-wrap gap-2"
+		aria-label="刷題模式"
+	>
+		<button
+			type="button"
+			class={getModeClass(
+				'practice'
+			)}
+			onclick={() => {
+				activeMode = 'practice';
+			}}
 		>
-			<h2 class="text-lg font-semibold">
-				目前沒有題庫
+			練習
+		</button>
+
+		<button
+			type="button"
+			class={getModeClass(
+				'wrong'
+			)}
+			onclick={() => {
+				activeMode = 'wrong';
+			}}
+		>
+			錯題
+		</button>
+
+		<button
+			type="button"
+			class="btn preset-tonal"
+			disabled
+			title="尚未開放"
+		>
+			考試練習
+		</button>
+	</nav>
+
+
+	{#if activeMode === 'practice'}
+		<section class="mb-6">
+			<h2 class="text-2xl font-semibold">
+				練習模式
 			</h2>
 
-			<p class="mt-2 opacity-60">
-				請稍後再試。
-			</p>
+			{#if data.user}
+				<p class="mt-2 opacity-60">
+					題目順序固定隨機，登入狀態下進度與即時正確率會自動保存。
+				</p>
+			{:else}
+				<p class="mt-2 opacity-60">
+					目前為訪客模式，練習狀態只保留在本次瀏覽器 session。
+				</p>
+			{/if}
 		</section>
-	{:else}
-		<div class="space-y-6">
-			{#each data.banks as bank}
-				<section
-					class="card preset-outlined-surface-200-800 p-6"
-				>
-					<header
-						class="
-							mb-6
-							flex
-							flex-col
-							gap-3
-							md:flex-row
-							md:items-start
-							md:justify-between
-						"
+
+
+		{#if data.banks.length === 0}
+			<section
+				class="card preset-outlined p-6"
+			>
+				<h3 class="text-lg font-semibold">
+					目前沒有題庫
+				</h3>
+			</section>
+		{:else}
+			<div class="space-y-6">
+				{#each data.banks as bank}
+					<section
+						class="card preset-outlined p-6"
 					>
-						<div>
-							<h2
-								class="text-xl font-semibold"
-							>
-								{bank.name}
-							</h2>
-
-							{#if bank.description}
-								<p
-									class="
-										mt-1
-										text-sm
-										opacity-60
-									"
-								>
-									{bank.description}
-								</p>
-							{/if}
-						</div>
-
-						<div
-							class="
-								shrink-0
-								text-sm
-								opacity-60
-							"
+						<header
+							class="mb-6 flex flex-col gap-3 md:flex-row md:items-start md:justify-between"
 						>
-							{bank.questionCount}
-							題
-						</div>
-					</header>
+							<div>
+								<h3 class="text-xl font-semibold">
+									{bank.name}
+								</h3>
+
+								{#if bank.description}
+									<p class="mt-1 text-sm opacity-60">
+										{bank.description}
+									</p>
+								{/if}
+							</div>
+
+							<span class="text-sm opacity-60">
+								{bank.questionCount} 題
+							</span>
+						</header>
 
 
-					{#if bank.progress}
-						<div
-							class="
-								mb-6
-								rounded-container
-								bg-surface-100-900
-								p-4
-							"
-						>
+						{#if bank.progress}
 							<div
-								class="
-									flex
-									items-center
-									justify-between
-									gap-4
-								"
+								class="mb-6 rounded-container bg-surface-100-900 p-4"
 							>
-								<div>
-									<p
-										class="
-											text-sm
-											font-medium
-										"
-									>
-										目前練習進度
-									</p>
+								<div
+									class="flex items-center justify-between gap-4"
+								>
+									<div>
+										<p class="text-sm font-medium">
+											目前練習進度
+										</p>
 
-									<p
-										class="
-											mt-1
-											text-sm
-											opacity-60
-										"
+										<p class="mt-1 text-sm opacity-60">
+											{bank.progress.completedQuestions}
+											/
+											{bank.progress.totalQuestions}
+											題
+										</p>
+									</div>
+
+									<a
+										href={`/practice/${bank.slug}`}
+										class="btn preset-tonal-primary"
 									>
-										{bank.progress.completedQuestions}
-										/
-										{bank.progress.totalQuestions}
-										題
-									</p>
+										繼續練習
+									</a>
 								</div>
 
-								<a
-									href={`/practice/${bank.slug}`}
-									class="
-										btn
-										preset-tonal-primary
-									"
-								>
-									繼續練習
-								</a>
-							</div>
-
-							<progress
-								class="progress mt-4 w-full"
-								value={bank.progress.completedQuestions}
-								max={bank.progress.totalQuestions}
-							></progress>
-						</div>
-					{/if}
-
-
-					<form
-						method="POST"
-						action="?/startPractice"
-						use:enhance={enhanceStart}
-						class="space-y-6"
-					>
-						<input
-							type="hidden"
-							name="bankId"
-							value={bank.id}
-						/>
-
-
-						<fieldset>
-							<legend
-								class="
-									mb-3
-									text-sm
-									font-semibold
-								"
-							>
-								題目數量
-							</legend>
-
-							<div
-								class="
-									grid
-									grid-cols-1
-									gap-3
-									sm:grid-cols-3
-								"
-							>
-								<label
-									class="
-										flex
-										cursor-pointer
-										items-center
-										gap-3
-										rounded-container
-										border
-										border-surface-300-700
-										p-3
-									"
-								>
-									<input
-										type="radio"
-										name="coverage"
-										value="30"
-										checked
-										class="
-											size-4
-											accent-primary-500
-										"
-									/>
-
-									<span>
-										<strong>
-											30%
-										</strong>
-
-										<span
-											class="
-												ml-1
-												text-sm
-												opacity-60
-											"
-										>
-											·
-											{Math.ceil(
-												bank.questionCount *
-												0.3
-											)}
-											題
-										</span>
-									</span>
-								</label>
-
-
-								<label
-									class="
-										flex
-										cursor-pointer
-										items-center
-										gap-3
-										rounded-container
-										border
-										border-surface-300-700
-										p-3
-									"
-								>
-									<input
-										type="radio"
-										name="coverage"
-										value="50"
-										class="
-											size-4
-											accent-primary-500
-										"
-									/>
-
-									<span>
-										<strong>
-											50%
-										</strong>
-
-										<span
-											class="
-												ml-1
-												text-sm
-												opacity-60
-											"
-										>
-											·
-											{Math.ceil(
-												bank.questionCount *
-												0.5
-											)}
-											題
-										</span>
-									</span>
-								</label>
-
-
-								<label
-									class="
-										flex
-										cursor-pointer
-										items-center
-										gap-3
-										rounded-container
-										border
-										border-surface-300-700
-										p-3
-									"
-								>
-									<input
-										type="radio"
-										name="coverage"
-										value="100"
-										class="
-											size-4
-											accent-primary-500
-										"
-									/>
-
-									<span>
-										<strong>
-											100%
-										</strong>
-
-										<span
-											class="
-												ml-1
-												text-sm
-												opacity-60
-											"
-										>
-											·
-											{bank.questionCount}
-											題
-										</span>
-									</span>
-								</label>
-							</div>
-						</fieldset>
-
-
-						<fieldset>
-							<legend
-								class="
-									mb-3
-									text-sm
-									font-semibold
-								"
-							>
-								選項順序
-							</legend>
-
-							<div
-								class="
-									flex
-									flex-wrap
-									gap-4
-								"
-							>
-								<label
-									class="
-										flex
-										cursor-pointer
-										items-center
-										gap-2
-									"
-								>
-									<input
-										type="radio"
-										name="optionOrder"
-										value="random"
-										checked
-										class="
-											size-4
-											accent-primary-500
-										"
-									/>
-
-									<span>
-										隨機
-									</span>
-								</label>
-
-								<label
-									class="
-										flex
-										cursor-pointer
-										items-center
-										gap-2
-									"
-								>
-									<input
-										type="radio"
-										name="optionOrder"
-										value="fixed"
-										class="
-											size-4
-											accent-primary-500
-										"
-									/>
-
-									<span>
-										固定
-									</span>
-								</label>
-							</div>
-						</fieldset>
-
-
-						{#if
-							form?.bankId === bank.id &&
-							form?.message
-						}
-							<div
-								class="
-									preset-tonal-error
-									rounded-container
-									p-3
-									text-sm
-								"
-								role="alert"
-							>
-								{form.message}
+								<progress
+									class="progress mt-4 w-full"
+									value={bank.progress.completedQuestions}
+									max={bank.progress.totalQuestions}
+								></progress>
 							</div>
 						{/if}
 
 
-						<div
-							class="
-								flex
-								justify-end
-							"
+						<form
+							method="POST"
+							action="?/startPractice"
+							use:enhance={enhanceStart}
+							class="space-y-6"
 						>
-							<button
-								type="submit"
-								class="
-									btn
-									preset-filled-primary-500
-								"
-								disabled={bank.questionCount === 0}
+							<input
+								type="hidden"
+								name="bankId"
+								value={bank.id}
+							/>
+
+
+							<fieldset>
+								<legend class="mb-3 text-sm font-semibold">
+									題目數量
+								</legend>
+
+								<div
+									class="grid grid-cols-1 gap-3 sm:grid-cols-3"
+								>
+									{#each [30, 50, 100] as coverage}
+										<label
+											class="flex cursor-pointer items-center gap-3 rounded-container border border-surface-300-700 p-3"
+										>
+											<input
+												type="radio"
+												name="coverage"
+												value={coverage}
+												checked={coverage === 30}
+												class="size-4 accent-primary-500"
+											/>
+
+											<span>
+												<strong>
+													{coverage}%
+												</strong>
+
+												<span class="ml-1 text-sm opacity-60">
+													·
+													{coverage === 100
+														? bank.questionCount
+														: Math.ceil(
+															bank.questionCount *
+															coverage /
+															100
+														)}
+													題
+												</span>
+											</span>
+										</label>
+									{/each}
+								</div>
+							</fieldset>
+
+
+							<fieldset>
+								<legend class="mb-3 text-sm font-semibold">
+									選項順序
+								</legend>
+
+								<div class="flex flex-wrap gap-4">
+									<label
+										class="flex cursor-pointer items-center gap-2"
+									>
+										<input
+											type="radio"
+											name="optionOrder"
+											value="random"
+											checked
+											class="size-4 accent-primary-500"
+										/>
+										<span>隨機</span>
+									</label>
+
+									<label
+										class="flex cursor-pointer items-center gap-2"
+									>
+										<input
+											type="radio"
+											name="optionOrder"
+											value="fixed"
+											class="size-4 accent-primary-500"
+										/>
+										<span>固定</span>
+									</label>
+								</div>
+							</fieldset>
+
+
+							{#if
+								form?.bankId === bank.id &&
+								form?.message
+							}
+								<div
+									class="preset-tonal-error rounded-container p-3 text-sm"
+									role="alert"
+								>
+									{form.message}
+								</div>
+							{/if}
+
+
+							<div class="flex justify-end">
+								<button
+									type="submit"
+									class="btn preset-filled-primary-500"
+									disabled={bank.questionCount === 0}
+								>
+									{bank.progress
+										? '重新開始'
+										: '開始練習'}
+								</button>
+							</div>
+						</form>
+					</section>
+				{/each}
+			</div>
+		{/if}
+
+	{:else}
+		<section class="mb-6">
+			<h2 class="text-2xl font-semibold">
+				錯題模式
+			</h2>
+
+			<p class="mt-2 opacity-60">
+				答對會立即從錯題中移除；答錯則保留，直到真正答對為止。
+			</p>
+		</section>
+
+
+		{#if !data.user}
+			<section
+				class="card preset-outlined p-8 text-center"
+			>
+				<h3 class="text-xl font-semibold">
+					登入後才能使用錯題模式
+				</h3>
+
+				<p class="mt-2 opacity-60">
+					錯題會依帳號保存，因此訪客模式無法建立個人錯題集合。
+				</p>
+
+				<a
+					href="/login?redirectTo=%2F"
+					class="btn preset-filled-primary-500 mt-6"
+				>
+					登入
+				</a>
+			</section>
+		{:else}
+			<div
+				class="grid gap-5 md:grid-cols-2"
+			>
+				{#each data.banks as bank}
+					<section
+						class="card preset-outlined p-6"
+					>
+						<div
+							class="flex items-start justify-between gap-4"
+						>
+							<div>
+								<h3 class="text-xl font-semibold">
+									{bank.name}
+								</h3>
+
+								<p class="mt-2 text-sm opacity-60">
+									剩餘錯題
+								</p>
+
+								<p
+									class="mt-1 text-3xl font-bold"
+									class:text-error-700-300={
+										(bank.wrongCount ?? 0) > 0
+									}
+								>
+									{bank.wrongCount ?? 0}
+								</p>
+							</div>
+
+							<span
+								class="badge preset-tonal-error"
 							>
-								{#if bank.progress}
-									重新開始
-								{:else}
-									開始練習
-								{/if}
-							</button>
+								錯題
+							</span>
 						</div>
-					</form>
-				</section>
-			{/each}
-		</div>
+
+
+						<div class="mt-6 flex justify-end">
+							{#if (bank.wrongCount ?? 0) > 0}
+								<a
+									href={`/wrong/${bank.slug}`}
+									class="btn preset-filled-primary-500"
+								>
+									開始複習
+								</a>
+							{:else}
+								<span
+									class="text-sm opacity-60"
+								>
+									目前沒有待複習的錯題
+								</span>
+							{/if}
+						</div>
+					</section>
+				{/each}
+			</div>
+		{/if}
 	{/if}
 </div>
