@@ -37,12 +37,21 @@
 			</p>
 		</div>
 
-		<a
-			href="/admin/banks/new"
-			class="btn preset-filled-primary-500"
-		>
-			新增題庫
-		</a>
+		<div class="flex flex-wrap gap-2">
+			<a
+				href="/admin/banks/import"
+				class="btn preset-tonal-primary"
+			>
+				匯入 JSON
+			</a>
+
+			<a
+				href="/admin/banks/new"
+				class="btn preset-filled-primary-500"
+			>
+				新增題庫
+			</a>
+		</div>
 	</header>
 
 	{#if data.banks.length === 0}
@@ -54,15 +63,26 @@
 			</h2>
 
 			<p class="mt-2 opacity-60">
-				建立第一個題庫後，就可以開始新增題目。
+				可以建立空題庫，或直接匯入既有 JSON 題庫。
 			</p>
 
-			<a
-				href="/admin/banks/new"
-				class="btn preset-filled-primary-500 mt-5"
+			<div
+				class="mt-5 flex flex-wrap justify-center gap-2"
 			>
-				建立題庫
-			</a>
+				<a
+					href="/admin/banks/import"
+					class="btn preset-tonal-primary"
+				>
+					匯入 JSON
+				</a>
+
+				<a
+					href="/admin/banks/new"
+					class="btn preset-filled-primary-500"
+				>
+					建立題庫
+				</a>
+			</div>
 		</section>
 	{:else}
 		<div class="grid gap-4">
@@ -111,6 +131,13 @@
 								class="btn preset-filled-primary-500"
 							>
 								管理題目
+							</a>
+
+							<a
+								href={`/admin/banks/${bank.id}/export`}
+								class="btn preset-tonal"
+							>
+								匯出 JSON
 							</a>
 
 							<a
