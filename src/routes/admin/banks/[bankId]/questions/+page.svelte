@@ -12,13 +12,15 @@
 	}: PageProps = $props();
 
 	onMount(() => {
-		if (!data.updated) {
+		if (!data.updated && !data.imported) {
 			return;
 		}
 
 		const url = new URL(window.location.href);
 		url.searchParams.delete('updated');
 		url.searchParams.delete('practiceProgressReset');
+		url.searchParams.delete('imported');
+		url.searchParams.delete('importedCount');
 
 		window.history.replaceState(
 			window.history.state,
@@ -71,7 +73,14 @@
 		</a>
 	</header>
 
-	{#if data.updated}
+	{#if data.imported}
+		<div
+			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
+			role="status"
+		>
+			題庫已匯入，共新增 {data.importedCount} 道題目。
+		</div>
+	{:else if data.updated}
 		<div
 			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
 			role="status"
