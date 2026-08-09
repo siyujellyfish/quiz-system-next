@@ -13,6 +13,10 @@ import type {
 	Cookies
 } from '@sveltejs/kit';
 
+import type {
+	SessionUser
+} from '$lib/types/auth';
+
 import { db } from '$lib/server/db';
 
 import {
@@ -25,11 +29,6 @@ export const SESSION_COOKIE_NAME =
 
 const SESSION_DURATION_SECONDS =
 	60 * 60 * 24 * 30;
-
-export type SessionUser = {
-	id: string;
-	username: string;
-};
 
 function createSessionToken(): string {
 	return randomBytes(32)
