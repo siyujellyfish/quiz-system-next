@@ -128,15 +128,9 @@
 <div
 	class="mx-auto w-full max-w-5xl p-4 md:p-6"
 >
-	<header class="mb-6">
-		<h1 class="text-3xl font-bold">
-			刷題模式
-		</h1>
-
-		<p class="mt-2 opacity-60">
-			選擇模式與題庫開始作答。
-		</p>
-	</header>
+	<p class="mb-5 opacity-60">
+		選擇模式與題庫開始作答。
+	</p>
 
 
 	<Tabs
