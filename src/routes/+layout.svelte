@@ -1,7 +1,23 @@
 <script lang="ts">
 	import './layout.css';
 
-	let { children } = $props();
+	import type {
+		LayoutProps
+	} from './$types';
+
+	import AppHeader
+		from '$lib/components/global/AppHeader.svelte';
+
+	let {
+		data,
+		children
+	}: LayoutProps = $props();
 </script>
 
-{@render children()}
+<div class="flex min-h-dvh flex-col">
+	<AppHeader user={data.user ?? null} />
+
+	<main class="flex flex-1 flex-col">
+		{@render children()}
+	</main>
+</div>
