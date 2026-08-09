@@ -98,12 +98,14 @@
 				'ring-error-500/40'
 			);
 		} else if (
-			submitting &&
+			!answerResult &&
 			selectedOptionId === optionId
 		) {
 			classes.push(
 				'border-primary-500',
-				'bg-primary-500/10'
+				'bg-primary-500/10',
+				'ring-1',
+				'ring-primary-500/30'
 			);
 		} else if (!disabled) {
 			classes.push(
