@@ -1,0 +1,2290 @@
+[
+  {
+    "id": "1427885635",
+    "prompt": "A team of threat intelligence analysts is performing threat analysis on malware, and each of them has come up with their own theory and evidence\nto support their theory on a given malware.\nNow, to identify the most consistent theory out of all the theories, which of the following analytic processes must threat intelligence manager\nuse?",
+    "options": [
+      {
+        "id": "1427885635-0",
+        "text": "Application decomposition and analysis (ADA)",
+        "isCorrect": false
+      },
+      {
+        "id": "1427885635-1",
+        "text": "Threat modelling",
+        "isCorrect": false
+      },
+      {
+        "id": "1427885635-2",
+        "text": "Analysis of competing hypotheses (ACH)",
+        "isCorrect": true
+      },
+      {
+        "id": "1427885635-3",
+        "text": "Automated technical analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "186292996",
+    "prompt": "In which of the following phases of the threat intelligence lifecycle is raw data converted into meaningful information by highly trained\nprofessionals using sophisticated technology and tools?",
+    "options": [
+      {
+        "id": "186292996-0",
+        "text": "Processing and exploitation",
+        "isCorrect": true
+      },
+      {
+        "id": "186292996-1",
+        "text": "Analysis and production",
+        "isCorrect": false
+      },
+      {
+        "id": "186292996-2",
+        "text": "Planning and direction",
+        "isCorrect": false
+      },
+      {
+        "id": "186292996-3",
+        "text": "Data collection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1843470821",
+    "prompt": "A threat analyst obtains an intelligence related to a threat, where the data is sent in the form of a connection request from a remote host to the\nserver. From this data, he obtains only the IP address of the source and destination but no contextual information. While processing this data, he\nobtains contextual information stating that multiple connection requests from different geo-locations are received by the server within a short\ntime span, and as a result, the server is stressed and gradually its performance has reduced. He further performed analysis on the information\nbased on the past and present experience and concludes the attack experienced by the client organization.\nWhich of the following attacks is performed on the client organization?",
+    "options": [
+      {
+        "id": "1843470821-0",
+        "text": "MAC spoofing attack",
+        "isCorrect": false
+      },
+      {
+        "id": "1843470821-1",
+        "text": "Distributed Denial-of-Service (DDoS) attack",
+        "isCorrect": true
+      },
+      {
+        "id": "1843470821-2",
+        "text": "DHCP attacks",
+        "isCorrect": false
+      },
+      {
+        "id": "1843470821-3",
+        "text": "Bandwidth attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "939676458",
+    "prompt": "Which of the following characteristics of APT refers to numerous attempts done by the attacker to gain entry to the target’s network?",
+    "options": [
+      {
+        "id": "939676458-0",
+        "text": "Risk tolerance",
+        "isCorrect": false
+      },
+      {
+        "id": "939676458-1",
+        "text": "Attack origination points",
+        "isCorrect": true
+      },
+      {
+        "id": "939676458-2",
+        "text": "Timeliness",
+        "isCorrect": false
+      },
+      {
+        "id": "939676458-3",
+        "text": "Multiphased",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1420421641",
+    "prompt": "Joe works as a threat intelligence analyst with Xsecurity Inc. He is assessing the TI program by comparing the project results with the original\nobjectives by reviewing project charter. He is also reviewing the list of expected deliverables to ensure that each of those is delivered to an\nacceptable level of quality.\nIdentify the activity that Joe is performing to assess a TI program’s success or failure.",
+    "options": [
+      {
+        "id": "1420421641-0",
+        "text": "Determining the fulfilllment of stakeholders",
+        "isCorrect": false
+      },
+      {
+        "id": "1420421641-1",
+        "text": "Identifying areas of further improvement",
+        "isCorrect": false
+      },
+      {
+        "id": "1420421641-2",
+        "text": "Conducting a gap analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "1420421641-3",
+        "text": "Determining the costs and benefits associated with the program",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1268453865",
+    "prompt": "During the process of threat intelligence analysis, John, a threat analyst, successfully extracted an indication of adversary’s information, such as\nModus operandi, tools, communication channels, and forensics evasion strategies used by adversaries.\nIdentify the type of threat intelligence analysis is performed by John.",
+    "options": [
+      {
+        "id": "1268453865-0",
+        "text": "Strategic threat intelligence analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "1268453865-1",
+        "text": "Operational threat intelligence analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "1268453865-2",
+        "text": "Tactical threat intelligence analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "1268453865-3",
+        "text": "Technical threat intelligence analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2050614455",
+    "prompt": "What is the correct sequence of steps involved in scheduling a threat intelligence program?\n1. Review the project charter\n2. Identify all deliverables\n3. Identify the sequence of activities\n4. Identify task dependencies\n5. Develop the final schedule\n6. Estimate duration of each activity\n7. Identify and estimate resources for all activities\n8. Define all activities\n9. Build a work breakdown structure (WBS)",
+    "options": [
+      {
+        "id": "2050614455-0",
+        "text": "1-->9-->2-->8-->3-->7-->4-->6-->5",
+        "isCorrect": true
+      },
+      {
+        "id": "2050614455-1",
+        "text": "1-->2-->3-->4-->5-->6-->9-->8-->7",
+        "isCorrect": false
+      },
+      {
+        "id": "2050614455-2",
+        "text": "3-->4-->5-->2-->1-->9-->8-->7-->6",
+        "isCorrect": false
+      },
+      {
+        "id": "2050614455-3",
+        "text": "1-->2-->3-->4-->5-->6-->7-->8-->9",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "249131570",
+    "prompt": "Organizations must choose a right threat intelligence platform to assess and leverage intelligence information, monitor multiple enforcement\npoints, manage intelligence feeds, and select appropriate security for the digital assets.\nWhich of the following key factors ensures that the TI platform offers a structured way to perform investigations on attacks by processing the\nthreat intelligence and utilizing the internal security controls to automate the detection process?",
+    "options": [
+      {
+        "id": "249131570-0",
+        "text": "Search",
+        "isCorrect": false
+      },
+      {
+        "id": "249131570-1",
+        "text": "Scoring",
+        "isCorrect": false
+      },
+      {
+        "id": "249131570-2",
+        "text": "Workflow",
+        "isCorrect": true
+      },
+      {
+        "id": "249131570-3",
+        "text": "Open",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1019962220",
+    "prompt": "You are the leading cybersecurity analyst at financial institutions. An anomaly is detected in the network, suggesting a potential security threat. To\nproactively investigate and mitigate the risk, arrange the following steps in the correct sequence as part of the threat hunting process:\n1) Investigation\n2) Collect and process data\n3) Response\n4) Hypothesis\n5) Trigger\na) 5 –> 3 –> 1 –> 4 –> 2\nb) 3 –> 2 –> 5 –> 1 –> 4\nc) 4 –> 1 –> 3 –> 5 –> 2\nd) 4 –> 2 –> 5 –> 1 –> 3",
+    "options": [
+      {
+        "id": "1019962220-0",
+        "text": "c",
+        "isCorrect": true
+      },
+      {
+        "id": "1019962220-1",
+        "text": "d",
+        "isCorrect": false
+      },
+      {
+        "id": "1019962220-2",
+        "text": "a",
+        "isCorrect": false
+      },
+      {
+        "id": "1019962220-3",
+        "text": "b",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1952675913",
+    "prompt": "Daniel is a professional hacker whose aim is to attack a system to steal data and money for profit. He performs hacking to obtain confidential \ndata such as social security numbers, personally identifiable information (PII) of an employee, and credit card information. After obtaining\nconfidential data, he further sells the information on the black market to make money.\nDaniel comes under which of the following types of threat actor.",
+    "options": [
+      {
+        "id": "1952675913-0",
+        "text": "Organized hackers",
+        "isCorrect": true
+      },
+      {
+        "id": "1952675913-1",
+        "text": "Industrial spies",
+        "isCorrect": false
+      },
+      {
+        "id": "1952675913-2",
+        "text": "Insider threat",
+        "isCorrect": false
+      },
+      {
+        "id": "1952675913-3",
+        "text": "State-sponsored hackers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1517457179",
+    "prompt": "Jame, a professional hacker, is trying to hack the confidential information of a target organization. He identified the vulnerabilities in the target\nsystem and created a tailored deliverable malicious payload using an exploit and a backdoor to send it to the victim.\nWhich of the following phases of cyber kill chain methodology is Jame executing?",
+    "options": [
+      {
+        "id": "1517457179-0",
+        "text": "Reconnaissance",
+        "isCorrect": false
+      },
+      {
+        "id": "1517457179-1",
+        "text": "Exploitation",
+        "isCorrect": false
+      },
+      {
+        "id": "1517457179-2",
+        "text": "Installation",
+        "isCorrect": false
+      },
+      {
+        "id": "1517457179-3",
+        "text": "Weaponization",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1383294198",
+    "prompt": "Jacob, a professional hacker, created an exact replica of an online shopping website. He copied the entire contents of the original website onto\nthe local system that enables him to create a dummy spam website for performing social engineering attacks over the employees.\nWhat type of technique did Jacob use for cloning the website?",
+    "options": [
+      {
+        "id": "1383294198-0",
+        "text": "Social engineering",
+        "isCorrect": false
+      },
+      {
+        "id": "1383294198-1",
+        "text": "Website mirroring",
+        "isCorrect": true
+      },
+      {
+        "id": "1383294198-2",
+        "text": "Data sampling",
+        "isCorrect": false
+      },
+      {
+        "id": "1383294198-3",
+        "text": "Tailgating",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "705375599",
+    "prompt": "A threat analyst wants to incorporate a requirement in the threat knowledge repository that provides an ability to modify or delete past or\nirrelevant threat data.\nWhich of the following requirement must he include in the threat knowledge repository to fulfill his needs?",
+    "options": [
+      {
+        "id": "705375599-0",
+        "text": "Searchable functionality",
+        "isCorrect": false
+      },
+      {
+        "id": "705375599-1",
+        "text": "Protection ranking",
+        "isCorrect": false
+      },
+      {
+        "id": "705375599-2",
+        "text": "Data management",
+        "isCorrect": true
+      },
+      {
+        "id": "705375599-3",
+        "text": "Evaluating performance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "468541352",
+    "prompt": "Andrews and Sons Corp. has decided to share threat information among sharing partners. Garry, a threat analyst, working in Andrews and Sons\nCorp., has asked to follow a trust model necessary to establish trust between sharing partners. In the trust model used by him, the first\norganization makes use of a body of evidence in a second organization, and the level of trust between two organizations depends on the degree\nand quality of evidence provided by the first organization.\nWhich of the following types of trust model is used by Garry to establish the trust?",
+    "options": [
+      {
+        "id": "468541352-0",
+        "text": "Mediated trust",
+        "isCorrect": false
+      },
+      {
+        "id": "468541352-1",
+        "text": "Mandated trust",
+        "isCorrect": false
+      },
+      {
+        "id": "468541352-2",
+        "text": "Direct historical trust",
+        "isCorrect": false
+      },
+      {
+        "id": "468541352-3",
+        "text": "Validated trust",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1030259381",
+    "prompt": "In which of the following attacks does the attacker exploit vulnerabilities in a computer application before the software developer can release a\npatch for them?",
+    "options": [
+      {
+        "id": "1030259381-0",
+        "text": "Distributed network attack",
+        "isCorrect": false
+      },
+      {
+        "id": "1030259381-1",
+        "text": "Zero-day attack",
+        "isCorrect": true
+      },
+      {
+        "id": "1030259381-2",
+        "text": "Active online attack",
+        "isCorrect": false
+      },
+      {
+        "id": "1030259381-3",
+        "text": "Advanced persistent attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1468554975",
+    "prompt": "In a team of threat analysts, two individuals were competing over projecting their own hypotheses on a given malware. However, to find logical\nproofs to confirm their hypotheses, the threat intelligence manager used a de-biasing strategy that involves learning strategic decision making in\nthe circumstances comprising multistep interactions with numerous representatives, either having or without any perfect relevant information.\nWhich of the following de-biasing strategies the threat intelligence manager used to confirm their hypotheses?",
+    "options": [
+      {
+        "id": "1468554975-0",
+        "text": "Game theory",
+        "isCorrect": true
+      },
+      {
+        "id": "1468554975-1",
+        "text": "Machine learning",
+        "isCorrect": false
+      },
+      {
+        "id": "1468554975-2",
+        "text": "Decision theory",
+        "isCorrect": false
+      },
+      {
+        "id": "1468554975-3",
+        "text": "Cognitive psychology",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "678611824",
+    "prompt": "To extract useful intelligence from the gathered bulk data and to improve the efficiency of the composite bulk data, Sam, a threat analyst, follows\na data analysis method where he creates a logical sequence of events based on the assumptions of an adversary’s proposed actions,\nmechanisms, indicators, and implications. To develop accurate predictions, he further takes into consideration the important factors including bad\nactors, methods, vulnerabilities, targets, and so on.\nWhich of the following data analysis methods is used by Sam to extract useful intelligence out of bulk data?",
+    "options": [
+      {
+        "id": "678611824-0",
+        "text": "Linchpin analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "678611824-1",
+        "text": "Opportunity analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "678611824-2",
+        "text": "Analogy analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "678611824-3",
+        "text": "Critical path analysis",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1432831213",
+    "prompt": "Philip, a professional hacker, is planning to attack an organization. In order to collect information, he covertly collects information from the target\nperson by maintaining a personal or other relationship with the target person.\nWhich of the following intelligence sources is used by Philip to collect information about the target organization?",
+    "options": [
+      {
+        "id": "1432831213-0",
+        "text": "CHIS",
+        "isCorrect": true
+      },
+      {
+        "id": "1432831213-1",
+        "text": "SOCMINT",
+        "isCorrect": false
+      },
+      {
+        "id": "1432831213-2",
+        "text": "FLU",
+        "isCorrect": false
+      },
+      {
+        "id": "1432831213-3",
+        "text": "MASINT",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1212400631",
+    "prompt": "What term describes the trust establishment process, wherein the first organization relies on a body of evidence presented to the second\norganization, and the level of trust is contingent upon the degree and quality of evidence provided by the initiating organization?",
+    "options": [
+      {
+        "id": "1212400631-0",
+        "text": "Validated trust",
+        "isCorrect": true
+      },
+      {
+        "id": "1212400631-1",
+        "text": "Direct historical trust",
+        "isCorrect": false
+      },
+      {
+        "id": "1212400631-2",
+        "text": "Mandated trust",
+        "isCorrect": false
+      },
+      {
+        "id": "1212400631-3",
+        "text": "Mediated trust",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "152988547",
+    "prompt": "An organization, namely, Highlander, Inc., decided to integrate threat intelligence into the incident response process for rapid detection and\nrecovery from various security incidents.\nIn which of the following phases of the incident response management does the organization utilize operational and tactical threat intelligence to\nprovide context to the alerts generated by various security mechanisms?",
+    "options": [
+      {
+        "id": "152988547-0",
+        "text": "Phase 4: breach",
+        "isCorrect": false
+      },
+      {
+        "id": "152988547-1",
+        "text": "Phase 1: preplanning",
+        "isCorrect": true
+      },
+      {
+        "id": "152988547-2",
+        "text": "Phase 3: incident",
+        "isCorrect": false
+      },
+      {
+        "id": "152988547-3",
+        "text": "Phase 2: event",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "698728315",
+    "prompt": "Which component of risk management involves evaluating and ranking risks based on their significance, allowing organizations to focus\nresources on addressing the most critical threats?",
+    "options": [
+      {
+        "id": "698728315-0",
+        "text": "Risk prioritization",
+        "isCorrect": true
+      },
+      {
+        "id": "698728315-1",
+        "text": "Risk identification",
+        "isCorrect": false
+      },
+      {
+        "id": "698728315-2",
+        "text": "Risk mitigation",
+        "isCorrect": false
+      },
+      {
+        "id": "698728315-3",
+        "text": "Risk assessment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1298093935",
+    "prompt": "Walter and Sons Company has faced major cyber attacks and lost confidential data. The company has decided to concentrate more on the\nsecurity rather than other resources. Therefore, they hired Alice, a threat analyst, to perform data analysis. Alice was asked to perform qualitative\ndata analysis to extract useful information from collected bulk data.\nWhich of the following techniques will help Alice to perform qualitative data analysis?",
+    "options": [
+      {
+        "id": "1298093935-0",
+        "text": "Finding links between data and discover threat-related information",
+        "isCorrect": false
+      },
+      {
+        "id": "1298093935-1",
+        "text": "Brainstorming, interviewing, SWOT analysis, Delphi technique, and so on",
+        "isCorrect": true
+      },
+      {
+        "id": "1298093935-2",
+        "text": "Regression analysis, variance analysis, and so on",
+        "isCorrect": false
+      },
+      {
+        "id": "1298093935-3",
+        "text": "Numerical calculations, statistical modeling, measurement, research, and so on.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1903166514",
+    "prompt": "Lizzy, an analyst, wants to recognize the level of risks to the organization so as to plan countermeasures against cyber attacks. She used a threat\nmodelling methodology where she performed the following stages:\nStage 1: Build asset-based threat profiles\nStage 2: Identify infrastructure vulnerabilities\nStage 3: Develop security strategy and plans\nWhich of the following threat modelling methodologies was used by Lizzy in the aforementioned scenario?",
+    "options": [
+      {
+        "id": "1903166514-0",
+        "text": "VAST",
+        "isCorrect": false
+      },
+      {
+        "id": "1903166514-1",
+        "text": "TRIKE",
+        "isCorrect": false
+      },
+      {
+        "id": "1903166514-2",
+        "text": "OCTAVE",
+        "isCorrect": true
+      },
+      {
+        "id": "1903166514-3",
+        "text": "DREAD",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1060213752",
+    "prompt": "Which of the following types of threat attribution deals with the identification of the specific person, society, or a country sponsoring a well-\nplanned and executed intrusion or attack over its target?",
+    "options": [
+      {
+        "id": "1060213752-0",
+        "text": "Nation-state attribution",
+        "isCorrect": false
+      },
+      {
+        "id": "1060213752-1",
+        "text": "Campaign attribution",
+        "isCorrect": false
+      },
+      {
+        "id": "1060213752-2",
+        "text": "Intrusion-set attribution",
+        "isCorrect": false
+      },
+      {
+        "id": "1060213752-3",
+        "text": "True attribution",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "331298311",
+    "prompt": "Tim is working as an analyst in an ABC organization. His organization had been facing many challenges in converting the raw threat intelligence\ndata into meaningful contextual information. After inspection, he found that it was due to noise obtained from misrepresentation of data from\nhuge data collections. Hence, it is important to clean the data before performing data analysis using techniques such as data reduction. He needs\nto choose an appropriate threat intelligence framework that automatically performs data collection, filtering, and analysis for his organization.\nWhich of the following threat intelligence frameworks should he choose to perform such task?",
+    "options": [
+      {
+        "id": "331298311-0",
+        "text": "TC complete",
+        "isCorrect": true
+      },
+      {
+        "id": "331298311-1",
+        "text": "SIGVERIF",
+        "isCorrect": false
+      },
+      {
+        "id": "331298311-2",
+        "text": "Threat grid",
+        "isCorrect": false
+      },
+      {
+        "id": "331298311-3",
+        "text": "HighCharts",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1591041479",
+    "prompt": "Steve works as an analyst in a UK-based firm. He was asked to perform network monitoring to find any evidence of compromise. During the\nnetwork monitoring, he came to know that there are multiple logins from different locations in a short time span. Moreover, he also observed\ncertain irregular log in patterns from locations where the organization does not have business relations. This resembles that somebody is trying to\nsteal confidential information.\nWhich of the following key indicators of compromise does this scenario present?",
+    "options": [
+      {
+        "id": "1591041479-0",
+        "text": "Unusual outbound network traffic",
+        "isCorrect": false
+      },
+      {
+        "id": "1591041479-1",
+        "text": "Geographical anomalies",
+        "isCorrect": true
+      },
+      {
+        "id": "1591041479-2",
+        "text": "Unusual activity through privileged user account",
+        "isCorrect": false
+      },
+      {
+        "id": "1591041479-3",
+        "text": "Unexpected patching of systems",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1264227482",
+    "prompt": "Jian is a member of the security team at Trinity, Inc. He was conducting a real-time assessment of system activities in order to acquire threat\nintelligence feeds. He acquired feeds from sources like honeynets, P2P monitoring. infrastructure, and application logs.\nWhich of the following categories of threat intelligence feed was acquired by Jian?",
+    "options": [
+      {
+        "id": "1264227482-0",
+        "text": "Internal intelligence feeds",
+        "isCorrect": false
+      },
+      {
+        "id": "1264227482-1",
+        "text": "External intelligence feeds",
+        "isCorrect": false
+      },
+      {
+        "id": "1264227482-2",
+        "text": "CSV data feeds",
+        "isCorrect": false
+      },
+      {
+        "id": "1264227482-3",
+        "text": "Proactive surveillance feeds",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "41276019",
+    "prompt": "In which of the following levels of the threat hunting maturity model (HMM) does an organization use threat intelligence to search for anomalies\nin the network, follow the latest threat reports gathered from open and closed sources, and use open-source tools for analysis?",
+    "options": [
+      {
+        "id": "41276019-0",
+        "text": "Level 3: Innovative",
+        "isCorrect": false
+      },
+      {
+        "id": "41276019-1",
+        "text": "Level 4: Leading",
+        "isCorrect": false
+      },
+      {
+        "id": "41276019-2",
+        "text": "Level 1: Minimal",
+        "isCorrect": false
+      },
+      {
+        "id": "41276019-3",
+        "text": "Level 2: Procedural",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1986322139",
+    "prompt": "Cybersol Technologies initiated a cyber-threat intelligence program with a team of threat intelligence analysts. During the process, the analysts\nstarted converting the raw data into useful information by applying various techniques, such as machine-based techniques, and statistical\nmethods.\nIn which of the following phases of the threat intelligence lifecycle is the threat intelligence team currently working?",
+    "options": [
+      {
+        "id": "1986322139-0",
+        "text": "Planning and direction",
+        "isCorrect": false
+      },
+      {
+        "id": "1986322139-1",
+        "text": "Analysis and production",
+        "isCorrect": false
+      },
+      {
+        "id": "1986322139-2",
+        "text": "Dissemination and integration",
+        "isCorrect": false
+      },
+      {
+        "id": "1986322139-3",
+        "text": "Processing and exploitation",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1700417191",
+    "prompt": "A threat analyst working in XYZ Company was asked to perform threat intelligence analysis. During the information collection phase, he used a\nsocial engineering technique where he pretended to be a legitimate or authorized person. Using this technique, he gathered sensitive information\nby scanning terminals for passwords, searching important documents on the desks, rummaging bins, and so on.\nWhich of the following social engineering techniques was used by the analyst for information collection?",
+    "options": [
+      {
+        "id": "1700417191-0",
+        "text": "Dumpster diving",
+        "isCorrect": false
+      },
+      {
+        "id": "1700417191-1",
+        "text": "Impersonation",
+        "isCorrect": true
+      },
+      {
+        "id": "1700417191-2",
+        "text": "Piggybacking",
+        "isCorrect": false
+      },
+      {
+        "id": "1700417191-3",
+        "text": "Shoulder surfing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "827802866",
+    "prompt": "Sean works as a threat intelligence analyst. He is assigned a project for information gathering on a client’s network to find a potential threat. He\nstarted analysis and was trying to find out the company’s internal URLs, looking for any information about the different departments and business\nunits. He was unable to find any information.\nWhat should Sean do to get the information he needs?",
+    "options": [
+      {
+        "id": "827802866-0",
+        "text": "Sean should use website mirroring tools such as HTTrack Web Site Copier to find the company’s internal URLs",
+        "isCorrect": false
+      },
+      {
+        "id": "827802866-1",
+        "text": "Sean should use online services such as netcraft.com to find the company’s internal URLs",
+        "isCorrect": true
+      },
+      {
+        "id": "827802866-2",
+        "text": "Sean should use WayBackMachine in Archive.org to find the company’s internal URLs",
+        "isCorrect": false
+      },
+      {
+        "id": "827802866-3",
+        "text": "Sean should use e-mail tracking tools such as eMailTrackerPro to find the company’s internal URLs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "787020699",
+    "prompt": "Alison, an analyst in an XYZ organization, wants to retrieve information about a company’s website from the time of its inception as well as the\nremoved information from the target website.\nWhat should Alison do to get the information he needs.",
+    "options": [
+      {
+        "id": "787020699-0",
+        "text": "Alison should recover cached pages of the website from the Google search engine cache to extract the required website information.",
+        "isCorrect": false
+      },
+      {
+        "id": "787020699-1",
+        "text": "Alison should use SmartWhois to extract the required website information.",
+        "isCorrect": false
+      },
+      {
+        "id": "787020699-2",
+        "text": "Alison should use https://archive.org to extract the required website information.",
+        "isCorrect": true
+      },
+      {
+        "id": "787020699-3",
+        "text": "Alison should run the Web Data Extractor tool to extract the required website information.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1337554731",
+    "prompt": "Kim, an analyst, is looking for an intelligence-sharing platform to gather and share threat information from a variety of sources. He wants to use\nthis information to develop security policies to enhance the overall security posture of his organization.\nWhich of the following sharing platforms should be used by Kim?",
+    "options": [
+      {
+        "id": "1337554731-0",
+        "text": "Cuckoo sandbox",
+        "isCorrect": false
+      },
+      {
+        "id": "1337554731-1",
+        "text": "OmniPeek",
+        "isCorrect": false
+      },
+      {
+        "id": "1337554731-2",
+        "text": "PortDroid network analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "1337554731-3",
+        "text": "Blueliv threat exchange network",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "798015398",
+    "prompt": "A consortium was established in a collaborative effort to strengthen the cybersecurity posture of multiple organizations within an industry sector.\nThe participating entities decided to adopt a threat intelligence exchange architecture in which all threat data is collected, analyzed, and\ndisseminated through a single central hub. What type of threat intelligence exchange architecture was implemented in this scenario?",
+    "options": [
+      {
+        "id": "798015398-0",
+        "text": "Decentralized exchange architecture",
+        "isCorrect": false
+      },
+      {
+        "id": "798015398-1",
+        "text": "Hybrid exchange architecture",
+        "isCorrect": false
+      },
+      {
+        "id": "798015398-2",
+        "text": "Centralized exchange architecture",
+        "isCorrect": true
+      },
+      {
+        "id": "798015398-3",
+        "text": "Federated exchange architecture",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "929766527",
+    "prompt": "In which of the following forms of bulk data collection are large amounts of data first collected from multiple sources in multiple formats and then\nprocessed to achieve threat intelligence?",
+    "options": [
+      {
+        "id": "929766527-0",
+        "text": "Production form",
+        "isCorrect": false
+      },
+      {
+        "id": "929766527-1",
+        "text": "Unstructured form",
+        "isCorrect": true
+      },
+      {
+        "id": "929766527-2",
+        "text": "Structured form",
+        "isCorrect": false
+      },
+      {
+        "id": "929766527-3",
+        "text": "Hybrid form",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "473747988",
+    "prompt": "An attacker instructs bots to use camouflage mechanism to hide his phishing and malware delivery locations in the rapidly changing network of\ncompromised bots. In this particular technique, a single  domain name consists of multiple IP addresses.\nWhich of the following technique is used by  the  attacker?",
+    "options": [
+      {
+        "id": "473747988-0",
+        "text": "DNS zone transfer",
+        "isCorrect": false
+      },
+      {
+        "id": "473747988-1",
+        "text": "DNS interrogation",
+        "isCorrect": false
+      },
+      {
+        "id": "473747988-2",
+        "text": "Fast-Flux DNS",
+        "isCorrect": true
+      },
+      {
+        "id": "473747988-3",
+        "text": "Dynamic DNS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "735523948",
+    "prompt": "Two cybersecurity teams from different organizations joined forces to combat a rapidly evolving malware campaign targeting their industry. They\nexchange real-time information about the attackers’ techniques, compromised systems, and immediate defensive actions. What type of threat\nintelligence sharing characterizes this collaboration?",
+    "options": [
+      {
+        "id": "735523948-0",
+        "text": "Sharing operational threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "735523948-1",
+        "text": "Sharing strategic threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "735523948-2",
+        "text": "Sharing technical threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "735523948-3",
+        "text": "Sharing tactical threat intelligence",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "820977713",
+    "prompt": "ABC is a well-established cyber-security company in the United States. The organization implemented the automation of tasks such as data\nenrichment and indicator aggregation. They also joined various communities to increase their knowledge about the emerging threats. However,\nthe security teams can only detect and prevent identified threats in a reactive approach.\nBased on threat intelligence maturity model, identify the level of ABC to know the stage at which the organization stands with its security and\nvulnerabilities.",
+    "options": [
+      {
+        "id": "820977713-0",
+        "text": "Level 1: preparing for CTI",
+        "isCorrect": false
+      },
+      {
+        "id": "820977713-1",
+        "text": "Level 3: CTI program in place",
+        "isCorrect": false
+      },
+      {
+        "id": "820977713-2",
+        "text": "Level 2: increasing CTI capabilities",
+        "isCorrect": true
+      },
+      {
+        "id": "820977713-3",
+        "text": "Level 0: vague where to start",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1875136288",
+    "prompt": "Mr. Bob, a threat analyst, is performing analysis of competing hypotheses (ACH). He has reached to a stage where he is required to apply his\nanalysis skills effectively to reject as many hypotheses and select the best hypotheses from the identified bunch of hypotheses, and this is done\nwith the help of listed evidence. Then, he prepares a matrix where all the screened hypotheses are placed on the top, and the listed evidence for\nthe hypotheses are placed at the bottom.\nWhat stage of ACH is Bob currently in?",
+    "options": [
+      {
+        "id": "1875136288-0",
+        "text": "Diagnostics",
+        "isCorrect": true
+      },
+      {
+        "id": "1875136288-1",
+        "text": "Evidence",
+        "isCorrect": false
+      },
+      {
+        "id": "1875136288-2",
+        "text": "Inconsistency",
+        "isCorrect": false
+      },
+      {
+        "id": "1875136288-3",
+        "text": "Refinement",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "406877892",
+    "prompt": "Sam works as an analyst in an organization named InfoTech Security. He was asked to collect information from various threat intelligence\nsources. In meeting the deadline, he forgot to verify the threat intelligence sources and used data from an open-source data provider, who offered\nit at a very low cost. Through it was beneficial at the initial stage but relying on such data providers can produce unreliable data and noise putting\nthe organization network into risk.\nWhat mistake Sam did that led to this situation?",
+    "options": [
+      {
+        "id": "406877892-0",
+        "text": "Sam did not use the proper standardization formats for representing threat data.",
+        "isCorrect": false
+      },
+      {
+        "id": "406877892-1",
+        "text": "Sam used data without context.",
+        "isCorrect": false
+      },
+      {
+        "id": "406877892-2",
+        "text": "Sam used unreliable intelligence sources.",
+        "isCorrect": true
+      },
+      {
+        "id": "406877892-3",
+        "text": "Sam did not use the proper technology to use or consume the information.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "803033495",
+    "prompt": "Which of the following components refers to a node in the network that routes the traffic from a workstation to external command and control\nserver and helps in identification of installed malware in the network?",
+    "options": [
+      {
+        "id": "803033495-0",
+        "text": "Network interface card (NIC)",
+        "isCorrect": false
+      },
+      {
+        "id": "803033495-1",
+        "text": "Repeater",
+        "isCorrect": false
+      },
+      {
+        "id": "803033495-2",
+        "text": "Hub",
+        "isCorrect": false
+      },
+      {
+        "id": "803033495-3",
+        "text": "Gateway",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "932165583",
+    "prompt": "John, a professional hacker, is trying to perform APT attack on the target organization network. He gains access to a single system of a target\norganization and tries to obtain administrative login credentials to gain further access to the systems in the network using various techniques.\nWhat phase of the advanced persistent threat lifecycle is John currently in?",
+    "options": [
+      {
+        "id": "932165583-0",
+        "text": "Expansion",
+        "isCorrect": true
+      },
+      {
+        "id": "932165583-1",
+        "text": "Persistence",
+        "isCorrect": false
+      },
+      {
+        "id": "932165583-2",
+        "text": "Search and exfiltration",
+        "isCorrect": false
+      },
+      {
+        "id": "932165583-3",
+        "text": "Initial intrusion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1683148314",
+    "prompt": "While monitoring network activities, an unusual surge in outbound traffic was noticed, and a potential security incident was suspected. In the\ncontext of incident responses, what is the initial stage at which you actively recognize and confirm the presence of an incident?",
+    "options": [
+      {
+        "id": "1683148314-0",
+        "text": "Identification",
+        "isCorrect": true
+      },
+      {
+        "id": "1683148314-1",
+        "text": "Containment",
+        "isCorrect": false
+      },
+      {
+        "id": "1683148314-2",
+        "text": "Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "1683148314-3",
+        "text": "Eradication",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "665289773",
+    "prompt": "In which of the following storage architecture is the data stored in a localized system, server, or storage hardware and capable of storing a limited\namount of data in its database and locally available for data usage?",
+    "options": [
+      {
+        "id": "665289773-0",
+        "text": "Centralized storage",
+        "isCorrect": true
+      },
+      {
+        "id": "665289773-1",
+        "text": "Object-based storage",
+        "isCorrect": false
+      },
+      {
+        "id": "665289773-2",
+        "text": "Cloud storage",
+        "isCorrect": false
+      },
+      {
+        "id": "665289773-3",
+        "text": "Distributed storage",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2136410533",
+    "prompt": "The cybersecurity team seeks to enhance its threat hunting capabilities in a large enterprise. They plan to search systematically and proactively\nfor adversaries within their networks. What types of threat hunting approaches are they most likely to adopt, involving predefined processes,\nmethodologies, and frameworks for their investigation?",
+    "options": [
+      {
+        "id": "2136410533-0",
+        "text": "Situational threat hunting",
+        "isCorrect": false
+      },
+      {
+        "id": "2136410533-1",
+        "text": "Entity-driven threat hunting",
+        "isCorrect": false
+      },
+      {
+        "id": "2136410533-2",
+        "text": "Structured threat hunting",
+        "isCorrect": true
+      },
+      {
+        "id": "2136410533-3",
+        "text": "Unstructured threat hunting",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1337699690",
+    "prompt": "Jamie, an analyst, was asked to perform statistical data analysis process on the acquired data. While performing the analysis, he used conditional\nprobability method so as to understand the data and build insights for response actions based on it.\nWhat stage of the statistical data analysis is Jamie currently in?",
+    "options": [
+      {
+        "id": "1337699690-0",
+        "text": "Data validation",
+        "isCorrect": false
+      },
+      {
+        "id": "1337699690-1",
+        "text": "Data classification",
+        "isCorrect": false
+      },
+      {
+        "id": "1337699690-2",
+        "text": "Data correlation",
+        "isCorrect": true
+      },
+      {
+        "id": "1337699690-3",
+        "text": "Data preparation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1598304843",
+    "prompt": "An autonomous robot was deployed to navigate and learn about the environment. Through a trial-and-error process, the robot refines its actions\nbased on positive or negative feedback to maximize cumulative rewards.\nWhat type of machine learning will the robot employ in this scenario?",
+    "options": [
+      {
+        "id": "1598304843-0",
+        "text": "Unsupervised learning",
+        "isCorrect": false
+      },
+      {
+        "id": "1598304843-1",
+        "text": "Supervised learning",
+        "isCorrect": false
+      },
+      {
+        "id": "1598304843-2",
+        "text": "Reinforcement learning",
+        "isCorrect": true
+      },
+      {
+        "id": "1598304843-3",
+        "text": "Semi-supervised learning",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "620079934",
+    "prompt": "Michael, a threat analyst, works in an organization named TechTop, was asked to conduct a cyber-threat intelligence analysis. After obtaining\ninformation regarding threats, he has started analyzing the information and understanding the nature of the threats.\nWhat stage of the cyber-threat intelligence is Michael currently in?",
+    "options": [
+      {
+        "id": "620079934-0",
+        "text": "Unknown unknowns",
+        "isCorrect": false
+      },
+      {
+        "id": "620079934-1",
+        "text": "Known unknowns",
+        "isCorrect": true
+      },
+      {
+        "id": "620079934-2",
+        "text": "Unknowns unknown",
+        "isCorrect": false
+      },
+      {
+        "id": "620079934-3",
+        "text": "Known knowns",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1767419560",
+    "prompt": "Sarah is a security operations center (SOC) analyst working at JW Williams and Sons organization based in Chicago. As a part of security\noperations, she contacts information providers (sharing partners) for gathering information such as collections of validated and prioritized threat\nindicators along with a detailed technical analysis of malware samples, botnets, DDoS attack methods, and various other malicious tools. She\nfurther used the collected information at the tactical and operational levels.\nSarah obtained the required information from which of the following types of sharing partner?",
+    "options": [
+      {
+        "id": "1767419560-0",
+        "text": "Providers of threat data feeds",
+        "isCorrect": true
+      },
+      {
+        "id": "1767419560-1",
+        "text": "Providers of threat actors",
+        "isCorrect": false
+      },
+      {
+        "id": "1767419560-2",
+        "text": "Providers of comprehensive cyber-threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1767419560-3",
+        "text": "Providers of threat indicators",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "416491937",
+    "prompt": "Marry wants to follow an iterative and incremental approach to prioritize requirements in order to protect the important assets of an organization\nagainst attacks. She wants to set the requirements based on the order of priority, where the most important requirement must be met before, for a\ngreater chance of success. She wants to apply prioritization tasks, scenarios, use cases, tests, and so on.\nWhich of the following methodologies should Marry use to prioritize the requirements?",
+    "options": [
+      {
+        "id": "416491937-0",
+        "text": "MoSCow",
+        "isCorrect": true
+      },
+      {
+        "id": "416491937-1",
+        "text": "Data visualization",
+        "isCorrect": false
+      },
+      {
+        "id": "416491937-2",
+        "text": "Data sampling",
+        "isCorrect": false
+      },
+      {
+        "id": "416491937-3",
+        "text": "Fusion analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1517653156",
+    "prompt": "Moses, a threat intelligence analyst at InfoTec Inc., wants to find crucial information about the potential threats the organization is facing by using\nadvanced Google search operators. He wants to identify whether any fake websites are hosted at the similar to the organization’s URL.\nWhich of the following Google search queries should Moses use?",
+    "options": [
+      {
+        "id": "1517653156-0",
+        "text": "link: www.infothech.org",
+        "isCorrect": false
+      },
+      {
+        "id": "1517653156-1",
+        "text": "cache: www.infothech.org",
+        "isCorrect": false
+      },
+      {
+        "id": "1517653156-2",
+        "text": "info: www.infothech.org",
+        "isCorrect": false
+      },
+      {
+        "id": "1517653156-3",
+        "text": "related: www.infothech.org",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "696694905",
+    "prompt": "A network administrator working in an ABC organization collected log files generated by a traffic monitoring system, which may not seem to have\nuseful information, but after performing proper analysis by him, the same information can be used to detect an attack in the network.\nWhich of the following categories of threat information has he collected?",
+    "options": [
+      {
+        "id": "696694905-0",
+        "text": "Detection indicators",
+        "isCorrect": false
+      },
+      {
+        "id": "696694905-1",
+        "text": "Low-level data",
+        "isCorrect": true
+      },
+      {
+        "id": "696694905-2",
+        "text": "Strategic reports",
+        "isCorrect": false
+      },
+      {
+        "id": "696694905-3",
+        "text": "Advisories",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1567644296",
+    "prompt": "As the CEO of a multinational corporation, you focus on making decisions that align with the organization’s long-term goals and overall business\nstrategies. What type of threat intelligence would be most valuable in guiding your decisions to enhance a company’s resilience against emerging\ncyber threats?",
+    "options": [
+      {
+        "id": "1567644296-0",
+        "text": "Technical threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1567644296-1",
+        "text": "Operational threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1567644296-2",
+        "text": "Strategic threat intelligence",
+        "isCorrect": true
+      },
+      {
+        "id": "1567644296-3",
+        "text": "Tactical threat intelligence",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "438690804",
+    "prompt": "A company, TechSoft Solutions, implemented a threat intelligence program and began developing operational capabilities obtained in the previous\nlevels and created an organized team approach for strategic analysis. The company also established necessary intelligence processes and\nworkflows to extract their own threat intelligence.\nIdentify the threat intelligence maturity level at which the company stands.",
+    "options": [
+      {
+        "id": "438690804-0",
+        "text": "Level 1: preparing for CTI",
+        "isCorrect": false
+      },
+      {
+        "id": "438690804-1",
+        "text": "Level 3: CTI program in place",
+        "isCorrect": true
+      },
+      {
+        "id": "438690804-2",
+        "text": "Level 2: increasing CTI capabilities",
+        "isCorrect": false
+      },
+      {
+        "id": "438690804-3",
+        "text": "Level 4: well-defined CTI program",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "903689729",
+    "prompt": "Jack is a professional hacker who wants to perform remote exploitation on the target system of an organization. He established a two-way\ncommunication channel between the victim’s system and his server. He used encryption techniques to hide the presence of a communication\nchannel on a victim’s system and further applied privilege escalation techniques to exploit the system.\nWhat phase of the cyber kill chain methodology is Jack currently in?",
+    "options": [
+      {
+        "id": "903689729-0",
+        "text": "Delivery",
+        "isCorrect": false
+      },
+      {
+        "id": "903689729-1",
+        "text": "Command and control",
+        "isCorrect": true
+      },
+      {
+        "id": "903689729-2",
+        "text": "Weaponization",
+        "isCorrect": false
+      },
+      {
+        "id": "903689729-3",
+        "text": "Reconnaissance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "764891812",
+    "prompt": "Alice, an analyst, shared information with security operation managers and network operations center (NOC) staff for protecting the\norganizational resources against various threats. Information shared by Alice was highly technical and include threat actor TTPs, malware\ncampaigns, tools used by threat actors, and so on.\nWhich of the following types of threat intelligence was shared by Alice?",
+    "options": [
+      {
+        "id": "764891812-0",
+        "text": "Operational threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "764891812-1",
+        "text": "Tactical threat intelligence",
+        "isCorrect": true
+      },
+      {
+        "id": "764891812-2",
+        "text": "Technical threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "764891812-3",
+        "text": "Strategic threat intelligence",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1027647045",
+    "prompt": "An analyst wants to disseminate the information effectively so that the consumers can acquire and benefit out of the intelligence.\nWhich of the following criteria must an analyst consider in order to make the intelligence concise, to the point, accurate, and easily\nunderstandable and must consist of a right balance between tables, narrative, numbers, graphics, and multimedia?",
+    "options": [
+      {
+        "id": "1027647045-0",
+        "text": "The right order",
+        "isCorrect": false
+      },
+      {
+        "id": "1027647045-1",
+        "text": "The right content",
+        "isCorrect": false
+      },
+      {
+        "id": "1027647045-2",
+        "text": "The right presentation",
+        "isCorrect": true
+      },
+      {
+        "id": "1027647045-3",
+        "text": "The right time",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1955399475",
+    "prompt": "Tech Knights Inc., a small-scale company, has decided to share the intelligence information with various organizations using a nonprofit\nassociation that provides a secure place to accumulate and share the information about the cyber threats in the industry, and it also provides an\nextended service of data analysis to the organizational network.\nWhich of the following types of sharing organizations should Tech Knights Inc. use to share information?",
+    "options": [
+      {
+        "id": "1955399475-0",
+        "text": "Information sharing and analysis centers (ISACs)",
+        "isCorrect": true
+      },
+      {
+        "id": "1955399475-1",
+        "text": "Trading partners",
+        "isCorrect": false
+      },
+      {
+        "id": "1955399475-2",
+        "text": "Informal contacts",
+        "isCorrect": false
+      },
+      {
+        "id": "1955399475-3",
+        "text": "Commercial vendors",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1691150697",
+    "prompt": "Henry. a threat intelligence analyst at ABC Inc., is working on a threat intelligence program. He was assigned to work on establishing criteria for\nprioritization of intelligence needs and requirements.\nWhich of the following considerations must be employed by Henry to prioritize intelligence requirements?",
+    "options": [
+      {
+        "id": "1691150697-0",
+        "text": "Understand data reliability",
+        "isCorrect": false
+      },
+      {
+        "id": "1691150697-1",
+        "text": "Produce actionable data",
+        "isCorrect": false
+      },
+      {
+        "id": "1691150697-2",
+        "text": "Develop a collection plan",
+        "isCorrect": false
+      },
+      {
+        "id": "1691150697-3",
+        "text": "Understand frequency and impact of a threat",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1915565167",
+    "prompt": "Tracy works as a CISO in a large multinational company. She consumes threat intelligence to understand the changing trends of cyber security.\nShe requires intelligence to understand the current business trends and make appropriate decisions regarding new technologies, security budget,\nimprovement of processes, and staff. The intelligence helps her in minimizing business risks and protecting the new technology and business\ninitiatives.\nIdentify the type of threat intelligence consumer is Tracy.",
+    "options": [
+      {
+        "id": "1915565167-0",
+        "text": "Strategic users",
+        "isCorrect": true
+      },
+      {
+        "id": "1915565167-1",
+        "text": "Tactical users",
+        "isCorrect": false
+      },
+      {
+        "id": "1915565167-2",
+        "text": "Operational users",
+        "isCorrect": false
+      },
+      {
+        "id": "1915565167-3",
+        "text": "Technical users",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1560249856",
+    "prompt": "You are a cybersecurity analyst working at a financial institution. An unusual pattern of financial transactions was detected, suggesting potential\nfraud or money laundering. What specific type of threat intelligence would you rely on to analyze these financial activities and identify potential\nrisks?",
+    "options": [
+      {
+        "id": "1560249856-0",
+        "text": "SOCINT",
+        "isCorrect": false
+      },
+      {
+        "id": "1560249856-1",
+        "text": "TECHINT",
+        "isCorrect": false
+      },
+      {
+        "id": "1560249856-2",
+        "text": "CHIS",
+        "isCorrect": false
+      },
+      {
+        "id": "1560249856-3",
+        "text": "FININT",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1246625684",
+    "prompt": "H&P, Inc. is a small-scale organization that has decided to outsource the network security monitoring due to lack of resources in the organization.\nThey are looking for the options where they can directly incorporate threat intelligence into their existing network defense solutions.\nWhich of the following is the most cost-effective methods the organization can employ?",
+    "options": [
+      {
+        "id": "1246625684-0",
+        "text": "Look for an individual within the organization",
+        "isCorrect": false
+      },
+      {
+        "id": "1246625684-1",
+        "text": "Recruit managed security service providers (MSSP)",
+        "isCorrect": true
+      },
+      {
+        "id": "1246625684-2",
+        "text": "Recruit data management solution provider",
+        "isCorrect": false
+      },
+      {
+        "id": "1246625684-3",
+        "text": "Recruit the right talent",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1288168399",
+    "prompt": "Jim works as a security analyst in a large multinational company. Recently, a group of hackers penetrated into their organizational network and\nused a data staging technique to collect sensitive data. They collected all sorts of sensitive data about the employees and customers, business\ntactics of the organization, financial information, network infrastructure information and so on.\nWhat should Jim do to detect the data staging before the hackers exfiltrate from the network?",
+    "options": [
+      {
+        "id": "1288168399-0",
+        "text": "Jim should monitor network traffic for malicious file transfers, file integrity monitoring, and event logs.",
+        "isCorrect": true
+      },
+      {
+        "id": "1288168399-1",
+        "text": "Jim should identify the attack at an initial stage by checking the content of the user agent field.",
+        "isCorrect": false
+      },
+      {
+        "id": "1288168399-2",
+        "text": "Jim should identify the web shell running in the network by analyzing server access, error logs, suspicious strings indicating encoding, user agent strings, and so on.",
+        "isCorrect": false
+      },
+      {
+        "id": "1288168399-3",
+        "text": "Jim should analyze malicious DNS requests, DNS payload, unspecified domains, and destination of DNS requests.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "313162358",
+    "prompt": "Alice, a threat intelligence analyst at HiTech Cyber Solutions, wants to gather information for identifying emerging threats to the organization and\nimplement essential techniques to prevent their systems and networks from such attacks. Alice is searching for online sources to obtain\ninformation such as the method used to launch an attack, and techniques and tools used to perform an attack and the procedures followed for\ncovering the tracks after an attack.\nWhich of the following online sources should Alice use to gather such information?",
+    "options": [
+      {
+        "id": "313162358-0",
+        "text": "Job sites",
+        "isCorrect": false
+      },
+      {
+        "id": "313162358-1",
+        "text": "Social network settings",
+        "isCorrect": false
+      },
+      {
+        "id": "313162358-2",
+        "text": "Financial services",
+        "isCorrect": false
+      },
+      {
+        "id": "313162358-3",
+        "text": "Hacking forums",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1876184123",
+    "prompt": "Steve is working as an analyst for Highlanders & Co. While performing data analysis, he used a method in which he included a list of all activities\nrequired to complete the project, time, dependencies, and logical endpoints such as milestones to acquire information about the relationship\nbetween various activities and the period of the activities obtained.\nWhich of the following data analysis methods was used by Steve?",
+    "options": [
+      {
+        "id": "1876184123-0",
+        "text": "Timeline analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "1876184123-1",
+        "text": "Analogy analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "1876184123-2",
+        "text": "Cone of plausibility",
+        "isCorrect": false
+      },
+      {
+        "id": "1876184123-3",
+        "text": "Critical path analysis",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "467493267",
+    "prompt": "Mario is working as an analyst in an XYZ organization in the United States. He has been asked to prepare a threat landscape report to provide in-\ndepth awareness and greater insight into the threats his organization is facing.\nWhich of the following details should she include to prepare a threat landscape report?",
+    "options": [
+      {
+        "id": "467493267-0",
+        "text": "A summary of threat actors most likely targeting the organization along with their motivations, intentions, and TTPs.",
+        "isCorrect": true
+      },
+      {
+        "id": "467493267-1",
+        "text": "History of an attack and location where it was performed",
+        "isCorrect": false
+      },
+      {
+        "id": "467493267-2",
+        "text": "Attribution of an attack to specific threat actor or group",
+        "isCorrect": false
+      },
+      {
+        "id": "467493267-3",
+        "text": "Attacker’s motivation and intention behind the attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "886130081",
+    "prompt": "Bob is a threat intelligence analyst in Global Technologies Inc. While extracting threat intelligence, he identified that the organization is vulnerable\nto various application threats that can be exploited by attackers.\nWhich of the following are the possible application threats that have been identified by Bob?",
+    "options": [
+      {
+        "id": "886130081-0",
+        "text": "Footprinting and spoofing",
+        "isCorrect": false
+      },
+      {
+        "id": "886130081-1",
+        "text": "SQL injection and buffer overflow attack",
+        "isCorrect": true
+      },
+      {
+        "id": "886130081-2",
+        "text": "Man-in-the-middle attack and physical security attack",
+        "isCorrect": false
+      },
+      {
+        "id": "886130081-3",
+        "text": "DNS and ARP poisoning",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "456472294",
+    "prompt": "Tyrion, a professional hacker, is targeting an organization to steal confidential information. He wants to perform website footprinting to obtain the\nfollowing information, which is hidden in the web page header.\nConnection status and content type\nAccept-ranges and last-modified information\nX-powered-by information -\nWeb server in use and its version\nWhich of the following tools should the Tyrion use to view header content?",
+    "options": [
+      {
+        "id": "456472294-0",
+        "text": "AutoShun",
+        "isCorrect": false
+      },
+      {
+        "id": "456472294-1",
+        "text": "Burp suite",
+        "isCorrect": true
+      },
+      {
+        "id": "456472294-2",
+        "text": "Hydra",
+        "isCorrect": false
+      },
+      {
+        "id": "456472294-3",
+        "text": "Vanguard enforcer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1842999671",
+    "prompt": "While analyzing a series of security incidents, you notice a pattern of attacks originating from specific geographical locations. To gain deeper\ninsight into the spatial aspects of these threats, what contextualization method would you employ to understand the geographic origin and\ndistribution of the attacks?",
+    "options": [
+      {
+        "id": "1842999671-0",
+        "text": "Temporal context",
+        "isCorrect": false
+      },
+      {
+        "id": "1842999671-1",
+        "text": "Historical context",
+        "isCorrect": false
+      },
+      {
+        "id": "1842999671-2",
+        "text": "Spatial context",
+        "isCorrect": true
+      },
+      {
+        "id": "1842999671-3",
+        "text": "Policy context",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1094837170",
+    "prompt": "James, a senior threat intelligence officer, was tasked with assessing the success and failure of the threat intelligence program established by the\norganization. As part of the assessment, James reviewed the outcome of the intelligence program, determined if any improvements were required\nin the program, and identified the past learnings that can be applied to the future program.\nIdentify the activity performed by James in the above scenario.",
+    "options": [
+      {
+        "id": "1094837170-0",
+        "text": "Determine the fulfilllment of stakeholders",
+        "isCorrect": false
+      },
+      {
+        "id": "1094837170-1",
+        "text": "Report findings and recommendations",
+        "isCorrect": true
+      },
+      {
+        "id": "1094837170-2",
+        "text": "Determine the costs and benefits associated with the program",
+        "isCorrect": false
+      },
+      {
+        "id": "1094837170-3",
+        "text": "Conduct a gap analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1011555005",
+    "prompt": "An XYZ organization hired Mr. Andrews, a threat analyst. In order to identify the threats and mitigate the effect of such threats, Mr. Andrews was\nasked to perform threat modeling. During the process of threat modeling, he collected important information about the treat actor and\ncharacterized the analytic behavior of the adversary that includes technological details, goals, and motives that can be useful in building a strong\ncountermeasure.\nWhat stage of the threat modeling is Mr. Andrews currently in?",
+    "options": [
+      {
+        "id": "1011555005-0",
+        "text": "Threat ranking",
+        "isCorrect": false
+      },
+      {
+        "id": "1011555005-1",
+        "text": "System modeling",
+        "isCorrect": false
+      },
+      {
+        "id": "1011555005-2",
+        "text": "Threat profiling and attribution",
+        "isCorrect": true
+      },
+      {
+        "id": "1011555005-3",
+        "text": "Threat determination and identification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2015359588",
+    "prompt": "An organization suffered many major attacks and lost critical information, such as employee records, and financial information. Therefore, the\nmanagement decides to hire a threat analyst to extract the strategic threat intelligence that provides high-level information regarding current\ncyber-security posture, threats, details on the financial impact of various cyber-activities, and so on.\nWhich of the following sources will help the analyst to collect the required intelligence?",
+    "options": [
+      {
+        "id": "2015359588-0",
+        "text": "Campaign reports, malware, incident reports, attack group reports, human intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "2015359588-1",
+        "text": "OSINT, CTI vendors, ISAO/ISACs",
+        "isCorrect": true
+      },
+      {
+        "id": "2015359588-2",
+        "text": "Active campaigns, attacks on other organizations, data feeds from external third parties",
+        "isCorrect": false
+      },
+      {
+        "id": "2015359588-3",
+        "text": "Human, social media, chat rooms",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1647278170",
+    "prompt": "Enrage Tech Company hired Enrique, a security analyst, for performing threat intelligence analysis. While performing data collection process, he\nused a counterintelligence mechanism where a recursive DNS server is employed to perform interserver DNS communication and when a request\nis generated from any name server to the recursive DNS server, the recursive DNS servers log the responses that are received. Then it replicates\nthe logged data and stores the data in the central database. Using these logs, he analyzed the malicious attempts that took place over DNS\ninfrastructure.\nWhich of the following cyber counterintelligence (CCI) gathering technique has Enrique used for data collection?",
+    "options": [
+      {
+        "id": "1647278170-0",
+        "text": "Data collection through DNS interrogation",
+        "isCorrect": false
+      },
+      {
+        "id": "1647278170-1",
+        "text": "Data collection through dynamic DNS (DDNS)",
+        "isCorrect": false
+      },
+      {
+        "id": "1647278170-2",
+        "text": "Data collection through passive DNS monitoring",
+        "isCorrect": true
+      },
+      {
+        "id": "1647278170-3",
+        "text": "Data collection through DNS zone transfer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1304714867",
+    "prompt": "Miley, an analyst, wants to reduce the amount of collected data and make the storing and sharing process easy. She uses filtering, tagging, and\nqueuing technique to sort out the relevant and structured data from the large amounts of unstructured data.\nWhich of the following techniques was employed by Miley?",
+    "options": [
+      {
+        "id": "1304714867-0",
+        "text": "Normalization",
+        "isCorrect": true
+      },
+      {
+        "id": "1304714867-1",
+        "text": "Sandboxing",
+        "isCorrect": false
+      },
+      {
+        "id": "1304714867-2",
+        "text": "Convenience sampling",
+        "isCorrect": false
+      },
+      {
+        "id": "1304714867-3",
+        "text": "Data visualization",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "573222374",
+    "prompt": "John is a lead cybersecurity analyst preparing to gather threat intelligence for client organization. Arrange the following steps in the correct\nsequence, outlining the process that John would follow to plan an effective threat intelligence collection:\n1. Structuring/normalization\n2. Sharing information\n3. Data collection\n4. Storing and visualizing data",
+    "options": [
+      {
+        "id": "573222374-0",
+        "text": "3 –> 1 –> 4 –> 2",
+        "isCorrect": true
+      },
+      {
+        "id": "573222374-1",
+        "text": "2 –> 1 –> 4 –> 3",
+        "isCorrect": false
+      },
+      {
+        "id": "573222374-2",
+        "text": "1 –> 2 –> 3 –> 4",
+        "isCorrect": false
+      },
+      {
+        "id": "573222374-3",
+        "text": "4 –> 3 –> 2 –> 1",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1197270841",
+    "prompt": "SecurityTech Inc. is developing a TI plan where it can drive more advantages in less funds. In the process of selecting a TI platform, it wants to\nincorporate a feature that ranks elements such as intelligence sources, threat actors, attacks, and digital assets of the organization, so that it can\nput in more funds toward the resources which are critical for the organization’s security.\nWhich of the following key features should SecurityTech Inc. consider in their TI plan for selecting the TI platform?",
+    "options": [
+      {
+        "id": "1197270841-0",
+        "text": "Workflow",
+        "isCorrect": false
+      },
+      {
+        "id": "1197270841-1",
+        "text": "Open",
+        "isCorrect": false
+      },
+      {
+        "id": "1197270841-2",
+        "text": "Search",
+        "isCorrect": false
+      },
+      {
+        "id": "1197270841-3",
+        "text": "Scoring",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1963133986",
+    "prompt": "CalSoft is a large-scale organization that wants to establish a certain level of trust before sharing intelligence within the organization. As various\ndepartments in the organization share information frequently, they decided to use different trust models for different departments. In addition, the\norganization acts as a provider of threat intelligence to all connected members and organizations.\nWhich of the following organizational trust models should be used by CalSoft?",
+    "options": [
+      {
+        "id": "1963133986-0",
+        "text": "Mediated trust",
+        "isCorrect": false
+      },
+      {
+        "id": "1963133986-1",
+        "text": "Mandated trust",
+        "isCorrect": false
+      },
+      {
+        "id": "1963133986-2",
+        "text": "Hybrid trust",
+        "isCorrect": true
+      },
+      {
+        "id": "1963133986-3",
+        "text": "Validated trust",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1722736048",
+    "prompt": "Karry, a threat analyst at an XYZ organization, is performing threat intelligence analysis. During the data collection phase, he used a data\ncollection method that involves no participants and is purely based on analysis and observation of activities and processes going on within the\nlocal boundaries of the organization.\nIdentify the type data collection method used by the Karry.",
+    "options": [
+      {
+        "id": "1722736048-0",
+        "text": "Active data collection",
+        "isCorrect": false
+      },
+      {
+        "id": "1722736048-1",
+        "text": "Exploited data collection",
+        "isCorrect": false
+      },
+      {
+        "id": "1722736048-2",
+        "text": "Raw data collection",
+        "isCorrect": false
+      },
+      {
+        "id": "1722736048-3",
+        "text": "Passive data collection",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "2083541648",
+    "prompt": "Bob, a threat analyst, works in an organization named TechTop. He was asked to collect intelligence to fulfill the needs and requirements of the\nRed Tam present within the organization.\nWhich of the following are the needs of a RedTeam?",
+    "options": [
+      {
+        "id": "2083541648-0",
+        "text": "Intelligence on latest vulnerabilities, threat actors, and their tactics, techniques, and procedures (TTPs)",
+        "isCorrect": true
+      },
+      {
+        "id": "2083541648-1",
+        "text": "Intelligence related to increased attacks targeting a particular software or operating system vulnerability",
+        "isCorrect": false
+      },
+      {
+        "id": "2083541648-2",
+        "text": "Intelligence that reveals risks related to various strategic business decisions",
+        "isCorrect": false
+      },
+      {
+        "id": "2083541648-3",
+        "text": "Intelligence extracted latest attacks analysis on similar organizations, which includes details about latest threats and TTPs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "174876582",
+    "prompt": "An analyst is conducting threat intelligence analysis in a client organization, and during the information gathering process, he gathered\ninformation from the publicly available sources and analyzed to obtain a rich useful form of intelligence. The information source that he used is\nprimarily used for national security, law enforcement, and for collecting intelligence required for business or strategic decision making.\nWhich of the following sources of intelligence did the analyst use to collect information?",
+    "options": [
+      {
+        "id": "174876582-0",
+        "text": "SIGINT",
+        "isCorrect": false
+      },
+      {
+        "id": "174876582-1",
+        "text": "ISAC",
+        "isCorrect": false
+      },
+      {
+        "id": "174876582-2",
+        "text": "OPSEC",
+        "isCorrect": false
+      },
+      {
+        "id": "174876582-3",
+        "text": "OSINT",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "307662256",
+    "prompt": "Kira works as a security analyst in an organization. She was asked to define and set up the requirements before collecting threat intelligence\ninformation. The requirements should focus on what must be collected in order to fulfill production intelligence.\nWhich of the following categories of threat intelligence requirements should Kira focus on?",
+    "options": [
+      {
+        "id": "307662256-0",
+        "text": "Collection requirements",
+        "isCorrect": true
+      },
+      {
+        "id": "307662256-1",
+        "text": "Production requirements",
+        "isCorrect": false
+      },
+      {
+        "id": "307662256-2",
+        "text": "Intelligence requirements",
+        "isCorrect": false
+      },
+      {
+        "id": "307662256-3",
+        "text": "Business requirements",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1714285183",
+    "prompt": "Marie, a threat analyst at an organization named TechSavvy, was asked to perform operational threat intelligence analysis to get contextual\ninformation about security events and incidents.\nWhich of the following sources does Marie need to use to perform operational threat intelligence analysis?",
+    "options": [
+      {
+        "id": "1714285183-0",
+        "text": "Malware indicators, network indicators, e-mail indicators",
+        "isCorrect": false
+      },
+      {
+        "id": "1714285183-1",
+        "text": "OSINT, security industry white papers, human contacts",
+        "isCorrect": false
+      },
+      {
+        "id": "1714285183-2",
+        "text": "Attack group reports, attack campaign reports, incident reports, malware samples",
+        "isCorrect": false
+      },
+      {
+        "id": "1714285183-3",
+        "text": "Activity-related attacks, social media sources, chat room conversations",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1611140676",
+    "prompt": "Flora, a threat intelligence analyst at PanTech Cyber Solutions, is working on a threat intelligence program. She is trying to collect the company’s\ncrucial information through online job sites.\nWhich of the following information will Flora obtain through job sites?",
+    "options": [
+      {
+        "id": "1611140676-0",
+        "text": "Top-level domains and subdomains of the company",
+        "isCorrect": false
+      },
+      {
+        "id": "1611140676-1",
+        "text": "Open ports and services",
+        "isCorrect": false
+      },
+      {
+        "id": "1611140676-2",
+        "text": "Hardware and software information, network-related information, and technologies used by the company",
+        "isCorrect": true
+      },
+      {
+        "id": "1611140676-3",
+        "text": "Employee details and social security numbers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2138677172",
+    "prompt": "Henry, working as a threat analyst in an organization named MylesTech, wants to share gathered intelligence.\nHe wants to share the intelligence with a broad range of communities that can be trusted more, but the sensitivity of information is less.\nWhich of the following tiers of the sharing model must be employed by Henry?",
+    "options": [
+      {
+        "id": "2138677172-0",
+        "text": "Targeted tier",
+        "isCorrect": false
+      },
+      {
+        "id": "2138677172-1",
+        "text": "Multi tier",
+        "isCorrect": false
+      },
+      {
+        "id": "2138677172-2",
+        "text": "Private tier",
+        "isCorrect": false
+      },
+      {
+        "id": "2138677172-3",
+        "text": "Public tier",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1815983927",
+    "prompt": "John, a threat intelligence analyst in Cybertech Company, was asked to obtain information that provides greater insight into the current cyber\nrisks. To gather such information, John needs to find the answer of the following questions:\n• Why the organization might be attacked?\n• How the organization might be attacked?\n• Who might be the intruders?\nIdentity the type of security testing John is going to perform.",
+    "options": [
+      {
+        "id": "1815983927-0",
+        "text": "Black box testing",
+        "isCorrect": false
+      },
+      {
+        "id": "1815983927-1",
+        "text": "Intelligence-led security testing",
+        "isCorrect": true
+      },
+      {
+        "id": "1815983927-2",
+        "text": "White box testing",
+        "isCorrect": false
+      },
+      {
+        "id": "1815983927-3",
+        "text": "Performance testing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1678421539",
+    "prompt": "You are a Security Operations Center (SOC) analyst responsible for monitoring and safeguarding the organization’s network. During routine\nactivities, identify a potential vulnerability that can expose critical systems to exploitation. In what specific aspects of cybersecurity would you\nactively engage in when addressing and mitigating this vulnerability?",
+    "options": [
+      {
+        "id": "1678421539-0",
+        "text": "Security awareness training",
+        "isCorrect": false
+      },
+      {
+        "id": "1678421539-1",
+        "text": "Incident response",
+        "isCorrect": false
+      },
+      {
+        "id": "1678421539-2",
+        "text": "Vulnerability management",
+        "isCorrect": true
+      },
+      {
+        "id": "1678421539-3",
+        "text": "Threat intelligence analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1758048326",
+    "prompt": "Tech Crunch Inc. has hired John, who is a professional threat intelligence analyst. He was asked to conduct threat intelligence analysis that\nprovides contextual information about the security events and incidents that further help the organization to disclose potential risks, provide\ngreater insight into attacker methodologies, identify past malicious activities, and perform investigations on malicious activities in a more\nefficient way.\nIdentify the type of threat intelligence John is going to perform for the organization.",
+    "options": [
+      {
+        "id": "1758048326-0",
+        "text": "Technical threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1758048326-1",
+        "text": "Tactical threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1758048326-2",
+        "text": "Strategic threat intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1758048326-3",
+        "text": "Operational threat intelligence",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1305908142",
+    "prompt": "Kathy wants to ensure that she shares threat intelligence containing sensitive information with the appropriate audience. Hence, she used traffic\nlight protocol (TLP).\nWhich TLP color would you signify that information should be shared only within a particular community?",
+    "options": [
+      {
+        "id": "1305908142-0",
+        "text": "White",
+        "isCorrect": false
+      },
+      {
+        "id": "1305908142-1",
+        "text": "Amber",
+        "isCorrect": false
+      },
+      {
+        "id": "1305908142-2",
+        "text": "Red",
+        "isCorrect": false
+      },
+      {
+        "id": "1305908142-3",
+        "text": "Green",
+        "isCorrect": true
+      }
+    ]
+  }
+]

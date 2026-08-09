@@ -1,0 +1,3980 @@
+[
+  {
+    "id": "edrp-1",
+    "prompt": "ABC Inc. has a host of servers, each serving a different purpose. Almost all are critical. Most servers were virtualized with backup virtual components. When one server's memory crashed mid-day, operations were unaffected as it switched to backup virtual memory. What is such a feature called?",
+    "options": [
+      {
+        "id": "edrp-1-a",
+        "text": "Deduplication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-1-b",
+        "text": "High Availability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-1-c",
+        "text": "Fault Tolerance",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-1-d",
+        "text": "Mirroring",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-2",
+    "prompt": "Zoe's site crashed under high traffic. She bought two more servers and distributed the load across three servers to maximize efficiency. Which solution did she use?",
+    "options": [
+      {
+        "id": "edrp-2-a",
+        "text": "Load Balancing",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-2-b",
+        "text": "High-Availability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-2-c",
+        "text": "Point in Time Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-2-d",
+        "text": "Clustering",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-3",
+    "prompt": "Which of the following services provides mail and calendar services?",
+    "options": [
+      {
+        "id": "edrp-3-a",
+        "text": "Web Server",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-3-b",
+        "text": "Application Server",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-3-c",
+        "text": "Domain Controller",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-3-d",
+        "text": "Exchange Server",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-4",
+    "prompt": "Seth wants an approximate picture of risk likelihood (earthquake unlikely, fire high, intrusion partly controlled by guards) to prioritize mitigation. What kind of risk assessment is Seth conducting?",
+    "options": [
+      {
+        "id": "edrp-4-a",
+        "text": "Semi-Quantitative Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-4-b",
+        "text": "Quantitative Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-4-c",
+        "text": "Qualitative Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-4-d",
+        "text": "Semi-Qualitative Risk Assessment",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-5",
+    "prompt": "Which term defines the assessment of risk factors and the relationship between these factors?",
+    "options": [
+      {
+        "id": "edrp-5-a",
+        "text": "Risk Models",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-5-b",
+        "text": "Risk Mitigation",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-5-c",
+        "text": "Risk Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-5-d",
+        "text": "Risk Assessment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-6",
+    "prompt": "Richard backs up daily at 8pm. Fire at 9am destroyed servers. Transfer from alternate site takes 8 hours. Based on last backup, recovery time is 'minus 13 hours'. What term defines this 13-hour period?",
+    "options": [
+      {
+        "id": "edrp-6-a",
+        "text": "Recovery Point Objective (RPO)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-6-b",
+        "text": "Recovery Time Objective (RTO)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-6-c",
+        "text": "Single Point of Failure (SPOF)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-6-d",
+        "text": "Maximum Acceptable Outage (MAO)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-7",
+    "prompt": "Jess wants to implement the standard for societal security in the business continuity management system. Which standard should she implement?",
+    "options": [
+      {
+        "id": "edrp-7-a",
+        "text": "NFPA 1600",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-7-b",
+        "text": "ISO 27005",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-7-c",
+        "text": "ISO 27031",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-7-d",
+        "text": "ISO 22301",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-8",
+    "prompt": "John wants the alternate site to run in parallel to the primary, allowing near-immediate continuity. Which site is best suited?",
+    "options": [
+      {
+        "id": "edrp-8-a",
+        "text": "Hot Site",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-8-b",
+        "text": "Warm Site",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-8-c",
+        "text": "Colocation Facilities",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-8-d",
+        "text": "Cold Site",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-9",
+    "prompt": "Katie implemented the RAID level that splits data into blocks and writes evenly across drives but provides no redundancy. This RAID requires a minimum of ___ drives.",
+    "options": [
+      {
+        "id": "edrp-9-a",
+        "text": "Three drives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-9-b",
+        "text": "Six drives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-9-c",
+        "text": "Two drives",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-9-d",
+        "text": "Four drives",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-10",
+    "prompt": "Jill wants an analysis to decide if her food truck business would be profitable in monetary terms. Which analysis was she advised to conduct?",
+    "options": [
+      {
+        "id": "edrp-10-a",
+        "text": "Cost Benefit Analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-10-b",
+        "text": "Cost Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-10-c",
+        "text": "Business Impact Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-10-d",
+        "text": "Risk Analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-11",
+    "prompt": "XYZ.com (London) lost a hosting server. Admins solved slowness by routing traffic to the alternate server in Mumbai. What term best describes this?",
+    "options": [
+      {
+        "id": "edrp-11-a",
+        "text": "High-Availability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-11-b",
+        "text": "Global Load Balancing",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-11-c",
+        "text": "Failover",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-11-d",
+        "text": "Network Load Balancing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-12",
+    "prompt": "Which technology is used to create a copy of data on one server on another server?",
+    "options": [
+      {
+        "id": "edrp-12-a",
+        "text": "Data Replication",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-12-b",
+        "text": "Snapshots",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-12-c",
+        "text": "Cloud Storage",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-12-d",
+        "text": "Failover Cluster",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-13",
+    "prompt": "Which team is responsible for the implementation and execution of the disaster recovery plan, including test plans?",
+    "options": [
+      {
+        "id": "edrp-13-a",
+        "text": "Operations Team",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-13-b",
+        "text": "Planning Team",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-13-c",
+        "text": "Technology Team",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-13-d",
+        "text": "Support Team",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-14",
+    "prompt": "Many choose this backup method to protect against site-specific problems; location can be a home office or a disaster-hardened bunker. Which backup method?",
+    "options": [
+      {
+        "id": "edrp-14-a",
+        "text": "Near-line",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-14-b",
+        "text": "Offsite",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-14-c",
+        "text": "Onsite",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-14-d",
+        "text": "Online",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-15",
+    "prompt": "Nancy needs RAID with parity stored across multiple drives, reconstruction during downtime, good speed, and not expensive. Which RAID level?",
+    "options": [
+      {
+        "id": "edrp-15-a",
+        "text": "RAID 1",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-15-b",
+        "text": "RAID 3",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-15-c",
+        "text": "RAID 10",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-15-d",
+        "text": "RAID 0",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-16",
+    "prompt": "James set aside $20,000 emergency fund for a virtual-connection DR service. What is this emergency fund called?",
+    "options": [
+      {
+        "id": "edrp-16-a",
+        "text": "Risk Adjusted Return on Capital (RAROC)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-16-b",
+        "text": "Risk Adjusted Return on Risk Adjusted Capital (RARORAC)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-16-c",
+        "text": "Risk Adjusted Performance Management (RAPM)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-16-d",
+        "text": "Return on Risk Adjusted Capital (RORAC)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-17",
+    "prompt": "Which is NOT a component of a centralized governance structure for Business Continuity and Risk Management?",
+    "options": [
+      {
+        "id": "edrp-17-a",
+        "text": "Programs and Practices",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-17-b",
+        "text": "Enablement",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-17-c",
+        "text": "Effectiveness",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-17-d",
+        "text": "Authenticity",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-18",
+    "prompt": "Amy mimicked a real-life disaster, testing software, communication, procedures and personnel. Which test?",
+    "options": [
+      {
+        "id": "edrp-18-a",
+        "text": "Walkthrough Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-18-b",
+        "text": "Parallel Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-18-c",
+        "text": "Full Interruption Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-18-d",
+        "text": "Simulation Testing",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-19",
+    "prompt": "Which standard on disaster/emergency management & BC programs defines disasters and covers prevention, mitigation, preparedness, response, continuity, and recovery?",
+    "options": [
+      {
+        "id": "edrp-19-a",
+        "text": "NFPA 1600",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-19-b",
+        "text": "INCITS 483-2012",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-19-c",
+        "text": "ISO 27031",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-19-d",
+        "text": "ISO 27005",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-20",
+    "prompt": "Which server category stores host account info and implements security policies in its domain?",
+    "options": [
+      {
+        "id": "edrp-20-a",
+        "text": "Global Catalog Servers",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-20-b",
+        "text": "Domain Controller Servers",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-20-c",
+        "text": "File Servers",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-20-d",
+        "text": "IIS Servers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-21",
+    "prompt": "Timothy implements a dedicated network for sharing storage resources, separating storage units from servers/user network. He uses a ___.",
+    "options": [
+      {
+        "id": "edrp-21-a",
+        "text": "SCSA",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-21-b",
+        "text": "NAS",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-21-c",
+        "text": "SAN",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-21-d",
+        "text": "SAS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-22",
+    "prompt": "Jack on Hyper-V wants a snapshot backup instead of full backup of VMs. Which native Hyper-V Manager feature?",
+    "options": [
+      {
+        "id": "edrp-22-a",
+        "text": "Checkpoint Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-22-b",
+        "text": "Hyper-V Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-22-c",
+        "text": "System Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-22-d",
+        "text": "Snapshots Backup",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-23",
+    "prompt": "Which term refers to the individual skills required to ensure achievement of terminal objectives?",
+    "options": [
+      {
+        "id": "edrp-23-a",
+        "text": "Enabling Objectives",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-23-b",
+        "text": "Routine Objectives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-23-c",
+        "text": "Qualitative Objectives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-23-d",
+        "text": "Development Objectives",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-24",
+    "prompt": "Matt created several logical servers on one physical server. Which technology?",
+    "options": [
+      {
+        "id": "edrp-24-a",
+        "text": "Deduplication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-24-b",
+        "text": "Snapshot",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-24-c",
+        "text": "Virtualization",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-24-d",
+        "text": "Mirroring",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-25",
+    "prompt": "Will sets up a pair of RAID disks so all data written to one is auto-copied to the other. Which RAID level?",
+    "options": [
+      {
+        "id": "edrp-25-a",
+        "text": "RAID 5",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-25-b",
+        "text": "RAID 1",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-25-c",
+        "text": "RAID 0",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-25-d",
+        "text": "RAID 3",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-26",
+    "prompt": "Zane finds one server's Active Directory missing; all other domain servers have AD intact. Which restoration process?",
+    "options": [
+      {
+        "id": "edrp-26-a",
+        "text": "Authoritative Active Directory Restoration",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-26-b",
+        "text": "Non-Authoritative Active Directory Restoration",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-26-c",
+        "text": "Data Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-26-d",
+        "text": "Server Migration",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-27",
+    "prompt": "Which strategy is NOT part of risk response?",
+    "options": [
+      {
+        "id": "edrp-27-a",
+        "text": "Sharing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-27-b",
+        "text": "Safety",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-27-c",
+        "text": "Mitigation",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-27-d",
+        "text": "Acceptance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-28",
+    "prompt": "Cameron's software created a copy of data using block level imaging. Which software/method?",
+    "options": [
+      {
+        "id": "edrp-28-a",
+        "text": "Bare-metal Restore",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-28-b",
+        "text": "Disk Imaging",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-28-c",
+        "text": "Virtualization",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-28-d",
+        "text": "Cloud Backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-29",
+    "prompt": "Which refers to a central command and control facility responsible for recovery actions, coordinating response/resources, ensuring coherence of operations?",
+    "options": [
+      {
+        "id": "edrp-29-a",
+        "text": "Emergency Operations Center",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-29-b",
+        "text": "Colocation Facilities",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-29-c",
+        "text": "Mobile Recovery Center",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-29-d",
+        "text": "Crisis Command Center",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-30",
+    "prompt": "Annabeth (web-hosting, no downtime affordable) opted for live replication at the backup site for immediate switchover. Which backup site?",
+    "options": [
+      {
+        "id": "edrp-30-a",
+        "text": "Hot Sites",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-30-b",
+        "text": "Warm Sites",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-30-c",
+        "text": "Colocation Facilities",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-30-d",
+        "text": "Cold Sites",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-31",
+    "prompt": "Fred wants a plan of well-planned actions before, during, and after a catastrophic event. Which plan?",
+    "options": [
+      {
+        "id": "edrp-31-a",
+        "text": "Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-31-b",
+        "text": "Business Recovery Plan",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-31-c",
+        "text": "Data Backup Plan",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-31-d",
+        "text": "IT Disaster Recovery Plan",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-32",
+    "prompt": "Which technique verifies data is safe, secure, and readable after update, restore, or retrieve?",
+    "options": [
+      {
+        "id": "edrp-32-a",
+        "text": "Database Integrity Testing",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-32-b",
+        "text": "Backup Integrity Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-32-c",
+        "text": "Database Authentication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-32-d",
+        "text": "Database Consolidation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-33",
+    "prompt": "In which test is the entire BCP implemented?",
+    "options": [
+      {
+        "id": "edrp-33-a",
+        "text": "Orientation Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-33-b",
+        "text": "Functional Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-33-c",
+        "text": "Simulation Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-33-d",
+        "text": "Full-Scale Test",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-34",
+    "prompt": "ABC Bank distributes client data chunks across global centers; a % deviation between actual and targeted data should not exist. Which recovery metric defines this % deviation?",
+    "options": [
+      {
+        "id": "edrp-34-a",
+        "text": "Recovery Service Resiliency (RSR)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-34-b",
+        "text": "Recovery Object Granularity (ROG)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-34-c",
+        "text": "Recovery Consistency Objective (RCO)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-34-d",
+        "text": "Recovery Location Scope (RLS)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-35",
+    "prompt": "Jonathan classified risks as Very Low/Low/Medium/High/Very High. Which assessment method?",
+    "options": [
+      {
+        "id": "edrp-35-a",
+        "text": "Semi-Qualitative Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-35-b",
+        "text": "Quantitative Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-35-c",
+        "text": "Semi-Quantitative Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-35-d",
+        "text": "Qualitative Risk Assessment",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-36",
+    "prompt": "Which term refers to systems that maintain data and access despite malicious/accidental problems with storage servers, networks, clients, and accounts?",
+    "options": [
+      {
+        "id": "edrp-36-a",
+        "text": "Survivable Storage System",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-36-b",
+        "text": "Decentralized Computing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-36-c",
+        "text": "Mainframe Computer System",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-36-d",
+        "text": "Mirroring",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-37",
+    "prompt": "Kelly backs up only files created/modified after the last backup. What type?",
+    "options": [
+      {
+        "id": "edrp-37-a",
+        "text": "Normal backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-37-b",
+        "text": "Full backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-37-c",
+        "text": "Differential Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-37-d",
+        "text": "Incremental backup",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-38",
+    "prompt": "Which term refers to a set of tasks organizations must continue throughout or resume rapidly after a disruptive incident?",
+    "options": [
+      {
+        "id": "edrp-38-a",
+        "text": "Business Impact Analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-38-b",
+        "text": "Maximum Allowed Downtime (MAD)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-38-c",
+        "text": "Mission Essential Functions (MEF)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-38-d",
+        "text": "Risk Mitigation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-39",
+    "prompt": "Jack rents a server in the same data center his friend uses; cheaper, provides cooling. Which backup site?",
+    "options": [
+      {
+        "id": "edrp-39-a",
+        "text": "Colocation Facilities",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-39-b",
+        "text": "Hot Sites",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-39-c",
+        "text": "Cold Sites",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-39-d",
+        "text": "Warm Sites",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-40",
+    "prompt": "Rachel wants a DR tier that backs up data over a WAN connection. Which tier?",
+    "options": [
+      {
+        "id": "edrp-40-a",
+        "text": "Tier 0",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-40-b",
+        "text": "Tier 6",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-40-c",
+        "text": "Tier 5",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-40-d",
+        "text": "Tier 3",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-41",
+    "prompt": "Which method keeps the SYSVOL folder synchronized across multiple servers in the same domain?",
+    "options": [
+      {
+        "id": "edrp-41-a",
+        "text": "Failover",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-41-b",
+        "text": "Distributed File System Replication",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-41-c",
+        "text": "Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-41-d",
+        "text": "Load Balancing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-42",
+    "prompt": "Lisa wants to cut cost of many idle dedicated servers, optimize resources, save cooling energy. Which solution?",
+    "options": [
+      {
+        "id": "edrp-42-a",
+        "text": "Operating System Virtualization",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-42-b",
+        "text": "Server Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-42-c",
+        "text": "Virtual Desktop Infrastructure",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-42-d",
+        "text": "Server Virtualization",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-43",
+    "prompt": "Rick interconnected individual computers and removed the central server to balance load. Which architecture?",
+    "options": [
+      {
+        "id": "edrp-43-a",
+        "text": "Three Tier",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-43-b",
+        "text": "N-Tier",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-43-c",
+        "text": "Peer-to-Peer",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-43-d",
+        "text": "Client-Server",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-44",
+    "prompt": "Which term refers to a storage system of HDDs that looks and acts like a physical tape library?",
+    "options": [
+      {
+        "id": "edrp-44-a",
+        "text": "Disk-to-Disk (D2D)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-44-b",
+        "text": "Virtual Tape Library (VTL)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-44-c",
+        "text": "Mirroring",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-44-d",
+        "text": "Snapshot",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-45",
+    "prompt": "Which is NOT an advantage of colocation facilities?",
+    "options": [
+      {
+        "id": "edrp-45-a",
+        "text": "Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-45-b",
+        "text": "Cooling",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-45-c",
+        "text": "Economic Advantages",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-45-d",
+        "text": "Recovery of Servers",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-46",
+    "prompt": "IT dept copies data changes from original to replica DB server annually (DB updated once/year). Which solution?",
+    "options": [
+      {
+        "id": "edrp-46-a",
+        "text": "Transactional Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-46-b",
+        "text": "SQL Server Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-46-c",
+        "text": "Merge Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-46-d",
+        "text": "Snapshot Replication",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-47",
+    "prompt": "Match the RAID components with their functions (1-iii etc.). [配對表PDF未印出選項內容]",
+    "options": [
+      {
+        "id": "edrp-47-a",
+        "text": "1-iii,2-v,3-i,4-iv",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-47-b",
+        "text": "1-ii,2-i,3-iv,4-iii",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-47-c",
+        "text": "1-iv,2-iii,3-v,4-ii",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-47-d",
+        "text": "1-v,2-iv,3-ii,4-ii",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-48",
+    "prompt": "Joan's DR test had team members confirm effectiveness, bottlenecks, weaknesses in the plan. Which test?",
+    "options": [
+      {
+        "id": "edrp-48-a",
+        "text": "Parallel Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-48-b",
+        "text": "Walkthrough Testing",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-48-c",
+        "text": "Simulation Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-48-d",
+        "text": "Full Interruption Testing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-49",
+    "prompt": "When information availability increases in PASIS architecture, which feature decreases?",
+    "options": [
+      {
+        "id": "edrp-49-a",
+        "text": "Confidentiality",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-49-b",
+        "text": "Durability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-49-c",
+        "text": "Nonrepudiation",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-49-d",
+        "text": "Latency",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-50",
+    "prompt": "XYZ Inc. transfers critical data to backup site via an FTP server. Which term best describes this?",
+    "options": [
+      {
+        "id": "edrp-50-a",
+        "text": "Electronic Vaulting",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-50-b",
+        "text": "Disk Shadowing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-50-c",
+        "text": "Disk Duplexing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-50-d",
+        "text": "Manually copying the data files and transferring them to the remote site",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-51",
+    "prompt": "Which term refers to the ease with which technicians can resolve or replace failing components/systems?",
+    "options": [
+      {
+        "id": "edrp-51-a",
+        "text": "Robustness",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-51-b",
+        "text": "Redundancy",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-51-c",
+        "text": "Reparability",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-51-d",
+        "text": "Recoverability",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-52",
+    "prompt": "Jack set up BCP training for employees with small roles, covering framework/processes/strategies. What is this training?",
+    "options": [
+      {
+        "id": "edrp-52-a",
+        "text": "Scenario Training",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-52-b",
+        "text": "Detailed Awareness Training",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-52-c",
+        "text": "Simulation Training",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-52-d",
+        "text": "Introductory Awareness Training",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-53",
+    "prompt": "Jonah's laptop creates a new backup daily, each taking more space than the previous. Which backup type?",
+    "options": [
+      {
+        "id": "edrp-53-a",
+        "text": "Differential Backup",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-53-b",
+        "text": "Online Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-53-c",
+        "text": "Full System Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-53-d",
+        "text": "Incremental Backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-54",
+    "prompt": "Jonas took measures to avoid/minimize cyclone damage before it hit. Under which classification?",
+    "options": [
+      {
+        "id": "edrp-54-a",
+        "text": "Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-54-b",
+        "text": "Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-54-c",
+        "text": "Prevention",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-54-d",
+        "text": "Resumption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-55",
+    "prompt": "Which DR test is very expensive and disrupts normal business operations?",
+    "options": [
+      {
+        "id": "edrp-55-a",
+        "text": "Checklist Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-55-b",
+        "text": "Full Interruption Testing",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-55-c",
+        "text": "Simulation Testing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-55-d",
+        "text": "Parallel Testing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-56",
+    "prompt": "Gloria's BCP audit stage ascertained whether operational resiliency/continuity was encouraged and if BCP was over/underfunded. Which audit stage?",
+    "options": [
+      {
+        "id": "edrp-56-a",
+        "text": "Management of Process Changes",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-56-b",
+        "text": "Overall Testing of the Plan",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-56-c",
+        "text": "Ongoing Program Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-56-d",
+        "text": "Overall Program Governance",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-57",
+    "prompt": "Emma's scenario training phase: participants informed in advance about training. Which phase?",
+    "options": [
+      {
+        "id": "edrp-57-a",
+        "text": "Planning Phase",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-57-b",
+        "text": "Warning Phase",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-57-c",
+        "text": "Execution Phase",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-57-d",
+        "text": "Review Phase",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-58",
+    "prompt": "Which term measures the severity of the impact of a risk on a business?",
+    "options": [
+      {
+        "id": "edrp-58-a",
+        "text": "Frequency",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-58-b",
+        "text": "Recovery Time",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-58-c",
+        "text": "Recovery Scale",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-58-d",
+        "text": "Assessment Scale",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-59",
+    "prompt": "Alan backs up 3-4 articles daily; backup time = downtime, wants it quick. Which backup suits?",
+    "options": [
+      {
+        "id": "edrp-59-a",
+        "text": "Differential Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-59-b",
+        "text": "Incremental Backup",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-59-c",
+        "text": "Full System Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-59-d",
+        "text": "Online Data Backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-60",
+    "prompt": "Which term refers to the system's ability to correctly serve the requests it receives?",
+    "options": [
+      {
+        "id": "edrp-60-a",
+        "text": "Nonrepudiation",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-60-b",
+        "text": "Availability",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-60-c",
+        "text": "Precaution",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-60-d",
+        "text": "Integrity",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-61",
+    "prompt": "George identifies risks (phishing, earthquakes, server crash, electrical surges) and must prioritize per an InfoSec risk management standard. Which standard?",
+    "options": [
+      {
+        "id": "edrp-61-a",
+        "text": "ISO 27001",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-61-b",
+        "text": "ISO/IEC 27005",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-61-c",
+        "text": "INCITS 483-2012",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-61-d",
+        "text": "ISO 27031",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-62",
+    "prompt": "Phil's VM crashed during experiment; he had a method taking backups at intervals giving an architectural instance of last saved VM. Which method?",
+    "options": [
+      {
+        "id": "edrp-62-a",
+        "text": "Disk-to-Disk (D2D)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-62-b",
+        "text": "Snapshot",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-62-c",
+        "text": "Continuous Data Protection (CDP)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-62-d",
+        "text": "Mirroring",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-63",
+    "prompt": "Standard providing a framework to identify/specify all aspects for improving ICT readiness for business continuity. Which standard?",
+    "options": [
+      {
+        "id": "edrp-63-a",
+        "text": "INCITS 483-2012",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-63-b",
+        "text": "ISO 27005",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-63-c",
+        "text": "ISO 27031",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-63-d",
+        "text": "ISO 22313",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-64",
+    "prompt": "Phoebe's DR test cases need at least 90% to pass for success. What is this scenario known as?",
+    "options": [
+      {
+        "id": "edrp-64-a",
+        "text": "Software Testing Lifecycle",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-64-b",
+        "text": "Suspension Criteria",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-64-c",
+        "text": "Exit Criteria",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-64-d",
+        "text": "Entry Criteria",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-65",
+    "prompt": "Name of the shared directory in Microsoft Server OS containing copy of commonly shared/replicated public files of a domain?",
+    "options": [
+      {
+        "id": "edrp-65-a",
+        "text": "Public Files",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-65-b",
+        "text": "ADFS",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-65-c",
+        "text": "inetpub",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-65-d",
+        "text": "SYSVOL",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-66",
+    "prompt": "Using which Windows 10 feature can users preserve system state including system files, installed apps, and settings?",
+    "options": [
+      {
+        "id": "edrp-66-a",
+        "text": "System Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-66-b",
+        "text": "System Update",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-66-c",
+        "text": "Failover replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-66-d",
+        "text": "System Restore",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-67",
+    "prompt": "Which cluster provides consistent file system images across servers, allowing simultaneous read/write to a single shared file system?",
+    "options": [
+      {
+        "id": "edrp-67-a",
+        "text": "High-Performance Clusters",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-67-b",
+        "text": "Storage Cluster",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-67-c",
+        "text": "Failover Cluster",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-67-d",
+        "text": "High-Availability Clusters",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-68",
+    "prompt": "In PASIS, after implementation critical data was only accessible to authorized employees. Which PASIS feature?",
+    "options": [
+      {
+        "id": "edrp-68-a",
+        "text": "Reaction",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-68-b",
+        "text": "Confidentiality",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-68-c",
+        "text": "Availability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-68-d",
+        "text": "Maintenance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-69",
+    "prompt": "Jonathan used a DR component containing a pictorial representation of all DR processes. Which DR component?",
+    "options": [
+      {
+        "id": "edrp-69-a",
+        "text": "Exclusions",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-69-b",
+        "text": "Activation Procedures",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-69-c",
+        "text": "System Description",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-69-d",
+        "text": "Scope Statement",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-70",
+    "prompt": "Which term refers to a high-speed data transmission technique providing access to consolidated block-level storage?",
+    "options": [
+      {
+        "id": "edrp-70-a",
+        "text": "Network Attached Storage (NAS)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-70-b",
+        "text": "Storage Area Network (SAN)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-70-c",
+        "text": "Cloud Storage",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-70-d",
+        "text": "Storage Virtualization",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-71",
+    "prompt": "Which term refers to storage tech used to capture real-time data changes and facilitate restore points and recovery?",
+    "options": [
+      {
+        "id": "edrp-71-a",
+        "text": "Mirroring",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-71-b",
+        "text": "Disk-to-Disk (D2D)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-71-c",
+        "text": "Virtual Tape Library (VTL)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-71-d",
+        "text": "Continuous Data Protection (CDP)",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-72",
+    "prompt": "Archie tested the BCP by mobilizing the resources. Which test?",
+    "options": [
+      {
+        "id": "edrp-72-a",
+        "text": "Functional Test",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-72-b",
+        "text": "Simulation Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-72-c",
+        "text": "Checklist Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-72-d",
+        "text": "Orientation Test",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-73",
+    "prompt": "Joanna's software backs up/restores/recovers DB files using database server sessions. Which software?",
+    "options": [
+      {
+        "id": "edrp-73-a",
+        "text": "Disk Drill",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-73-b",
+        "text": "RMAN",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-73-c",
+        "text": "Recuva",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-73-d",
+        "text": "Virtuozzo",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-74",
+    "prompt": "Which term refers to the recommencement of business functions as systems are gradually made available after a disaster?",
+    "options": [
+      {
+        "id": "edrp-74-a",
+        "text": "Resume",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-74-b",
+        "text": "Recover",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-74-c",
+        "text": "Reduce",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-74-d",
+        "text": "Return",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-75",
+    "prompt": "Jake's plan identifies all personnel accountable for research, development, and implementation of the DRP. Which plan?",
+    "options": [
+      {
+        "id": "edrp-75-a",
+        "text": "Disaster Recovery Plan",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-75-b",
+        "text": "Disaster Management Plan",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-75-c",
+        "text": "Business Continuity Plan",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-75-d",
+        "text": "IT Recovery Plan",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-76",
+    "prompt": "Tom wants centralized storage with free data backup on the server, efficient backup/recovery. Which storage tech?",
+    "options": [
+      {
+        "id": "edrp-76-a",
+        "text": "PAS",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-76-b",
+        "text": "RAID",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-76-c",
+        "text": "NAS",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-76-d",
+        "text": "DAS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-77",
+    "prompt": "Where can the VM Management Service be located in the Hyper-V architecture?",
+    "options": [
+      {
+        "id": "edrp-77-a",
+        "text": "Parent Partition",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-77-b",
+        "text": "Child Partition",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-77-c",
+        "text": "Windows Kernel",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-77-d",
+        "text": "Hypervisor Layer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-78",
+    "prompt": "Which sub-team assigns research and carries out development/implementation of the DRP throughout the organization?",
+    "options": [
+      {
+        "id": "edrp-78-a",
+        "text": "Disaster Management Team Chairpersons",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-78-b",
+        "text": "Disaster Management Team Coordinators",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-78-c",
+        "text": "Disaster Management Team",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-78-d",
+        "text": "Disaster Management Executive Committee",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-79",
+    "prompt": "Fred's site inaccessible; hosting files on server corrupted. Which server must he restore?",
+    "options": [
+      {
+        "id": "edrp-79-a",
+        "text": "Catalog Server",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-79-b",
+        "text": "IIS Server",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-79-c",
+        "text": "Application Server",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-79-d",
+        "text": "Database Server",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-80",
+    "prompt": "Which term refers to a programming pattern where computers are clustered in a distributed and parallel fashion?",
+    "options": [
+      {
+        "id": "edrp-80-a",
+        "text": "Decentralized Computing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-80-b",
+        "text": "Cloud Computing",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-80-c",
+        "text": "Grid Computing",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-80-d",
+        "text": "Centralized Computing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-81",
+    "prompt": "Which term refers to a backup taken when the database is offline?",
+    "options": [
+      {
+        "id": "edrp-81-a",
+        "text": "Full System Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-81-b",
+        "text": "Hot Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-81-c",
+        "text": "Online Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-81-d",
+        "text": "Cold Backup",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-82",
+    "prompt": "James (PASIS) recovered data from earthquake-destroyed storage nodes. Which PASIS feature allowed recovery?",
+    "options": [
+      {
+        "id": "edrp-82-a",
+        "text": "Integrity",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-82-b",
+        "text": "Availability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-82-c",
+        "text": "Reaction",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-82-d",
+        "text": "Durability",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-83",
+    "prompt": "Company wants a backup method that encrypts data, accessible anytime/anywhere. Which method?",
+    "options": [
+      {
+        "id": "edrp-83-a",
+        "text": "Cloud Backup",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-83-b",
+        "text": "Hot Site Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-83-c",
+        "text": "Offsite Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-83-d",
+        "text": "Onsite Backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-84",
+    "prompt": "Fred installed generator, mail malware/spam protection, and 8-hr backup to mitigate two risks. Which process did Fred go through?",
+    "options": [
+      {
+        "id": "edrp-84-a",
+        "text": "Risk Mitigation",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-84-b",
+        "text": "Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-84-c",
+        "text": "Risk Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-84-d",
+        "text": "Risk Identification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-85",
+    "prompt": "Which term measures the number of applications/data sets handled by the recovery solution and max data size it can store?",
+    "options": [
+      {
+        "id": "edrp-85-a",
+        "text": "Recovery Location Scope (RLS)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-85-b",
+        "text": "Recovery Service Resiliency (RSR)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-85-c",
+        "text": "Recovery Point Objective (RPO)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-85-d",
+        "text": "Recovery Service Scalability (RSS)",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-86",
+    "prompt": "Which components does PASIS architecture integrate?",
+    "options": [
+      {
+        "id": "edrp-86-a",
+        "text": "Centralized Computing, Data Redundancy and Encoding",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-86-b",
+        "text": "Centralized Storage Systems, Deduplication and Mirroring",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-86-c",
+        "text": "Decentralized Storage Systems, Data Redundancy and Encoding, and Dynamic Self-Maintenance",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-86-d",
+        "text": "Distributed Computing, Data Redundancy and Encoding, and Dynamic Self-Maintenance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-87",
+    "prompt": "Which term refers to the ability to restore data and applications should data centers/servers/infrastructure get damaged by a disaster?",
+    "options": [
+      {
+        "id": "edrp-87-a",
+        "text": "Recovery Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-87-b",
+        "text": "Disaster Recovery",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-87-c",
+        "text": "Data Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-87-d",
+        "text": "Application Recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-88",
+    "prompt": "Betting site: payment gateway down >1hr loses $100k+15%; might lose 25% permanently. Unacceptable, fixed immediately. What term defines this two-hour period?",
+    "options": [
+      {
+        "id": "edrp-88-a",
+        "text": "Recovery Point Objective (RPO)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-88-b",
+        "text": "Work Recovery Time (WRT)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-88-c",
+        "text": "Maximum Tolerable Period of Disruption (MTPOD)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-88-d",
+        "text": "Recovery Time Objective (RTO)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-89",
+    "prompt": "Jane wants a standard guiding establishment/implementation/maintenance of a formal documented BIA process. Which standard?",
+    "options": [
+      {
+        "id": "edrp-89-a",
+        "text": "ISO/IEC 27031",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-89-b",
+        "text": "ISO/TS 22317",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-89-c",
+        "text": "ISO/IEC 27005",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-89-d",
+        "text": "AS/NZS 5050",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-90",
+    "prompt": "Which term refers to a virtualized data storage and processing facility provided as a service?",
+    "options": [
+      {
+        "id": "edrp-90-a",
+        "text": "Cloud-based Storage",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-90-b",
+        "text": "Software Defined Data Center",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-90-c",
+        "text": "Virtual Machines",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-90-d",
+        "text": "Data Virtualization",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-91",
+    "prompt": "Which term refers to a dedicated server also used for file storage and sharing?",
+    "options": [
+      {
+        "id": "edrp-91-a",
+        "text": "Network Attached Storage (NAS)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-91-b",
+        "text": "Data Virtualization",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-91-c",
+        "text": "Storage Area Network (SAN)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-91-d",
+        "text": "Cloud Storage",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-92",
+    "prompt": "Martin wants to back up Cisco Router config to an FTP server. Which Cisco IOS CLI command?",
+    "options": [
+      {
+        "id": "edrp-92-a",
+        "text": "#copy running configuration tftp",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-92-b",
+        "text": "#backup running configuration ftp",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-92-c",
+        "text": "#backup running configuration ftp",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-92-d",
+        "text": "#copy running configuration ftp",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-93",
+    "prompt": "Jason notices slow VM data transmission due to poor VMQ handling from NIC restrictions. What should he do?",
+    "options": [
+      {
+        "id": "edrp-93-a",
+        "text": "Improve the performance of the network storage",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-93-b",
+        "text": "None of these",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-93-c",
+        "text": "Increase the bandwidth of the network connection",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-93-d",
+        "text": "Update the NIC driver",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-94",
+    "prompt": "Remy invested $15,000; 15% fail chance rising to 35% after fire-safety inspection. Which method of evaluating risk?",
+    "options": [
+      {
+        "id": "edrp-94-a",
+        "text": "Risk Valuation",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-94-b",
+        "text": "Risk Adjusted Return On Capital (RAROC)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-94-c",
+        "text": "Value at Risk",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-94-d",
+        "text": "Return on Risk Adjusted Capital (RORAC)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-95",
+    "prompt": "Which term refers to repairing the old site or setting up a new alternate site to resume operations after a disaster?",
+    "options": [
+      {
+        "id": "edrp-95-a",
+        "text": "Restoration",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-95-b",
+        "text": "Business Continuity",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-95-c",
+        "text": "Resumption",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-95-d",
+        "text": "Response",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-96",
+    "prompt": "Lily's archiving method provides tools/software, easy access/cataloging, but recurring cooling & maintenance costs. Which archiving method?",
+    "options": [
+      {
+        "id": "edrp-96-a",
+        "text": "Cloud-Based Archiving",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-96-b",
+        "text": "Legacy Archiving",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-96-c",
+        "text": "Optical Media Storage",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-96-d",
+        "text": "On Premise Disk Based Archiving",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-97",
+    "prompt": "Hospital ER needs zero-minute downtime; secondary server takes over automatically the second primary goes down (coordinated). Which solution?",
+    "options": [
+      {
+        "id": "edrp-97-a",
+        "text": "Point in Time Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-97-b",
+        "text": "Database Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-97-c",
+        "text": "Failover",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-97-d",
+        "text": "Deduplication",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-98",
+    "prompt": "Which term refers to a client-server architecture merged with layered architecture?",
+    "options": [
+      {
+        "id": "edrp-98-a",
+        "text": "Client-Server Architecture",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-98-b",
+        "text": "Application Server-Tier Architecture",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-98-c",
+        "text": "Tightly Coupled Architecture",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-98-d",
+        "text": "N-Tier Architecture",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-99",
+    "prompt": "Which term refers to the potential gain from the best alternative forgone when choosing between mutually exclusive alternatives?",
+    "options": [
+      {
+        "id": "edrp-99-a",
+        "text": "Cost Benefit Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-99-b",
+        "text": "Fixed Cost",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-99-c",
+        "text": "Business Impact Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-99-d",
+        "text": "Opportunity Cost",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-100",
+    "prompt": "Jack updated macOS to a buggy beta; wants to restore to previous OS version. Which MacBook feature?",
+    "options": [
+      {
+        "id": "edrp-100-a",
+        "text": "Time Shift",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-100-b",
+        "text": "Image Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-100-c",
+        "text": "Snapshot",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-100-d",
+        "text": "Time Machine",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-101",
+    "prompt": "Which is a feature of mainframe computers?",
+    "options": [
+      {
+        "id": "edrp-101-a",
+        "text": "Pluralism",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-101-b",
+        "text": "Proven Reliability",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-101-c",
+        "text": "Openness",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-101-d",
+        "text": "Transparency",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-102",
+    "prompt": "Which term refers to backing up files modified/changed/added since the last full backup?",
+    "options": [
+      {
+        "id": "edrp-102-a",
+        "text": "Differential Backup",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-102-b",
+        "text": "Online Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-102-c",
+        "text": "Incremental Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-102-d",
+        "text": "Full System Backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-103",
+    "prompt": "Which term refers to evaluation of potential interruptions in a department's working due to failure of their internal systems?",
+    "options": [
+      {
+        "id": "edrp-103-a",
+        "text": "Team wide BIA",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-103-b",
+        "text": "Branch-wide BIA",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-103-c",
+        "text": "Organization-wide BIA",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-103-d",
+        "text": "Country-wide BIA",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-104",
+    "prompt": "John wants RAID requiring minimum six drives for high fault tolerance and high read/write speed. Which RAID level?",
+    "options": [
+      {
+        "id": "edrp-104-a",
+        "text": "RAID level 10",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-104-b",
+        "text": "RAID level 5",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-104-c",
+        "text": "RAID level 50",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-104-d",
+        "text": "RAID level 1",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-105",
+    "prompt": "Which term refers to determining the potential impact of disruptive events on an organization's business processes?",
+    "options": [
+      {
+        "id": "edrp-105-a",
+        "text": "Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-105-b",
+        "text": "Business Impact Analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-105-c",
+        "text": "Risk Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-105-d",
+        "text": "Vulnerability Assessment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-106",
+    "prompt": "Which term refers to third-party services like recovery infrastructure, real-time remote backup, and offsite replication?",
+    "options": [
+      {
+        "id": "edrp-106-a",
+        "text": "Continuous Data Protection",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-106-b",
+        "text": "Managed Disaster Recovery",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-106-c",
+        "text": "Tape Vaulting",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-106-d",
+        "text": "Disk Shadowing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-107",
+    "prompt": "Which training is meant for employees who have an important execution role in the BCP, provided framework/processes/strategies?",
+    "options": [
+      {
+        "id": "edrp-107-a",
+        "text": "Detailed Awareness Training",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-107-b",
+        "text": "Introductory Awareness Training",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-107-c",
+        "text": "Scenario Training",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-107-d",
+        "text": "Simulation Training",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-108",
+    "prompt": "Mike needs to install a feature in Windows Server 2012 to enable backup/restore of a file server. Which feature via which app?",
+    "options": [
+      {
+        "id": "edrp-108-a",
+        "text": "Windows Server Backup, Administrative Tools",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-108-b",
+        "text": "Server Migration, Microsoft Management Console",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-108-c",
+        "text": "Windows Server Backup, Microsoft Management Console",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-108-d",
+        "text": "Server Migration, Administrative Tools",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-109",
+    "prompt": "Which term refers to training milestones that must be achieved to meet the BC training program's aim?",
+    "options": [
+      {
+        "id": "edrp-109-a",
+        "text": "Routine Objectives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-109-b",
+        "text": "Development Objectives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-109-c",
+        "text": "Time-Related Objectives",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-109-d",
+        "text": "Terminal Objectives",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-110",
+    "prompt": "Which DR tier makes use of point in time copies?",
+    "options": [
+      {
+        "id": "edrp-110-a",
+        "text": "Tier 8",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-110-b",
+        "text": "Tier 5",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-110-c",
+        "text": "Tier 0",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-110-d",
+        "text": "Tier 4",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-111",
+    "prompt": "Polly estimates magnitude of damage if new product specs leaked (could lose $200k+, > upgrade cost, so upgrades). Which risk factor did she estimate?",
+    "options": [
+      {
+        "id": "edrp-111-a",
+        "text": "Likelihood",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-111-b",
+        "text": "Vulnerability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-111-c",
+        "text": "Impact",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-111-d",
+        "text": "Hazard",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-112",
+    "prompt": "Which term refers to the blueprint that calls out the tactics dictating how continuity and recovery from a disaster will be achieved?",
+    "options": [
+      {
+        "id": "edrp-112-a",
+        "text": "Business Continuity Plan",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-112-b",
+        "text": "Business Continuity Strategy",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-112-c",
+        "text": "Business Continuity Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-112-d",
+        "text": "Crisis Management",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-113",
+    "prompt": "Sam (Ubuntu) accidentally deleted official project files but had a backup. Which native Ubuntu option to recover?",
+    "options": [
+      {
+        "id": "edrp-113-a",
+        "text": "Shadow Copy",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-113-b",
+        "text": "Snapshots",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-113-c",
+        "text": "Déjà Dup",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-113-d",
+        "text": "Checkpoints",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-114",
+    "prompt": "Which option must be considered by an organization when conducting BIA?",
+    "options": [
+      {
+        "id": "edrp-114-a",
+        "text": "Transferring a business activity to a third-party",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-114-b",
+        "text": "Time scales for assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-114-c",
+        "text": "Establishing alternate processes or creating redundancy/spare capacity in processes",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-114-d",
+        "text": "Ceasing or changing a business activity if viable alternatives are available",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-115",
+    "prompt": "Phil's DR tier provided automated recovery of data and applications. Which DR tier?",
+    "options": [
+      {
+        "id": "edrp-115-a",
+        "text": "Tier 2",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-115-b",
+        "text": "Tier 4",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-115-c",
+        "text": "Tier 8",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-115-d",
+        "text": "Tier 7",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-116",
+    "prompt": "Which is NOT an objective of business impact analysis?",
+    "options": [
+      {
+        "id": "edrp-116-a",
+        "text": "Identify RTO and RPO for Each Process",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-116-b",
+        "text": "Assess the Impact Caused by a Threat",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-116-c",
+        "text": "Identify the Critical Resources Required by the Business",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-116-d",
+        "text": "Establish the Recovery Order of the Critical Business Functions",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-117",
+    "prompt": "XYZ messaging app: secondary server can only take load for 4 hours; primary must be up within 4 hours. What term defines this 4-hour period?",
+    "options": [
+      {
+        "id": "edrp-117-a",
+        "text": "Recovery Time Objective (RTO)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-117-b",
+        "text": "Recovery Point Objective (RPO)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-117-c",
+        "text": "Maximum Tolerable Downtime (MTD)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-117-d",
+        "text": "Work Recovery Time (WRT)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-118",
+    "prompt": "Which term refers to bringing a system's application and data back to a previous state in a prescribed, acceptable time frame?",
+    "options": [
+      {
+        "id": "edrp-118-a",
+        "text": "System Migration",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-118-b",
+        "text": "System Replication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-118-c",
+        "text": "System Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-118-d",
+        "text": "System Recovery",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-119",
+    "prompt": "Vulnerability assessment steps: (a) assess impact (b) estimate probability (c) assess resources to mitigate (d) list threats. Correct order?",
+    "options": [
+      {
+        "id": "edrp-119-a",
+        "text": "b, d, c, a",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-119-b",
+        "text": "b, c, d, a",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-119-c",
+        "text": "d, b, a, c",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-119-d",
+        "text": "c, a, d, b",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-120",
+    "prompt": "Oliver's team's proposal leaked to competitor; lost project, morale dropped, other projects delayed for 2 months. Which impact best describes this?",
+    "options": [
+      {
+        "id": "edrp-120-a",
+        "text": "Quantitative Impact",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-120-b",
+        "text": "Qualitative Impact",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-120-c",
+        "text": "Semi-Qualitative Impact",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-120-d",
+        "text": "Industrial Impact",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-121",
+    "prompt": "The internal audit of the BCP takes place to ensure conformance to which standard?",
+    "options": [
+      {
+        "id": "edrp-121-a",
+        "text": "ISO 22313",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-121-b",
+        "text": "ISO/IEC 27031:2011",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-121-c",
+        "text": "ISO 22301:2012",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-121-d",
+        "text": "ISO/IEC 27005:2011",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-122",
+    "prompt": "Matt (stock brokering, real-time updates) cannot have downtime to back up. Which backup technique?",
+    "options": [
+      {
+        "id": "edrp-122-a",
+        "text": "Incremental Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-122-b",
+        "text": "Online Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-122-c",
+        "text": "Cold Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-122-d",
+        "text": "Hot Backup",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-123",
+    "prompt": "Jack connected computers/servers into a single unified computing resource, protecting against application/server/software/site failures. Which solution?",
+    "options": [
+      {
+        "id": "edrp-123-a",
+        "text": "Mirroring",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-123-b",
+        "text": "Deduplication",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-123-c",
+        "text": "Server Clustering",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-123-d",
+        "text": "Failover",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-124",
+    "prompt": "Which term refers to a graphical representation of data protection services designed to balance overall cost of data protection against loss?",
+    "options": [
+      {
+        "id": "edrp-124-a",
+        "text": "3DR",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-124-b",
+        "text": "Continuous Data Protection",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-124-c",
+        "text": "Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-124-d",
+        "text": "Data Protection Continuum",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-125",
+    "prompt": "Which term refers to utilizing a full backup of a file then modifying it with one or more incremental backups?",
+    "options": [
+      {
+        "id": "edrp-125-a",
+        "text": "Incremental Forever Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-125-b",
+        "text": "Differential Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-125-c",
+        "text": "Incremental Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-125-d",
+        "text": "Synthetic Backup",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-126",
+    "prompt": "Roger's test simulated a specific event scenario in which the BCP would be tested. Which test?",
+    "options": [
+      {
+        "id": "edrp-126-a",
+        "text": "Checklist Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-126-b",
+        "text": "Orientation Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-126-c",
+        "text": "Simulation Test",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-126-d",
+        "text": "Tabletop Test",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-127",
+    "prompt": "Joan's server slowed under traffic spike eating memory; she added extra virtual memory to smooth it. What is such a feature called?",
+    "options": [
+      {
+        "id": "edrp-127-a",
+        "text": "Monotonicity",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-127-b",
+        "text": "Transparency",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-127-c",
+        "text": "Openness",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-127-d",
+        "text": "Scalability",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-128",
+    "prompt": "Which cluster uses mounted file systems to read and write data?",
+    "options": [
+      {
+        "id": "edrp-128-a",
+        "text": "Failover Cluster",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-128-b",
+        "text": "Storage Cluster",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-128-c",
+        "text": "High-Availability Cluster",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-128-d",
+        "text": "High-Performance Clusters",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-129",
+    "prompt": "Which three components define the three-tier architecture in decentralized computing?",
+    "options": [
+      {
+        "id": "edrp-129-a",
+        "text": "Client, Peer-to-Peer, and Application",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-129-b",
+        "text": "Application, Peer-to-Peer, and Tightly Coupled",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-129-c",
+        "text": "Client, Application Server, and Database Server",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-129-d",
+        "text": "Tightly Coupled, Client, and Peer-to-Peer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-130",
+    "prompt": "Mia's computer destroyed in fire; IT used backups to restore a fresh laptop (no OS) to old state, automated, quick. Which data recovery method?",
+    "options": [
+      {
+        "id": "edrp-130-a",
+        "text": "System Restore",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-130-b",
+        "text": "Mirroring",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-130-c",
+        "text": "Bare Metal Recovery",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-130-d",
+        "text": "System Image Recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-131",
+    "prompt": "Which term refers to any circumstance with the potential to disrupt or degrade the quality of operations or asset?",
+    "options": [
+      {
+        "id": "edrp-131-a",
+        "text": "Threat",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-131-b",
+        "text": "Vulnerability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-131-c",
+        "text": "Hazard",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-131-d",
+        "text": "Impact",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-132",
+    "prompt": "Which term refers to a collection of historical records selected for long-term retention and future reference?",
+    "options": [
+      {
+        "id": "edrp-132-a",
+        "text": "Data Archiving",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-132-b",
+        "text": "Data Backup",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-132-c",
+        "text": "Data Deletion",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-132-d",
+        "text": "Data Restore",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-133",
+    "prompt": "Which technical process provides additional security to VMs by disabling unnecessary interfaces, devices, ports, and services?",
+    "options": [
+      {
+        "id": "edrp-133-a",
+        "text": "Hardening",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-133-b",
+        "text": "Restriction of Physical Access",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-133-c",
+        "text": "Defense-in-Depth",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-133-d",
+        "text": "Isolation of Security Functions",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-134",
+    "prompt": "Which virtualization method requires software called containers or virtual engines to run?",
+    "options": [
+      {
+        "id": "edrp-134-a",
+        "text": "Desktop Virtualization",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-134-b",
+        "text": "OS-based Virtualization",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-134-c",
+        "text": "Data Virtualization",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-134-d",
+        "text": "Network Virtualization",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-135",
+    "prompt": "Which term refers to the delay experienced by a system while it is serving a request?",
+    "options": [
+      {
+        "id": "edrp-135-a",
+        "text": "Latency",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-135-b",
+        "text": "Nonrepudiation",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-135-c",
+        "text": "Reaction",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-135-d",
+        "text": "Durability",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-136",
+    "prompt": "Matt cannot boot Windows Server 2012 after OS update; boot manager files corrupted. Which command in System Recovery?",
+    "options": [
+      {
+        "id": "edrp-136-a",
+        "text": "repadmin /showrepl",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-136-b",
+        "text": "sfc /scannow",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-136-c",
+        "text": "ntdsutil",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-136-d",
+        "text": "Bootrec /RebuildBCD",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-137",
+    "prompt": "Employees create individual backups of same data, wasting storage/bandwidth, risk of leak. What can be done?",
+    "options": [
+      {
+        "id": "edrp-137-a",
+        "text": "Data Remanence",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-137-b",
+        "text": "Failover",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-137-c",
+        "text": "Data Erasure",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-137-d",
+        "text": "Deduplication",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-138",
+    "prompt": "What is the main objective of a BC test plan?",
+    "options": [
+      {
+        "id": "edrp-138-a",
+        "text": "To demonstrate proficiency in management response and crisis conditions",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-138-b",
+        "text": "Not threaten the normal business operations of an organization",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-138-c",
+        "text": "To diverge from the test storyboard to include unplanned events or circumstances",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-138-d",
+        "text": "To ensure the plan is accurate and relevant under adverse circumstances",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-139",
+    "prompt": "When information confidentiality increases in PASIS architecture, what else also increases as a direct result?",
+    "options": [
+      {
+        "id": "edrp-139-a",
+        "text": "Reaction",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-139-b",
+        "text": "Durability",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-139-c",
+        "text": "Latency",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-139-d",
+        "text": "Storage Requirement",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-140",
+    "prompt": "In which scenario training phase is a debrief conducted with participants to obtain more feedback?",
+    "options": [
+      {
+        "id": "edrp-140-a",
+        "text": "Warning Phase",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-140-b",
+        "text": "Execution Phase",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-140-c",
+        "text": "Planning Phase",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-140-d",
+        "text": "Review Phase",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-141",
+    "prompt": "Which is a virtualization standard specified by the Distributed Management Task Force (DMTF)?",
+    "options": [
+      {
+        "id": "edrp-141-a",
+        "text": "Cloud API",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-141-b",
+        "text": "Open Virtualization Format (OVF)",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-141-c",
+        "text": "Cloud Security Alliance (CSA)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-141-d",
+        "text": "PCI Data Security Standard (PCI DSS)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-142",
+    "prompt": "Which refers to a moveable operating environment that can be set up at any place on transportable units?",
+    "options": [
+      {
+        "id": "edrp-142-a",
+        "text": "Colocation Facilities",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-142-b",
+        "text": "Cold Site",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-142-c",
+        "text": "Crisis Command Center",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-142-d",
+        "text": "Mobile Recovery Center",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-143",
+    "prompt": "In which DR tier is data backed up with a hot site?",
+    "options": [
+      {
+        "id": "edrp-143-a",
+        "text": "Tier 2",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-143-b",
+        "text": "Tier 5",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-143-c",
+        "text": "Tier 1",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-143-d",
+        "text": "Tier 4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-144",
+    "prompt": "Which statement should a DR coordinator interviewee use to get the post?",
+    "options": [
+      {
+        "id": "edrp-144-a",
+        "text": "Day-to-day management control over the execution and maintenance of the disaster recovery program",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-144-b",
+        "text": "Responsible for the specification and design of all technology-based disaster recovery solutions",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-144-c",
+        "text": "Executive authority over the disaster recovery program",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-144-d",
+        "text": "Responsible for disaster recovery planning verification and compliance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-145",
+    "prompt": "Which layer of the Recovery Management Model provides hassle-free recovery and controls data protection technologies like replication and backup?",
+    "options": [
+      {
+        "id": "edrp-145-a",
+        "text": "Analytics and Reporting Layer",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-145-b",
+        "text": "Protection Technologies Layer",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-145-c",
+        "text": "Testing Simulation Layer",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-145-d",
+        "text": "Common Management Layer",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-146",
+    "prompt": "Remus deleted VM snapshots to free host storage but space wasn't freed. What can he do?",
+    "options": [
+      {
+        "id": "edrp-146-a",
+        "text": "Uninstall the Hypervisor",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-146-b",
+        "text": "Shut down or restart the virtual machine system",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-146-c",
+        "text": "Delete the virtual machine database",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-146-d",
+        "text": "Delete the child disk of the snapshots present in the host machine",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-147",
+    "prompt": "James's hard drive irreversibly damaged, data unreadable/inaccessible. What type of data loss?",
+    "options": [
+      {
+        "id": "edrp-147-a",
+        "text": "Logical",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-147-b",
+        "text": "Natural Disaster",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-147-c",
+        "text": "Physical",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-147-d",
+        "text": "Data Corruption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-148",
+    "prompt": "Which term refers to a holistic management process identifying potential threats and impacts, providing a framework for organizational resilience?",
+    "options": [
+      {
+        "id": "edrp-148-a",
+        "text": "Business Impact Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-148-b",
+        "text": "Risk Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-148-c",
+        "text": "Business Continuity Management",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-148-d",
+        "text": "Disaster Recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-149",
+    "prompt": "Which term refers to applying strategies to help an organization deal with a sudden and significant undesirable event?",
+    "options": [
+      {
+        "id": "edrp-149-a",
+        "text": "Business Impact Analysis (BIA)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-149-b",
+        "text": "Application Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-149-c",
+        "text": "Risk Assessment",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-149-d",
+        "text": "Crisis Management",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-150",
+    "prompt": "Which is also known as the doomsday recovery level in 3DR?",
+    "options": [
+      {
+        "id": "edrp-150-a",
+        "text": "Backup of Data",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-150-b",
+        "text": "Archiving of Data",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-150-c",
+        "text": "Local Data Protection",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-150-d",
+        "text": "Remote Backup of Data Protection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-151",
+    "prompt": "Which term refers to the practice of bringing systems/applications/data back to 'normal' conditions in a prescribed, acceptable time frame?",
+    "options": [
+      {
+        "id": "edrp-151-a",
+        "text": "Risk Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-151-b",
+        "text": "Business Continuity Management (BCM)",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-151-c",
+        "text": "Disaster Recovery Management",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-151-d",
+        "text": "Recovery Management",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "edrp-152",
+    "prompt": "Craig can afford a few days' downtime; pre-installs hardware and pre-configures restoration at backup site to meet RTO. Which backup site?",
+    "options": [
+      {
+        "id": "edrp-152-a",
+        "text": "Warm Sites",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-152-b",
+        "text": "Cold Sites",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-152-c",
+        "text": "Hot Sites",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-152-d",
+        "text": "Colocation Facilities",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "edrp-153",
+    "prompt": "Which is NOT a component of BIA?",
+    "options": [
+      {
+        "id": "edrp-153-a",
+        "text": "Safety",
+        "isCorrect": true
+      },
+      {
+        "id": "edrp-153-b",
+        "text": "Formation of Committee",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-153-c",
+        "text": "Feedback",
+        "isCorrect": false
+      },
+      {
+        "id": "edrp-153-d",
+        "text": "Executive Sponsorship",
+        "isCorrect": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,2602 @@
+[
+  {
+    "id": "57151613",
+    "prompt": "A SIEM alert is triggered due to unusual network traffic involving NetBIOS. The System log shows that “The TCP/IP NetBIOS Helper service entered the running state”. Concurrently, Event Code 4624: “An account was successfully logged on” appears for multiple machines within a short time frame. The logon type is identified as 3 (Network logon). Which of the following security incidents is the SIEM detecting?",
+    "options": [
+      {
+        "id": "57151613-0",
+        "text": "A malware infection spreading via SMB protocol",
+        "isCorrect": false
+      },
+      {
+        "id": "57151613-1",
+        "text": "An attacker performing lateral movement within the network",
+        "isCorrect": true
+      },
+      {
+        "id": "57151613-2",
+        "text": "A user connecting to shared files from multiple workstations",
+        "isCorrect": false
+      },
+      {
+        "id": "57151613-3",
+        "text": "A network administrator conducting routine maintenance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1473213546",
+    "prompt": "A manufacturing company is deploying a SIEM system and wants to improve both its security monitoring and regulatory compliance capabilities. During the planning phase, the team decides to use an output-driven approach, starting with use cases that address unauthorized access to production control systems. They configure data sources and alert specific to this use case, ensuring they receive actionable alerts without excessive false positives. After validating its success, they move on to use cases related to supply chain disruptions and malware detection. Which of the following best describes the primary advantage of using an output-driven approach in SIEM deployment?",
+    "options": [
+      {
+        "id": "1473213546-0",
+        "text": "The SOC team can respond to all incidents in real time without delays.",
+        "isCorrect": false
+      },
+      {
+        "id": "1473213546-1",
+        "text": "The company can collect logs from non-critical systems.",
+        "isCorrect": false
+      },
+      {
+        "id": "1473213546-2",
+        "text": "The SIEM system can automatically block all unauthorized access attempts.",
+        "isCorrect": false
+      },
+      {
+        "id": "1473213546-3",
+        "text": "The company can create more complex use cases with greater scope.",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1075512774",
+    "prompt": "An attacker attempts to gain unauthorized access to a secure network by repeatedly guessing login credentials. The SIEM is configured to generate an alert after detecting 10 consecutive failed login attempts within a short timeframe. However, the attacker successfully logs in on the 9th attempt, just before the threshold is reached, bypassing the alert mechanism. Security teams only become aware of the incident after detecting suspicious activity post-login, highlighting a gap in the SIEM’s detection rules. What type of alert classification does this represent?",
+    "options": [
+      {
+        "id": "1075512774-0",
+        "text": "False Positive",
+        "isCorrect": false
+      },
+      {
+        "id": "1075512774-1",
+        "text": "True Negative",
+        "isCorrect": false
+      },
+      {
+        "id": "1075512774-2",
+        "text": "True Positive",
+        "isCorrect": false
+      },
+      {
+        "id": "1075512774-3",
+        "text": "False Negative",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1603719425",
+    "prompt": "Daniel Clark, a cybersecurity specialist working in the Cloud SOC for a government agency, is responsible for ensuring secure access to cloud applications while maintaining compliance with regulatory frameworks. His team needs a security solution that can enforce access policies to prevent unauthorized access to cloud based applications, monitor and restrict data sharing within SaaS, PaaS, and IaaS environments, ensure compliance with government regulations for data security and privacy, and apply security controls to prevent sensitive data exposure in the cloud. To achieve these objectives, the team has implemented a security technology that governs control over cloud resources, applies security policies, and protects sensitive cloud-stored data. Which Cloud SOC technology is Daniel’s team using?",
+    "options": [
+      {
+        "id": "1603719425-0",
+        "text": "Cloud Access Security Broker",
+        "isCorrect": true
+      },
+      {
+        "id": "1603719425-1",
+        "text": "Cloud Security Posture Management",
+        "isCorrect": false
+      },
+      {
+        "id": "1603719425-2",
+        "text": "Cloud-native anomaly detection",
+        "isCorrect": false
+      },
+      {
+        "id": "1603719425-3",
+        "text": "Cloud Workload Protection Platform",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1207526763",
+    "prompt": "A mid-sized healthcare organization is facing frequent phishing and ransomware attacks. They lack an internal SOC and want proactive threat detection and response capabilities. Compliance with HIPAA regulations is essential. The organization seeks a solution that includes both monitoring and rapid response to incidents. Which service best meets their needs?",
+    "options": [
+      {
+        "id": "1207526763-0",
+        "text": "Self-hosted SIEM with in-house SOC analysts",
+        "isCorrect": false
+      },
+      {
+        "id": "1207526763-1",
+        "text": "MSSP with 24/7 log monitoring and incident escalation",
+        "isCorrect": false
+      },
+      {
+        "id": "1207526763-2",
+        "text": "Cloud-based SIEM with MSSP-Managed services",
+        "isCorrect": false
+      },
+      {
+        "id": "1207526763-3",
+        "text": "MDR with proactive threat hunting and incident containment",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "740488161",
+    "prompt": "A Security Operations Center (SOC) analyst receives a high-priority alert indicating unusual user activity. An employee account is attempting to access company resources from a different country and outside of their normal working hours. This behavior raises concerns about potential account compromise or unauthorized access to automate the initial response and quickly restrict access while further investigating the incident, which SOAR Playbook would be relevant to adapt and implement?",
+    "options": [
+      {
+        "id": "740488161-0",
+        "text": "Malware Containment SOAR Playbook",
+        "isCorrect": false
+      },
+      {
+        "id": "740488161-1",
+        "text": "Alert Enrichment SOAR Playbook",
+        "isCorrect": false
+      },
+      {
+        "id": "740488161-2",
+        "text": "Phishing Investigations SOAR Playbook",
+        "isCorrect": false
+      },
+      {
+        "id": "740488161-3",
+        "text": "Deprovisioning Users SOAR Playbook",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1762466659",
+    "prompt": "A government agency responsible for protecting sensitive information needs to monitor its network for unusual data exfiltration attempts. Since traditional log data alone is insufficient to identify suspicious traffic patterns, the SIEM team decides to integrate traffic flow data into their system. This data will help detect anomalies, such as large data transfers to unauthorized destinations or unexpected traffic spikes. The team must choose the appropriate protocol to collect IP traffic information from network devices like routers and switches. Which protocol should be used to collect this data?",
+    "options": [
+      {
+        "id": "1762466659-0",
+        "text": "SNMP (Simple Network Management Protocol)",
+        "isCorrect": false
+      },
+      {
+        "id": "1762466659-1",
+        "text": "Syslog",
+        "isCorrect": false
+      },
+      {
+        "id": "1762466659-2",
+        "text": "IPFIX (IP Flow Information Export)",
+        "isCorrect": true
+      },
+      {
+        "id": "1762466659-3",
+        "text": "Net Flow (RFC 3954)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "333566232",
+    "prompt": "SecureTech Solutions, a managed security service provider (MSSP), is optimizing its log management architecture to enhance log storage, retrieval, and analysis efficiency. The SOC team needs to ensure that security logs are stored in a structured or semi- structured format, allowing for easy parsing, querying, and correlation of security events. To achieve this, they decide to implement a log storage format that organizes data in a text file in tabular structure, ensuring each log entry is stored in rows and columns. Additionally, they require a format that supports easy export to databases or spreadsheet-based analysis while maintaining readability. Which log format should the SOC team choose to store logs in a structured or semi structured format for efficient analysis?",
+    "options": [
+      {
+        "id": "333566232-0",
+        "text": "Cloud Storage",
+        "isCorrect": false
+      },
+      {
+        "id": "333566232-1",
+        "text": "Syslog Format",
+        "isCorrect": false
+      },
+      {
+        "id": "333566232-2",
+        "text": "Database",
+        "isCorrect": false
+      },
+      {
+        "id": "333566232-3",
+        "text": "Comma-Separated Values (CSV) Format",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1834916651",
+    "prompt": "A large web hosting service provider Web4Everyone is responsible for hosting multiple major websites, social media platforms and more. You are working here as a L1 SOC analyst responsible for investigating web server logs for potential malicious activity. Recently, your team detected multiple failed login attempts and unusual traffic patterns targeting the company’s web application. To efficiently analyze the logs and identify key details such as the remote host, username, timestamp, requested resource, and HTTP status code, and user-agent you need a structured log format that ensures quick and accurate parsing. Which standardized log format will you choose for this scenario?",
+    "options": [
+      {
+        "id": "1834916651-0",
+        "text": "Tab-Separated Format",
+        "isCorrect": false
+      },
+      {
+        "id": "1834916651-1",
+        "text": "Common Log Format (CLF)",
+        "isCorrect": false
+      },
+      {
+        "id": "1834916651-2",
+        "text": "JSON Format",
+        "isCorrect": false
+      },
+      {
+        "id": "1834916651-3",
+        "text": "Extended Log Format (ELF)",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "2037540122",
+    "prompt": "At 10:30 AM, during routine monitoring, SOC’s Tier-1 Jennifer detects unusual network traffic and confirms an active LockBit ransomware infection targeting systems in the finance department. She escalates the issue to the SOC lead, Sarah, who activates the Incident Response Team (IRT) and instructs the network team to isolate the finance department’s VLAN to prevent further spread across the network. Which phase of the Incident Response process is currently being implemented?",
+    "options": [
+      {
+        "id": "2037540122-0",
+        "text": "Eradication",
+        "isCorrect": false
+      },
+      {
+        "id": "2037540122-1",
+        "text": "Evidence Gathering and Forensic Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "2037540122-2",
+        "text": "Containment",
+        "isCorrect": true
+      },
+      {
+        "id": "2037540122-3",
+        "text": "Notification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1628612649",
+    "prompt": "A SOC analyst is responsible for designing a security dashboard that provides real-time monitoring of security threats. The organization wants to avoid overwhelming analysts with excessive information and focus on the most critical security alerts to ensure timely responses to potential threats. Which principle should guide the design of the dashboard?",
+    "options": [
+      {
+        "id": "1628612649-0",
+        "text": "Include as much data as possible to ensure complete visibility",
+        "isCorrect": false
+      },
+      {
+        "id": "1628612649-1",
+        "text": "Use only historical data to avoid real-time inconsistencies",
+        "isCorrect": false
+      },
+      {
+        "id": "1628612649-2",
+        "text": "Restrict dashboard access to only network administrators",
+        "isCorrect": false
+      },
+      {
+        "id": "1628612649-3",
+        "text": "Prioritize critical information and remove unnecessary details",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "633045967",
+    "prompt": "The Security Operations Center (SOC) team at Rapid Response Group, a leading cybersecurity firm, is facing challenges in managing security incidents efficiently. With an increasing volume of alerts and security events being generated daily in their Microsoft Sentinel environment, the team is struggling to respond to threats quickly and consistently. To enhance their incident response capabilities, they aim to automate routine security tasks, such as log collection, alert triaging, remediation steps, and notifications to stakeholders. By implementing automated workflows, they seek to reduce response times, eliminate manual intervention for repetitive actions, and ensure a standardized approach to handling security threats across the organization. Which component of Microsoft Sentinel should they utilize to create these automated workflows for incident response?",
+    "options": [
+      {
+        "id": "633045967-0",
+        "text": "Community",
+        "isCorrect": false
+      },
+      {
+        "id": "633045967-1",
+        "text": "Analytics",
+        "isCorrect": false
+      },
+      {
+        "id": "633045967-2",
+        "text": "Workspace",
+        "isCorrect": false
+      },
+      {
+        "id": "633045967-3",
+        "text": "Playbooks",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "949745675",
+    "prompt": "The SOC team found a suspicious document file on a user’s workstation. Upon initial inspection, the document appears benign, but deeper analysis reveals an embedded PowerShell script. The team suspects the script is designed to download and execute a malicious payload. They need to understand the script’s functionality without triggering it. Which malware analysis technique would be recommended technique for the SOC team to understand the PowerShell script's functionality without executing it?",
+    "options": [
+      {
+        "id": "949745675-0",
+        "text": "Dynamic analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "949745675-1",
+        "text": "Static analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "949745675-2",
+        "text": "Automated behavioral analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "949745675-3",
+        "text": "Network traffic analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "794773187",
+    "prompt": "A major financial institution has strict policies preventing unauthorized data transfers. As a SOC analyst, you are conducting routine log analysis when you detect an anomaly – an employee's workstation is initiating large file transfers outside of business hours. The files in question contain highly sensitive customer financial records. Upon further investigation, you discover that the employee has been remotely accessing the system from an unfamiliar IP address. Security logs also flag an unauthorized USB device connected to the workstation, violating corporate policy. Given the nature of the data involved and the possibility of data exfiltration, you need to act swiftly. What will be your first step in responding to this incident?",
+    "options": [
+      {
+        "id": "794773187-0",
+        "text": "Isolate employee’s workstation and revoke remote access",
+        "isCorrect": true
+      },
+      {
+        "id": "794773187-1",
+        "text": "Inform employee's department and wait for evidence",
+        "isCorrect": false
+      },
+      {
+        "id": "794773187-2",
+        "text": "Conduct a full forensic analysis first",
+        "isCorrect": false
+      },
+      {
+        "id": "794773187-3",
+        "text": "Disable corporate VPN entirely",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1008818508",
+    "prompt": "Jannet works in a multinational corporation that operates multiple data centers, cloud environments, and on-premises systems as a SOC analyst, she notices that security incidents are taking too long to detect and investigate. After analyzing this, she discovers that logs from firewalls, endpoint security solutions, authentication servers, and cloud applications are scattered across different systems in various formats hence her team has to manually convert logs into a readable format before investigating incidents. What approach should she implement to enable accepting the logs from heterogeneous sources with different formats and converting them into common format and improving incident detection and response time?",
+    "options": [
+      {
+        "id": "1008818508-0",
+        "text": "Log collection",
+        "isCorrect": false
+      },
+      {
+        "id": "1008818508-1",
+        "text": "Log normalization",
+        "isCorrect": true
+      },
+      {
+        "id": "1008818508-2",
+        "text": "Log correlation",
+        "isCorrect": false
+      },
+      {
+        "id": "1008818508-3",
+        "text": "Log transformation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1575087233",
+    "prompt": "A security team is tasked with configuring a newly deployed SIEM system. With limited resources, they must prioritize specific monitoring scenarios that provide the greatest security benefit. The team understands that an effective SIEM relies on well-defined use cases tailored to the organization's environment. Given the evolving threat landscape, they must carefully choose which use cases to implement first to maximize value and threat detection capabilities. Which factor should guide their selection of use cases?",
+    "options": [
+      {
+        "id": "1575087233-0",
+        "text": "Select use cases based on the availability and quality of data from existing data sources.",
+        "isCorrect": true
+      },
+      {
+        "id": "1575087233-1",
+        "text": "Focus on use cases required to meet industry compliance standards.",
+        "isCorrect": false
+      },
+      {
+        "id": "1575087233-2",
+        "text": "Implement as many use cases as the SIEM supports to cover all threats.",
+        "isCorrect": false
+      },
+      {
+        "id": "1575087233-3",
+        "text": "Prioritize use cases that address zero day attacks.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "501776341",
+    "prompt": "Bob is a SOC analyst in a multinational corporation that relies on a centralized file-sharing system for storing confidential project documents. One morning, he notices that few critical financial records stored on the shared server appear to have been altered without authorization. Upon further analysis, he discovers that the version history confirms unexpected changes made outside of business hours. Now he must investigate by inspecting the logs. Which log should he check to determine who accessed the files and when the modifications occurred?",
+    "options": [
+      {
+        "id": "501776341-0",
+        "text": "Network logs",
+        "isCorrect": false
+      },
+      {
+        "id": "501776341-1",
+        "text": "Security logs",
+        "isCorrect": true
+      },
+      {
+        "id": "501776341-2",
+        "text": "Authentication logs",
+        "isCorrect": false
+      },
+      {
+        "id": "501776341-3",
+        "text": "Firewall logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "741743353",
+    "prompt": "SecureTech Inc., a leading cybersecurity-focused organization, operates its critical infrastructure and applications in AWS. The Security Operations Center (SOC) team is responsible for detecting, investigating, and mitigating security threats within their cloud environment. Recently, the SOC team has observed an increase in suspicious activities, such as unexpected API calls, unusual outbound traffic from instances, and DNS requests to potentially malicious domains. To enhance their threat detection capabilities, they need a fully managed AWS security service that can continuously monitor for malicious activity across their AWS environment, analyze AWS CloudTrail logs, VPC Flow Logs, and DNS query logs, leverage machine learning and threat intelligence to identify advanced threats, and provide actionable security findings to accelerate response efforts. Which AWS service is best suited to help SecureTech Inc. proactively detect and respond to security threats in their AWS environment?",
+    "options": [
+      {
+        "id": "741743353-0",
+        "text": "AWS Config",
+        "isCorrect": false
+      },
+      {
+        "id": "741743353-1",
+        "text": "Amazon Macie",
+        "isCorrect": false
+      },
+      {
+        "id": "741743353-2",
+        "text": "AWS Security Hub",
+        "isCorrect": false
+      },
+      {
+        "id": "741743353-3",
+        "text": "Amazon GuardDuty",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "322288064",
+    "prompt": "As a SOC Administrator at a mid-sized financial institution, you noticed intermittent network slowdowns and unexplained high memory usage across multiple critical systems. Your initial analysis found no traces of malware, but a forensic investigation revealed unauthorized scheduled tasks that executed during off-peak hours. These tasks ran obfuscated scripts that connected to an external C2 server. Further investigations showed that the adversary had gained access months ago through a compromised VPN account, leveraging stolen credentials from a phishing campaign. Which phase of the Advanced Persistent Threat (APT) lifecycle does this scenario align with?",
+    "options": [
+      {
+        "id": "322288064-0",
+        "text": "Cleanup",
+        "isCorrect": false
+      },
+      {
+        "id": "322288064-1",
+        "text": "Initial Intrusion",
+        "isCorrect": false
+      },
+      {
+        "id": "322288064-2",
+        "text": "Persistence",
+        "isCorrect": true
+      },
+      {
+        "id": "322288064-3",
+        "text": "Search and Exfiltration",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1783469854",
+    "prompt": "An organization with a complex IT infrastructure is planning to implement a SIEM solution to improve its threat detection and response capabilities. Due to the scale and complexity of its systems, the organization opts for a phased deployment approach to ensure a smooth implementation and reduce potential risks. Which of the following should be the first phase in their SIEM deployment strategy?",
+    "options": [
+      {
+        "id": "1783469854-0",
+        "text": "Implement User and Entity Behavior Analytics (UEBA)",
+        "isCorrect": false
+      },
+      {
+        "id": "1783469854-1",
+        "text": "Set up the log management component before deploying the SIEM component",
+        "isCorrect": true
+      },
+      {
+        "id": "1783469854-2",
+        "text": "Configure security analytics to identify potential threats",
+        "isCorrect": false
+      },
+      {
+        "id": "1783469854-3",
+        "text": "Automate incident response processes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1049816631",
+    "prompt": "During a routine security audit, analysts discover that several of the organization's web servers are still using a vulnerable third- party library flagged for a zero-day exploit. This vulnerability was identified in a previous audit, and patches were initially deployed to mitigate the risk. However, due to reported application instability and compatibility issues, the application team rolled back the patches, leaving the systems exposed. Despite the known risk, the vulnerability remains unaddressed, and no alternative mitigations have been put in place. Given the state of the web servers and their reliance on outdated, vulnerable software, how should the security team classify this risk in the context of web application security?",
+    "options": [
+      {
+        "id": "1049816631-0",
+        "text": "Vulnerable and Outdated Components",
+        "isCorrect": true
+      },
+      {
+        "id": "1049816631-1",
+        "text": "Insecure Design",
+        "isCorrect": false
+      },
+      {
+        "id": "1049816631-2",
+        "text": "Security Logging and Monitoring Failures",
+        "isCorrect": false
+      },
+      {
+        "id": "1049816631-3",
+        "text": "Software and Data Integrity Failures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "384607117",
+    "prompt": "The SOC team at a national cybersecurity agency has detected anomalous network traffic originating from a sensitive government server. Initial analysis suggests a potential intrusion, leading the SOC team to escalate the incident to the forensic team for deeper investigation. Upon forensic examination, the team discovers a trojan on the compromised server. The trojan is suspected of engaging in data exfiltration, raising concerns about potential backdoor access and long-term persistence mechanisms employed by the malware. Given the severity of the situation, the lead malware analyst is tasked with conducting an in-depth analysis of the trojan to determine its capabilities (e.g., command execution, privilege escalation, keylogging), its persistence mechanisms (e.g., registry modifications, scheduled tasks, startup entries), and any backdoor functionalities (e.g., remote access, hidden communication channels). However, due to the sensitive nature of the system and the risk of unintended execution, the analyst must analyze the trojan's binary code at the instruction level without actually executing it. Which technique should the forensic analyst use?",
+    "options": [
+      {
+        "id": "384607117-0",
+        "text": "Malware Disassembly",
+        "isCorrect": true
+      },
+      {
+        "id": "384607117-1",
+        "text": "Interactive Debugging",
+        "isCorrect": false
+      },
+      {
+        "id": "384607117-2",
+        "text": "Network Behavior Monitoring",
+        "isCorrect": false
+      },
+      {
+        "id": "384607117-3",
+        "text": "Dynamic Code Injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1945397371",
+    "prompt": "A SOC team at a major financial institution detects unauthorized access attempts on its web application. The security team reviews the logs to find the web application is compromised. To determine the exact attack technique used and implement necessary mitigation measures, the forensic investigators is assessing cookie attributes (such as HttpOnly, Secure, and SameSite) for security weaknesses, and track anomalous request patterns that deviate from normal user behavior. Which of the following attack vectors is the forensic team investigating in the above investigation?",
+    "options": [
+      {
+        "id": "1945397371-0",
+        "text": "Man-in-the-Middle (MITM) Attack",
+        "isCorrect": false
+      },
+      {
+        "id": "1945397371-1",
+        "text": "SQL Injection",
+        "isCorrect": false
+      },
+      {
+        "id": "1945397371-2",
+        "text": "Cross-Site Scripting (XSS)",
+        "isCorrect": false
+      },
+      {
+        "id": "1945397371-3",
+        "text": "Session Poisoning",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1265588327",
+    "prompt": "A security operations center (SOC) team is investigating a phishing attack that targeted multiple employees. During the Containment Phase, they need to determine how users interacted with the malicious email, whether they opened it, clicked on links, downloaded attachments, or entered credentials. This information is critical to assessing the impact and preventing further compromise. Which specific activity helps the SOC team understand user interactions with the phishing email?",
+    "options": [
+      {
+        "id": "1265588327-0",
+        "text": "Monitoring and containment validation.",
+        "isCorrect": false
+      },
+      {
+        "id": "1265588327-1",
+        "text": "User action verification.",
+        "isCorrect": true
+      },
+      {
+        "id": "1265588327-2",
+        "text": "Malware infection check.",
+        "isCorrect": false
+      },
+      {
+        "id": "1265588327-3",
+        "text": "Blocking C2 and email traffic.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "953684225",
+    "prompt": "Lisa Carter, a SOC analyst at a financial services firm, is performing a risk assessment following a series of suspicious alerts detected by the SIEM (Security Information and Event Management) system. Her task is to evaluate the risk of a potential data breach prioritizing incident response efforts. She assesses three key factors: the likelihood of an attack succeeding based on current threat intelligence, the impact on critical business operations if the breach occurs, and the value of the assets targeted (e.g., customer data, financial systems). Using the standard risk assessment formula, which of the following scenarios represents the highest risk to the organization?",
+    "options": [
+      {
+        "id": "953684225-0",
+        "text": "High Likelihood, Low Impact, High Asset Value",
+        "isCorrect": false
+      },
+      {
+        "id": "953684225-1",
+        "text": "Low Likelihood, Low Impact, High Asset Value",
+        "isCorrect": false
+      },
+      {
+        "id": "953684225-2",
+        "text": "High Likelihood, High Impact, High Asset Value",
+        "isCorrect": true
+      },
+      {
+        "id": "953684225-3",
+        "text": "Low Likelihood, High Impact, Low Asset Value",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1435723327",
+    "prompt": "A rapidly growing e-commerce company wants to implement a SIEM solution to improve its security posture and comply with PCI DSS requirements. They need a solution that offers both the necessary technological features and the expertise to manage the system effectively. They also need to ensure continuous compliance support and data security assistance. Which of the following SIEM solutions is appropriate for this company?",
+    "options": [
+      {
+        "id": "1435723327-0",
+        "text": "Cloud-based SIEM",
+        "isCorrect": false
+      },
+      {
+        "id": "1435723327-1",
+        "text": "In-house SIEM",
+        "isCorrect": false
+      },
+      {
+        "id": "1435723327-2",
+        "text": "Security analytics",
+        "isCorrect": false
+      },
+      {
+        "id": "1435723327-3",
+        "text": "Managed SIEM",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "2086917815",
+    "prompt": "A multinational corporation with strict regulatory requirements (e.g., GDPR, PCI-DSS) needs a SIEM solution to monitor its global network. Data residency laws in certain regions prohibit transferring logs outside local jurisdictions. The company also requires centralized monitoring with 24/7 SOC operations but has limited in-house SIEM expertise. Which SIEM deployment model is appropriate in the given scenario?",
+    "options": [
+      {
+        "id": "2086917815-0",
+        "text": "Self-hosted, Jointly Managed",
+        "isCorrect": false
+      },
+      {
+        "id": "2086917815-1",
+        "text": "Hybrid Model, Jointly Managed",
+        "isCorrect": false
+      },
+      {
+        "id": "2086917815-2",
+        "text": "Cloud, MSSP-Managed",
+        "isCorrect": false
+      },
+      {
+        "id": "2086917815-3",
+        "text": "Self-hosted, MSSP-Managed",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1288558127",
+    "prompt": "You are working as a SOC analyst in a multinational company with multiple data centers and remote offices. Security logs are stored locally at each site, making it difficult to correlate incidents across different locations. Recently, an advanced persistent threat (APT) compromised multiple servers, but due to multiple sources of logs and inconsistent monitoring, the attack was detected only after significant data exfiltration had occurred. To improve visibility, streamline log analysis, and enable faster incident response, you need to implement a solution that aggregates logs from all sources into a unified system. Which solution will you implement for your organization?",
+    "options": [
+      {
+        "id": "1288558127-0",
+        "text": "Local logging",
+        "isCorrect": false
+      },
+      {
+        "id": "1288558127-1",
+        "text": "Event tracing",
+        "isCorrect": false
+      },
+      {
+        "id": "1288558127-2",
+        "text": "Centralized logging",
+        "isCorrect": true
+      },
+      {
+        "id": "1288558127-3",
+        "text": "Distributed logging",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1607608932",
+    "prompt": "The Security Operations Center (SOC) team is investigating a suspected malware incident during the Analysis Phase of their incident response process. Their primary goal is to validate the initial detection, ensure the threat is real, and gather critical intelligence to understand the scope of the attack. Which of the following actions should the SOC team take to confirm their initial findings and eliminate false alarms?",
+    "options": [
+      {
+        "id": "1607608932-0",
+        "text": "Verify generated logs",
+        "isCorrect": false
+      },
+      {
+        "id": "1607608932-1",
+        "text": "Root-cause analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "1607608932-2",
+        "text": "Scan the enterprise environment and update the scope",
+        "isCorrect": false
+      },
+      {
+        "id": "1607608932-3",
+        "text": "Verify false positives",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1513346971",
+    "prompt": "Katie is working in the Cyber Security department of an international Financial Corporation INT FIN Corp. as a SOC analyst. She is responsible for monitoring logs to detect potential security threats in real time. Her team needs to implement a functionality as part of incident response plan such that the system that it continuously scans logs for anomalies, identifies suspicious activities, and want to be notified when predefined security thresholds are reached as well as generate incidents or issue tickets to ensure immediate response and mitigation. It must provide critical details such as the type of event, its duration, the affected device, and its OS version. Which function should she configure to achieve this?",
+    "options": [
+      {
+        "id": "1513346971-0",
+        "text": "Log collection",
+        "isCorrect": false
+      },
+      {
+        "id": "1513346971-1",
+        "text": "Log normalization",
+        "isCorrect": false
+      },
+      {
+        "id": "1513346971-2",
+        "text": "Alerting and Reporting",
+        "isCorrect": true
+      },
+      {
+        "id": "1513346971-3",
+        "text": "Log parsing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "312105779",
+    "prompt": "A large financial institution receives thousands of security logs daily from firewalls, IDS systems, and user authentication platforms. The SOC team uses an AI-driven SIEM system with NLP capabilities to streamline threat detection. This approach enables faster response times, reduces manual rule creation, and helps detect advanced threats that traditional systems might overlook. Which of the following BEST illustrates the advantage of NLP in SIEM?",
+    "options": [
+      {
+        "id": "312105779-0",
+        "text": "Enables analysis of text-based data from logs and communications to detect threats",
+        "isCorrect": true
+      },
+      {
+        "id": "312105779-1",
+        "text": "Allows security analysts to write SIEM rules using complex programming languages",
+        "isCorrect": false
+      },
+      {
+        "id": "312105779-2",
+        "text": "Eliminates the need for data normalization and correlation in SIEM systems",
+        "isCorrect": false
+      },
+      {
+        "id": "312105779-3",
+        "text": "Simplifies infrastructure management by reducing hardware dependencies",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "879859268",
+    "prompt": "A large financial organization has recently experienced an increase in sophisticated cyber threats, including zero-day attacks and advanced persistent threats (APTs). The security team is struggling with traditional detection methods, which rely heavily on signature-based detection and manual intervention, causing delays in identifying and mitigating threats. To enhance their security posture, the Chief Information Security Officer (CISO) is exploring AI-driven solutions that can automatically analyze vast datasets, detect anomalies, and adapt to evolving threats in real time. The goal is to implement a system that can identify suspicious activity without predefined signatures, allowing for faster response times and minimal human oversight. Which key AI technology should the organization focus on to achieve this?",
+    "options": [
+      {
+        "id": "879859268-0",
+        "text": "Heuristic-based Signature Detection",
+        "isCorrect": false
+      },
+      {
+        "id": "879859268-1",
+        "text": "Natural Language Processing (NLP)",
+        "isCorrect": false
+      },
+      {
+        "id": "879859268-2",
+        "text": "Machine Learning (ML)",
+        "isCorrect": true
+      },
+      {
+        "id": "879859268-3",
+        "text": "Static IP Blocking",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1841692506",
+    "prompt": "CyberBank, a leading financial institution, has recently experienced a series of cyberattacks, including phishing campaigns, insider threats, and attempted data breaches targeting customer financial records. The bank operates across multiple regions, making it vulnerable to regional compliance violations, fraud attempts, and advanced persistent threats (APTs). During a board meeting, the CISO proposes a security solution that offers continuous security monitoring, rapid threat detection, and centralized visibility across all branches. Which of the following solution will provide automated alerting, digital forensics capabilities, and active threat hunting?",
+    "options": [
+      {
+        "id": "1841692506-0",
+        "text": "Deploying a standalone SIEM (Security Information and Event Management) system",
+        "isCorrect": false
+      },
+      {
+        "id": "1841692506-1",
+        "text": "Implementing Security Operation Center (SOC)",
+        "isCorrect": true
+      },
+      {
+        "id": "1841692506-2",
+        "text": "Implementing periodic security audit",
+        "isCorrect": false
+      },
+      {
+        "id": "1841692506-3",
+        "text": "Implementing SOAR (Security Orchestration, Automation, and Response)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "398482786",
+    "prompt": "A SOC analyst receives an alert indicating that the system time on a critical Windows server was changed at 3:00 AM. There are no scheduled maintenance tasks at this time. Unauthorized time changes can be used to evade security controls, such as altering timestamps to obscure malicious activity. The analyst must identify the relevant event codes that log system time modifications and related suspicious behavior. Which of the following Windows Security Event Codes should the analyst review to investigate potential tampering?",
+    "options": [
+      {
+        "id": "398482786-0",
+        "text": "4616 and 4618",
+        "isCorrect": true
+      },
+      {
+        "id": "398482786-1",
+        "text": "4608 and 4609",
+        "isCorrect": false
+      },
+      {
+        "id": "398482786-2",
+        "text": "4616 and 4624",
+        "isCorrect": false
+      },
+      {
+        "id": "398482786-3",
+        "text": "4625 and 4634",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "938607304",
+    "prompt": "A security analyst working in a multinational corporation's Threat Intelligence team is tasked with enhancing the organization's ability to detect stealthy malware infections. During an investigation, the analyst observes an unusually high volume of DNS requests directed toward domains that follow patterns commonly associated with Domain Generation Algorithms (DGAs). Recognizing that these automated domain queries could indicate a malware strain attempting to establish communication with its Command & Control (C2) infrastructure, the analyst realizes that existing detection capabilities may not be sufficient. To effectively counter such threats, the security team needs to define intelligence requirements – including identifying critical data sources, refining detection criteria, and improving threat monitoring strategies. Which stage of the Cyber Threat Intelligence (CTI) process does this scenario align with?",
+    "options": [
+      {
+        "id": "938607304-0",
+        "text": "Filtering CTI",
+        "isCorrect": false
+      },
+      {
+        "id": "938607304-1",
+        "text": "Automated tool",
+        "isCorrect": false
+      },
+      {
+        "id": "938607304-2",
+        "text": "Requirement Analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "938607304-3",
+        "text": "Intelligence Buy-In",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1230418724",
+    "prompt": "A large financial institution, SOC has recently identified a sophisticated phishing campaign targeting its employees, resulting in unauthorized access to sensitive customer data. The SOC team is under pressure to enhance their detection and response capabilities to manage this evolving threat. The organization already uses a SIEM system for log aggregation and alerting, alongside an EDR solution for endpoint visibility. Additionally, they have access to XDR for broader threat detection and XSOAR for security orchestration and automation. As a SOC analyst, you’ve been asked to recommend an integration strategy to improve real-time threat correlation, streamline incident response workflows, and maximize the use of existing tools. Which of the following integrations would meet these goals?",
+    "options": [
+      {
+        "id": "1230418724-0",
+        "text": "Integrate XDR with XSOAR",
+        "isCorrect": true
+      },
+      {
+        "id": "1230418724-1",
+        "text": "Integrate EDR with XSOAR",
+        "isCorrect": false
+      },
+      {
+        "id": "1230418724-2",
+        "text": "Integrate EDR with SIEM",
+        "isCorrect": false
+      },
+      {
+        "id": "1230418724-3",
+        "text": "Integrate XDR with SIEM",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1197447460",
+    "prompt": "Global Bank, a large financial institution, relies heavily on Microsoft Azure to host its critical banking applications and services, including customer transactions, financial data processing, and risk assessment systems. Given the highly regulated nature of the banking industry, the security operation center team must ensure continuous monitoring, compliance with financial regulations, and real-time threat detection across all Azure resources. To achieve this, the team requires a comprehensive solution that can collect, analyze, and visualize telemetry data from various cloud resources, virtual machines, storage accounts, and applications. The solution must also integrate seamlessly with their security tools, allowing them to detect anomalies, monitor performance, and respond proactively to potential security threats. Which Azure service is best suited to in the given situation?",
+    "options": [
+      {
+        "id": "1197447460-0",
+        "text": "Azure Active Directory",
+        "isCorrect": false
+      },
+      {
+        "id": "1197447460-1",
+        "text": "Azure Policy",
+        "isCorrect": false
+      },
+      {
+        "id": "1197447460-2",
+        "text": "Azure Monitor",
+        "isCorrect": true
+      },
+      {
+        "id": "1197447460-3",
+        "text": "Azure Firewall",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "611312375",
+    "prompt": "DNS logs in the SIEM show an internal host sending many DNS queries with long, encoded subdomains to an external domain. The queries predominantly use TXT records and occur during off-business hours. The external domain is newly registered and has no known business association. Which of the following best explains this behaviour?",
+    "options": [
+      {
+        "id": "611312375-0",
+        "text": "Detecting rogue DNS servers within the internal network",
+        "isCorrect": false
+      },
+      {
+        "id": "611312375-1",
+        "text": "Monitoring DNS cache poisoning attempts",
+        "isCorrect": false
+      },
+      {
+        "id": "611312375-2",
+        "text": "Identifying DNS tunneling for data exfiltration",
+        "isCorrect": true
+      },
+      {
+        "id": "611312375-3",
+        "text": "Validating DNS records for legitimate business operations",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1200852223",
+    "prompt": "Jennifer, a SOC analyst, initiates an investigation after receiving an alert about potential unauthorized activity on Marcus's workstation. She starts by retrieving EDR logs from the endpoint, analyzing network traffic patterns in the Security Information and Event Management (SIEM) system, and inspecting email gateway logs for signs of malicious attachments. Her objective is to determine whether this alert represents a legitimate security incident. In which phase of the Incident Response process is Jennifer currently operating?",
+    "options": [
+      {
+        "id": "1200852223-0",
+        "text": "Incident Recording and Assignment",
+        "isCorrect": false
+      },
+      {
+        "id": "1200852223-1",
+        "text": "Incident Triage",
+        "isCorrect": false
+      },
+      {
+        "id": "1200852223-2",
+        "text": "Evidence Gathering and Forensic Analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "1200852223-3",
+        "text": "Notification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1420791411",
+    "prompt": "Secuzin Corp., is a large enterprise performing millions of financial transactions daily, making it critical to analyze security logs efficiently, detect suspicious activities, and respond to incidents in real-time. Its SOC is responsible for managing security logs from various network devices, including firewalls, intrusion detection systems (IDS), authentication servers, and cloud services. As part of their SOC team to fulfill their compliance and regulatory requirements that mandate long-term archival of the logs you need to provide a log storage solution which should be scalable to handle increasing log volumes, provide encryption for data security, and should be seamlessly accessible. Which storage solution you must choose to meet these long-term log storage requirements?",
+    "options": [
+      {
+        "id": "1420791411-0",
+        "text": "Distributed storage system",
+        "isCorrect": false
+      },
+      {
+        "id": "1420791411-1",
+        "text": "Cloud storage",
+        "isCorrect": true
+      },
+      {
+        "id": "1420791411-2",
+        "text": "Hybrid storage system",
+        "isCorrect": false
+      },
+      {
+        "id": "1420791411-3",
+        "text": "Local storage",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1884547361",
+    "prompt": "The SOC team is tasked with enhancing the security of an organization's network infrastructure. The organization's public-facing web servers, which handle customer transactions, need to be isolated from the internal private network containing sensitive employee data and proprietary systems. The goal is to create a buffer zone that limits exposure of internal systems if the web servers are compromised during a cyberattack, such as a DDoS or SQL injection attempt. As a SOC analyst, which network architecture component would you recommend implementing to establish this isolated region?",
+    "options": [
+      {
+        "id": "1884547361-0",
+        "text": "Firewall",
+        "isCorrect": false
+      },
+      {
+        "id": "1884547361-1",
+        "text": "De-Militarized Zone (DMZ)",
+        "isCorrect": true
+      },
+      {
+        "id": "1884547361-2",
+        "text": "Honeypot",
+        "isCorrect": false
+      },
+      {
+        "id": "1884547361-3",
+        "text": "Intrusion Detection Systems (IDS)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1062754322",
+    "prompt": "The SOC analyst at a national cybersecurity agency detected unusual system behavior on critical infrastructure servers. Initial scans flagged potential malware activity. Due to the sophisticated nature of the suspected attack, which included registry key modifications, process injection, and unauthorized tasks, the case was escalated to the forensic team. The forensic team suspects the malware is designed for stealthy data exfiltration. To fully assess the compromise, they captured system snapshots before and after suspected infection to identify unauthorized changes and anomalies. Which process is the forensic team following by capturing and comparing system snapshots to detect unauthorized changes and anomalies?",
+    "options": [
+      {
+        "id": "1062754322-0",
+        "text": "Digital forensics",
+        "isCorrect": false
+      },
+      {
+        "id": "1062754322-1",
+        "text": "Host integrity monitoring",
+        "isCorrect": true
+      },
+      {
+        "id": "1062754322-2",
+        "text": "Threat intelligence gathering",
+        "isCorrect": false
+      },
+      {
+        "id": "1062754322-3",
+        "text": "Signature-based detection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "151257648",
+    "prompt": "A security operation center team in a large financial institution is working on implementing a threat intelligence strategy to proactively defend against cyber threats. To ensure the success of this initiative, they need to systematically allocate resources to gather relevant intelligence. The CISO has emphasized that simply collecting data is not enough; the team must focus on assigning specific personnel, tools, and time to gather intelligence that aligns with the organization's most pressing security concerns, such as fraud detection, phishing campaigns, and nation-state threats targeting financial transactions. As part of this structured approach, the team must determine who will be responsible for collecting intelligence, what sources will be monitored, and how frequently data should be gathered. This step ensures that the right resources are applied to the most relevant intelligence efforts. What is this process called?",
+    "options": [
+      {
+        "id": "151257648-0",
+        "text": "Resources",
+        "isCorrect": false
+      },
+      {
+        "id": "151257648-1",
+        "text": "Tasking",
+        "isCorrect": true
+      },
+      {
+        "id": "151257648-2",
+        "text": "Prioritization",
+        "isCorrect": false
+      },
+      {
+        "id": "151257648-3",
+        "text": "High-Level Requirements",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "48509135",
+    "prompt": "A newly hired SOC analyst has just joined a fast-growing multinational organization that manages a vast IT infrastructure across multiple regions. The analyst's first task is to quickly assess the company's external exposure and identify potential security risks before threat actors can exploit them. To begin the assessment, the analyst considers various techniques, including analyzing publicly available information, scanning for exposed services, reviewing DNS records, and gathering intelligence from external sources. However, given the sheer volume of data spanning multiple subsidiaries, cloud environments, and third- party integrations, the analyst quickly realizes that some methods may not scale well for large, complex infrastructures and may lead to delays or incomplete insights. Which technique is less practical for handling large or diverse data sets in this scenario?",
+    "options": [
+      {
+        "id": "48509135-0",
+        "text": "OSINT",
+        "isCorrect": false
+      },
+      {
+        "id": "48509135-1",
+        "text": "Web Enumeration",
+        "isCorrect": true
+      },
+      {
+        "id": "48509135-2",
+        "text": "Stack Counting",
+        "isCorrect": false
+      },
+      {
+        "id": "48509135-3",
+        "text": "DNS Lookup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "387002231",
+    "prompt": "TechSolutions, a software development firm, discovered a potential data leak after an external security researcher reported finding sensitive customer data on a public code repository. Level 1 SOC analysts confirmed the presence of the data and escalated the issue. Level 2 analysts have been tracking the source of the leak, and have found that the data was uploaded from an internal network account. The incident response team has been alerted, and the CISO is demanding a comprehensive analysis of the incident, including the extent of the data breach and the timeline of events. The SOC manager is overwhelmed has to decide whom to assign to the task of the in-depth investigation. To accurately determine timeline, extent, and root cause of the data leak, which of the following SOC role is critical in gathering analyzing the digital evidence?",
+    "options": [
+      {
+        "id": "387002231-0",
+        "text": "Forensic Analyst",
+        "isCorrect": true
+      },
+      {
+        "id": "387002231-1",
+        "text": "Subject Matter Expert",
+        "isCorrect": false
+      },
+      {
+        "id": "387002231-2",
+        "text": "Threat Intelligence Analyst",
+        "isCorrect": false
+      },
+      {
+        "id": "387002231-3",
+        "text": "SOC Manager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1368755923",
+    "prompt": "A healthcare organization's SIEM detects a series of unusual HTTP requests targeting its patient portal. The requests originate from a foreign IP address and occur during non-business hours. The methods used are primarily TRACE and OPTIONS, which are rarely seen in normal web traffic. The SIEM correlates these events with an increase in reconnaissance activity on other servers within the same subnet. What is the primary security concern with TRACE and OPTIONS requests?",
+    "options": [
+      {
+        "id": "1368755923-0",
+        "text": "They allow attackers to bypass authentication controls",
+        "isCorrect": false
+      },
+      {
+        "id": "1368755923-1",
+        "text": "They expose information about server-supported methods and request headers",
+        "isCorrect": true
+      },
+      {
+        "id": "1368755923-2",
+        "text": "They make Distributed Denial of Service (DDoS) attack easier",
+        "isCorrect": false
+      },
+      {
+        "id": "1368755923-3",
+        "text": "They can be used to upload malicious payloads directly to the server",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "581404344",
+    "prompt": "A health corporation is implementing an SIEM solution to improve its ability to detect and respond to security incidents and comply with the HIPAA regulatory requirements for protecting sensitive patient data. They need to ensure that the implemented SIEM solution can efficiently collect, analyze, and correlate security events from various sources, including network devices, servers, and security applications, and generate timely alerts for potential HIPAA violations. Which of the following capabilities is needed for a corporation's SIEM solution to meet these needs?",
+    "options": [
+      {
+        "id": "581404344-0",
+        "text": "Threat hunting and intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "581404344-1",
+        "text": "Log collection through agents",
+        "isCorrect": false
+      },
+      {
+        "id": "581404344-2",
+        "text": "Centralized SIEM Implementation",
+        "isCorrect": false
+      },
+      {
+        "id": "581404344-3",
+        "text": "Log management and security analytics",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1318275806",
+    "prompt": "A SOC analyst detects multiple instances of powershell.exe being launched with the -ExecutionPolicy Bypass and -NoProfile arguments on a domain controller. The parent process is winrm.exe, and the activity occurs during non-business hours. What should be the analyst’s primary focus?",
+    "options": [
+      {
+        "id": "1318275806-0",
+        "text": "Investigate Event ID 7045 to determine if a malicious service was created",
+        "isCorrect": false
+      },
+      {
+        "id": "1318275806-1",
+        "text": "Search for Event ID 4688 to find similar PowerShell executions within the last 24 hours",
+        "isCorrect": true
+      },
+      {
+        "id": "1318275806-2",
+        "text": "Review Event ID 5145 to see if unauthorized network shares were accessed",
+        "isCorrect": false
+      },
+      {
+        "id": "1318275806-3",
+        "text": "Look for Event ID 4625 to check for failed authentication attempts before execution",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "865266680",
+    "prompt": "Jake Carter, a SOC analyst at a financial institution in New York, is responsible for monitoring network traffic to detect potential data exfiltration attempts. His team uses a security solution that inspects data packets in real time as they traverse the network. During an incident response, Jake observes that the solution struggles to analyze encrypted traffic, limiting its effectiveness in identifying threats hidden within secure communications. Which security control, with this known limitation, is the SOC team relying on?",
+    "options": [
+      {
+        "id": "865266680-0",
+        "text": "IPsec",
+        "isCorrect": false
+      },
+      {
+        "id": "865266680-1",
+        "text": "Packet filters",
+        "isCorrect": true
+      },
+      {
+        "id": "865266680-2",
+        "text": "SSH",
+        "isCorrect": false
+      },
+      {
+        "id": "865266680-3",
+        "text": "VPN",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "291813008",
+    "prompt": "During routine monitoring, the SIEM detects an unusual spike in outbound data transfer from a critical database server. The typical outbound traffic for this server is around 5 MB/hour, but in the past 10 minutes, it has sent over 500 MB to an external IP address. No predefined signatures match this activity, but the SIEM raises an alert due to deviations from the server's normal behavior profile. Which detection method is responsible for this alert?",
+    "options": [
+      {
+        "id": "291813008-0",
+        "text": "Rule-based detection",
+        "isCorrect": false
+      },
+      {
+        "id": "291813008-1",
+        "text": "Signature-based detection",
+        "isCorrect": false
+      },
+      {
+        "id": "291813008-2",
+        "text": "Anomaly-based detection",
+        "isCorrect": true
+      },
+      {
+        "id": "291813008-3",
+        "text": "Heuristic-based detection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "917155907",
+    "prompt": "A security team is designing SIEM use-case logic to detect privilege escalation attempts on Windows servers. They have already identified and validated the necessary event sources (e.g., Active Directory logs, Windows Security logs). What should be their next step in the use case logic development process?",
+    "options": [
+      {
+        "id": "917155907-0",
+        "text": "Implement and test the use case immediately in the production SIEM environment",
+        "isCorrect": false
+      },
+      {
+        "id": "917155907-1",
+        "text": "Collect historical security logs to confirm the use case is necessary",
+        "isCorrect": false
+      },
+      {
+        "id": "917155907-2",
+        "text": "Define correlation rules and conditions that detect specific privilege escalation patterns",
+        "isCorrect": true
+      },
+      {
+        "id": "917155907-3",
+        "text": "Define response actions for detected incidents before writing the rules",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "675758337",
+    "prompt": "You are working in the Cyber Security team of Global Solutions Inc., a multinational corporation as a L2 SOC analyst. The corporation utilizes syslog for centralized logging across its geographically diverse network. Your team is tasked with ensuring that security logs are reliably sent out from various remote sites to the central logging server, even across potentially unreliable network connections and diverse network infrastructure. To guarantee consistent and dependable log delivery in their syslog infrastructure, which architectural layer of syslog should your team primarily focus on optimizing and hardening?",
+    "options": [
+      {
+        "id": "675758337-0",
+        "text": "Syslog Content Layer",
+        "isCorrect": false
+      },
+      {
+        "id": "675758337-1",
+        "text": "Syslog Management and Filtering",
+        "isCorrect": false
+      },
+      {
+        "id": "675758337-2",
+        "text": "Syslog Transport Layer",
+        "isCorrect": true
+      },
+      {
+        "id": "675758337-3",
+        "text": "Syslog Application Layer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1626937122",
+    "prompt": "Mark Reynolds, an SOC analyst at a global financial institution, is working on the eradication phase of an incident response plan after detecting a wave of phishing attacks targeting employees. To ensure attackers cannot reuse their malicious infrastructure, Mark implements a technique that blocks known malicious IP addresses used for sending spam emails at the Domain name system level. Which of the following techniques is best suited for this purpose?",
+    "options": [
+      {
+        "id": "1626937122-0",
+        "text": "IP Address Blacklisting at the Firewall",
+        "isCorrect": false
+      },
+      {
+        "id": "1626937122-1",
+        "text": "DNS Blackholing",
+        "isCorrect": true
+      },
+      {
+        "id": "1626937122-2",
+        "text": "SMTP Server Filtering",
+        "isCorrect": false
+      },
+      {
+        "id": "1626937122-3",
+        "text": "URL Blacklisting on Web Proxies",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1180869452",
+    "prompt": "Following a high-priority security incident, you, as an Incident Responder of a Cyber Incident Response firm, initiate an internal investigation after reports confirm that serious data breach in which sensitive customer data, including payment details and personal information, was stolen from a critical web server. You begin analyzing the server logs to reconstruct the attack timeline and identify how the attacker gained access. During your investigation, you discover suspicious activity in the logs, including repeated requests attempting to access files and directories outside of the web server's root directory. Some of these requests appear to be manipulating URL paths to navigate into restricted system files – a behavior that is often associated with web-based exploits. You suspect that a vulnerability in the web server was exploited to bypass security restrictions and access unauthorized directories, potentially exposing sensitive configurations and credentials. However, they still need to confirm the exact technique used to perform this attack. Which type of web application attack might have caused this incident?",
+    "options": [
+      {
+        "id": "1180869452-0",
+        "text": "Directory Traversal",
+        "isCorrect": true
+      },
+      {
+        "id": "1180869452-1",
+        "text": "Session Attacks: Cookie Poisoning Attacks",
+        "isCorrect": false
+      },
+      {
+        "id": "1180869452-2",
+        "text": "Cross-site Scripting (XSS) Attacks",
+        "isCorrect": false
+      },
+      {
+        "id": "1180869452-3",
+        "text": "SQL Injection Attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1909511226",
+    "prompt": "A threat hunter analyzing an infected endpoint finds that malicious processes keep reappearing even after termination, making traditional remediation ineffective. The user of the endpoint reports occasional system slowdowns, abnormal pop-ups, and unauthorized application launches. Upon deeper inspection, the threat hunter discovers that the system has multiple scheduled tasks executing unknown scripts at specific intervals, along with suspicious registry modifications that enable automatic script execution upon startup. Further investigation reveals that the endpoint has made occasional outbound connections to an unclassified external server, though the traffic is encrypted and intermittent. Additionally, the organization recently experienced multiple failed login attempts on privileged accounts originating from the same subnet, raising concerns about potential credential theft or lateral movement. With the possibility of persistence mechanisms, lateral movement, or external C2 activity, which signs should the threat hunter look out for to confirm and mitigate the threat?",
+    "options": [
+      {
+        "id": "1909511226-0",
+        "text": "Indicators of Attack (IoAs)",
+        "isCorrect": true
+      },
+      {
+        "id": "1909511226-1",
+        "text": "Network-Based Artifacts",
+        "isCorrect": false
+      },
+      {
+        "id": "1909511226-2",
+        "text": "Host-Based Artifacts",
+        "isCorrect": false
+      },
+      {
+        "id": "1909511226-3",
+        "text": "Threat Intelligence & Adversary",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "421644944",
+    "prompt": "You are part of a team of SOC analysts in a multinational organization that processes large volumes of security logs from various sources, including firewalls, IDS, and authentication servers. Your team realizes they are facing difficulties to detect security incidents because logs from different systems are analyzed in isolation, making it harder to link related events. What approach should you implement for future forensic investigations to automatically match related log events based on predefined rules?",
+    "options": [
+      {
+        "id": "421644944-0",
+        "text": "Log transformation",
+        "isCorrect": false
+      },
+      {
+        "id": "421644944-1",
+        "text": "Log collection",
+        "isCorrect": false
+      },
+      {
+        "id": "421644944-2",
+        "text": "Log normalization",
+        "isCorrect": false
+      },
+      {
+        "id": "421644944-3",
+        "text": "Log correlation",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1445534242",
+    "prompt": "Sarah Chen is a Level 1 security analyst in the Security Operations Center (SOC) team of Centex Healthcare, a regional hospital network. The SOC team has detected a potential data breach involving unauthorized access to patient records. Multiple departments need constant updates: Legal needs to assess HIPAA compliance implications, HR needs to coordinate staff training responses, and their managed security service provider requires technical details to assist with containment. Which role effectively serve as the central point of communication between all these stakeholders?",
+    "options": [
+      {
+        "id": "1445534242-0",
+        "text": "Incident Coordinator",
+        "isCorrect": true
+      },
+      {
+        "id": "1445534242-1",
+        "text": "Incident Manager",
+        "isCorrect": false
+      },
+      {
+        "id": "1445534242-2",
+        "text": "Information Security Officer",
+        "isCorrect": false
+      },
+      {
+        "id": "1445534242-3",
+        "text": "Public Relations Manager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "407445520",
+    "prompt": "You are a SOC analyst on duty when the team receives an alert about a ransomware incident affecting the organization's email infrastructure. The forensic analysis, conducted by the incident response team (IRT), identifies that the ransomware exploited CVE- 2024-0123 in an unpatched mail server. The IRT is now actively deploying emergency patch KB5025941, updating mail filtering rules to block malicious payloads, and implementing additional network segmentation to limit lateral movement. Based on this scenario, which phase of the Incident Response process is the SOC currently executing?",
+    "options": [
+      {
+        "id": "407445520-0",
+        "text": "Evidence Gathering and Forensic Analysis",
+        "isCorrect": false
+      },
+      {
+        "id": "407445520-1",
+        "text": "Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "407445520-2",
+        "text": "Containment",
+        "isCorrect": false
+      },
+      {
+        "id": "407445520-3",
+        "text": "Eradication",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1431471189",
+    "prompt": "A financial institution suspects an insider threat due to unauthorized access attempts on restricted databases. However, the SIEM alerts lack sufficient information to differentiate between legitimate and malicious access. The SOC manager recommends integrating contextual data to improve detection. Which contextual data source is required to be integrated in this scenario?",
+    "options": [
+      {
+        "id": "1431471189-0",
+        "text": "Location and physical context from GPS sensors",
+        "isCorrect": false
+      },
+      {
+        "id": "1431471189-1",
+        "text": "Threat context from external threat intelligence feeds",
+        "isCorrect": false
+      },
+      {
+        "id": "1431471189-2",
+        "text": "User context from HR systems",
+        "isCorrect": true
+      },
+      {
+        "id": "1431471189-3",
+        "text": "Vulnerability context",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1343091066",
+    "prompt": "At 9:15 AM EST, Marcus Wong, a Financial Operations analyst at GlobalTech, contacts the SOC team after noticing that his Excel spreadsheets are automatically encrypting themselves with unusual file extensions (e.g., .locked or .crypt). The SOC’s Tier 1 analyst logs the incident as ticket #INC-89271 in the SIEM system and escalates it to Jennifer Park, a Tier 2 SOC analyst on the Security Team, for further investigation. Which phase of the Incident Response process is currently taking place?",
+    "options": [
+      {
+        "id": "1343091066-0",
+        "text": "Containment",
+        "isCorrect": false
+      },
+      {
+        "id": "1343091066-1",
+        "text": "Incident Triage",
+        "isCorrect": false
+      },
+      {
+        "id": "1343091066-2",
+        "text": "Incident Recording and Assignment",
+        "isCorrect": true
+      },
+      {
+        "id": "1343091066-3",
+        "text": "Notification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1600351811",
+    "prompt": "A mid-sized hospital’s SOC team has recently detected multiple malware incidents that have disrupted access to patient records and caused operational inefficiencies. The SOC analysts have been tasked with eradicating the current infections and preventing future attacks by addressing the underlying vulnerabilities that allowed the malware to breach the hospital’s defenses. As an SOC analyst, you need to recommend a step that directly targets the weaknesses in the hospital’s network infrastructure or system configurations exploited by the malware. Which of the following eradication steps would best address these root causes?",
+    "options": [
+      {
+        "id": "1600351811-0",
+        "text": "Using Antivirus Tools for quarantine",
+        "isCorrect": false
+      },
+      {
+        "id": "1600351811-1",
+        "text": "Implementing Blacklist techniques for file execution",
+        "isCorrect": false
+      },
+      {
+        "id": "1600351811-2",
+        "text": "Updating Malware Database with vendor signatures",
+        "isCorrect": false
+      },
+      {
+        "id": "1600351811-3",
+        "text": "Fixing Devices",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "363649861",
+    "prompt": "At GlobalTech, a multinational corporation, the SOC team detects a suspicious ransomware outbreak affecting multiple endpoints. After successfully isolating the infected systems from the network, the Digital Forensics team, led by Ray Martinez, begins their investigation. They deploy a forensics workstation to acquire RAM dumps, extract Windows Event Logs, and collect network PCAP files from the compromised hosts. Which phase of the Incident Response lifecycle is currently underway?",
+    "options": [
+      {
+        "id": "363649861-0",
+        "text": "Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "363649861-1",
+        "text": "Eradication",
+        "isCorrect": false
+      },
+      {
+        "id": "363649861-2",
+        "text": "Evidence Gathering and Forensic Analysis",
+        "isCorrect": true
+      },
+      {
+        "id": "363649861-3",
+        "text": "Containment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1272015234",
+    "prompt": "A SOC analyst monitoring authentication logs detects a sudden and significant spike in failed login attempts targeting multiple critical servers during non-business hours. These repeated authentication failures appear abnormal compared to typical login activity. Upon deeper inspection, the analyst finds that all attempts are originating from a single external IP address, indicating a targeted attack rather than random scanning. What raises further concern is that some login attempts involve legitimate employee usernames, suggesting the possibility of a credential-stuffing attack using previously compromised credentials or an ongoing brute-force attempt. Given the nature of this suspicious activity and its potential to escalate into unauthorized access, the analyst must determine the appropriate next step in the threat hunting process to assess the situation further.",
+    "options": [
+      {
+        "id": "1272015234-0",
+        "text": "Establish a Baseline",
+        "isCorrect": false
+      },
+      {
+        "id": "1272015234-1",
+        "text": "Continuous Improvement",
+        "isCorrect": false
+      },
+      {
+        "id": "1272015234-2",
+        "text": "Rapid Response",
+        "isCorrect": false
+      },
+      {
+        "id": "1272015234-3",
+        "text": "Investigate and Analyze",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "767113011",
+    "prompt": "David Reynolds, a SOC analyst at a healthcare organization, is investigating a series of suspicious login attempts flagged by the SIEM (Security Information and Event Management) system. To mitigate the risk of brute-force attacks on the target end points, he collaborates with the IT team to implement an automatic account lockout policy. This policy temporarily disables user accounts after multiple failed login attempts, preventing attackers from repeatedly guessing passwords to gain unauthorized access. Within the SOC’s eradication strategy, which category of measures does this action align with?",
+    "options": [
+      {
+        "id": "767113011-0",
+        "text": "Network Security Measures",
+        "isCorrect": false
+      },
+      {
+        "id": "767113011-1",
+        "text": "Physical Security Measures",
+        "isCorrect": false
+      },
+      {
+        "id": "767113011-2",
+        "text": "Host Security Measures",
+        "isCorrect": false
+      },
+      {
+        "id": "767113011-3",
+        "text": "Authentication and Authorization Measures",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "51815713",
+    "prompt": "Mark Reynolds, a SOC analyst at a healthcare organization, is monitoring the SIEM system when he detects a potential security threat: a series of unusual login attempts targeting critical patient data servers. After investigating the alerts and collaborating with the incident response team, the SOC determines that the threat has a \"Likely\" chance of occurring and could cause \"Significant\" damage, including operational disruptions, financial loss due to data breaches, and regulatory penalties under HIPA",
+    "options": [
+      {
+        "id": "51815713-0",
+        "text": "Medium",
+        "isCorrect": false
+      },
+      {
+        "id": "51815713-1",
+        "text": "High",
+        "isCorrect": true
+      },
+      {
+        "id": "51815713-2",
+        "text": "Low",
+        "isCorrect": false
+      },
+      {
+        "id": "51815713-3",
+        "text": "Very High",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "69023773",
+    "prompt": "TechInnovate, a software development company, has received an alert from a reputable security research group provider about a newly discovered zero-day vulnerability in a widely used web application framework. The vulnerability is being actively exploited in the wild, and there is an increased risk of targeted attacks against organizations using the affected framework. Since no official patch is available, the SOC team needs to stay ahead of emerging threats by monitoring adversary tactics, identifying indicators of compromise (IoCs), and proactively adjusting security controls. The CISO wants to implement immediate defensive measures to detect, track, and mitigate the impact of the zero-day threat. Which SOC technology would be crucial in providing real-time visibility into evolving threat intelligence and enabling proactive mitigation?",
+    "options": [
+      {
+        "id": "69023773-0",
+        "text": "Endpoint Detection and Response (EDR) Tools",
+        "isCorrect": false
+      },
+      {
+        "id": "69023773-1",
+        "text": "Threat Intelligence Management Tools",
+        "isCorrect": true
+      },
+      {
+        "id": "69023773-2",
+        "text": "Security Information and Event Management (SIEM) Solutions",
+        "isCorrect": false
+      },
+      {
+        "id": "69023773-3",
+        "text": "Vulnerability Management Tools",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1223049967",
+    "prompt": "During a routine threat intelligence briefing, a SOC analyst comes across a classified report detailing a sophisticated cybercrime syndicate targeting executives of high-profile financial institutions. Unlike traditional malware-based attacks, these adversaries rarely leave digital footprints and seem to anticipate security measures in advance. While analyzing recent incidents, the analyst discovers that several breaches began with seemingly innocent conversations – a foreign journalist requesting an interview with a CEO, and a security consultant offering free risk assessments. Further investigations reveal that attackers socially engineered employees, manipulated trust, and extracted critical security details long before launching technical attacks. Realizing that the most valuable intelligence may not come from log files or malware analysis, the analyst decides to focus on intelligence that involves deception detection, and psychological profiling to uncover the true intent and methods of the attackers. Which type of intelligence is the analyst leveraging in this situation?",
+    "options": [
+      {
+        "id": "1223049967-0",
+        "text": "Threat Intelligence Feeds",
+        "isCorrect": false
+      },
+      {
+        "id": "1223049967-1",
+        "text": "Human Intelligence",
+        "isCorrect": true
+      },
+      {
+        "id": "1223049967-2",
+        "text": "Technical Threat Intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "1223049967-3",
+        "text": "Open-Source Intelligence (OSINT)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1519870189",
+    "prompt": "You are a SOC L1 analyst, and a critical infrastructure provider of your organization suffered an attack where threat actors infiltrated their network and exfiltrated sensitive system blueprints. However, before their presence was detected, they executed a series of commands that altered system logs, wiped forensic artifacts, and modified timestamps to mimic normal activity. The adversary also ensured that no unusual login events were logged by manipulating security monitoring tools. Which APT lifecycle phase does this represent?",
+    "options": [
+      {
+        "id": "1519870189-0",
+        "text": "Initial Intrusion",
+        "isCorrect": false
+      },
+      {
+        "id": "1519870189-1",
+        "text": "Search and Exfiltration",
+        "isCorrect": false
+      },
+      {
+        "id": "1519870189-2",
+        "text": "Cleanup",
+        "isCorrect": true
+      },
+      {
+        "id": "1519870189-3",
+        "text": "Expansion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "728628497",
+    "prompt": "A financial services company is implementing a SIEM solution to enhance its cybersecurity posture. Despite deploying the SIEM, the security team notices that it fails to detect known attacks or suspicious activities. Although the system generates reports, the team struggles to interpret them effectively. After investigation, they discovered that critical logs from firewalls, intrusion detection systems (IDS), and endpoint devices are not reaching the SIEM. What is the reason the SIEM solution is not functioning as expected?",
+    "options": [
+      {
+        "id": "728628497-0",
+        "text": "Difficulty handling the volume of collected log data",
+        "isCorrect": false
+      },
+      {
+        "id": "728628497-1",
+        "text": "Lack of understanding of SIEM features and capabilities",
+        "isCorrect": false
+      },
+      {
+        "id": "728628497-2",
+        "text": "Delays in log collection and analysis due to system performance issues",
+        "isCorrect": false
+      },
+      {
+        "id": "728628497-3",
+        "text": "Improper configuration or design of the SIEM deployment architecture",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "92990520",
+    "prompt": "You are working at T3ch Solutions, global technology firm that provides web and software solutions to many multinational corporations across the globe. Your role is an L2 SOC analyst in their cybersecurity department. Your team detects an adversary attempting to bypass authentication controls and escalate privileges within the enterprise network. To counter the threat, you implement credential encryption, behavioral analytics, and process isolation. Your approach follows a structured framework that systematically maps defensive techniques to known adversarial tactics, allowing you to anticipate and mitigate evolving cyber threats. Which framework did you choose to apply in this scenario?",
+    "options": [
+      {
+        "id": "92990520-0",
+        "text": "Cybersecurity Capability Maturity Model",
+        "isCorrect": false
+      },
+      {
+        "id": "92990520-1",
+        "text": "Systems Security Engineering CMM",
+        "isCorrect": false
+      },
+      {
+        "id": "92990520-2",
+        "text": "NIST Cybersecurity 2.0",
+        "isCorrect": false
+      },
+      {
+        "id": "92990520-3",
+        "text": "MITRE D3FEND Framework",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1183782884",
+    "prompt": "You are working as a SOC analyst for a cloud-based service provider that relies on PostgreSQL databases to store critical customer data. During a recent security review, you discover that logs are not being generated for failed authentication attempts, slow queries, or database errors. This lack of visibility is making it difficult for you to detect potential threats and investigate suspicious database activity. To ensure that PostgreSQL captures and stores logs for centralized monitoring and forensic analysis, which configuration parameter should you enable?",
+    "options": [
+      {
+        "id": "1183782884-0",
+        "text": "loggingcollector",
+        "isCorrect": false
+      },
+      {
+        "id": "1183782884-1",
+        "text": "logging_collector",
+        "isCorrect": true
+      },
+      {
+        "id": "1183782884-2",
+        "text": "logging-collector",
+        "isCorrect": false
+      },
+      {
+        "id": "1183782884-3",
+        "text": "log_collector",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1715934375",
+    "prompt": "A manufacturing company is deploying a SIEM system and wants to improve both its security monitoring and regulatory compliance capabilities. During the planning phase, the team decides to use an output-driven approach, starting with use cases that address unauthorized access to production control systems. They configure data sources and alert specific to this use case, ensuring they receive actionable alerts without excessive false positives. After validating its success, they move on to use cases related to supply chain disruptions and malware detection. Which of the following best describes the primary advantage of using an output-driven approach in SIEM deployment?",
+    "options": [
+      {
+        "id": "1715934375-0",
+        "text": "The SOC team can respond to all incidents in real time without delays.",
+        "isCorrect": false
+      },
+      {
+        "id": "1715934375-1",
+        "text": "The company avoids the need to collect logs from non-critical systems.",
+        "isCorrect": false
+      },
+      {
+        "id": "1715934375-2",
+        "text": "The SIEM system can automatically block all unauthorized access attempts.",
+        "isCorrect": false
+      },
+      {
+        "id": "1715934375-3",
+        "text": "The company can create more complex use cases with greater scope.",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "886699430",
+    "prompt": "The SOC team at CyberSecure Corp is conducting a security review to identify anomalous log entries from their firewall logs. The team needs to extract specific patterns such as email addresses, IP addresses, and URLs to detect unauthorized access attempts, phishing activities, and suspicious external communications. The SOC analyst applies various regular expressions (regex) patterns to filter and analyze logs efficiently. For example, they use \\b\\d{l,3}\\.\\d{l,3}\\.\\d{l,3}\\.\\d{l,3}\\b to matches IPv4 addresses. Which regex pattern should the SOC analyst use to extract all hexadecimal color codes found in the logs?",
+    "options": [
+      {
+        "id": "886699430-0",
+        "text": "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+        "isCorrect": false
+      },
+      {
+        "id": "886699430-1",
+        "text": "#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})",
+        "isCorrect": true
+      },
+      {
+        "id": "886699430-2",
+        "text": "(0[l-9]|1[0-2])/(0[l-9]|[12][0-9]|3[01])/\\d{4}",
+        "isCorrect": false
+      },
+      {
+        "id": "886699430-3",
+        "text": "\\b\\d{l,3}\\.\\d{l,3}\\.\\d{l,3}\\.\\d{l,3]\\b",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1927237076",
+    "prompt": "NationalHealth, a government agency responsible for managing sensitive patient health records, is subject to strict data sovereignty regulations that require all data to be stored and processed within the country's borders. The agency's leadership is deeply concerned about the potential risks associated with outsourcing security operations, as they need to ensure complete control over the handling of patient data. They also face increasing cyber threats and require a 24/7 security monitoring capability. The agency has a large budget, and is able to hire many security professionals. They need 24/7 security monitoring, and the emphasis on maintaining complete control over sensitive data, which SOC model would be suitable for their needs?",
+    "options": [
+      {
+        "id": "1927237076-0",
+        "text": "Outsourced SOC Model",
+        "isCorrect": false
+      },
+      {
+        "id": "1927237076-1",
+        "text": "In-House/Internal SOC Model",
+        "isCorrect": true
+      },
+      {
+        "id": "1927237076-2",
+        "text": "A combination of multiple MSSP's",
+        "isCorrect": false
+      },
+      {
+        "id": "1927237076-3",
+        "text": "Hybrid SOC Model expertise of an MSSP",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "222286732",
+    "prompt": "James Rodriguez has recently taken over as the lead SOC manager at GlobalTech Dynamics, a Fortune 500 company with a growing cyber threat landscape. She is tasked with strengthening the SOC’s capabilities to protect the organization's critical assets. Her team is currently deploying a $2M state-of-the-art SOC facility, creating detailed incident response playbooks, running tabletop exercises to simulate real-world attacks, and training a 15-member incident response team to handle alerts and incidents efficiently. In the context of the Incident Response Process Flow, which phase best aligns with these activities?",
+    "options": [
+      {
+        "id": "222286732-0",
+        "text": "Preparation",
+        "isCorrect": true
+      },
+      {
+        "id": "222286732-1",
+        "text": "Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "222286732-2",
+        "text": "Incident Triage",
+        "isCorrect": false
+      },
+      {
+        "id": "222286732-3",
+        "text": "Incident Recording and Assignment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "20614241",
+    "prompt": "A leading e-commerce company relies on backend servers for processing customer transactions. You are working with their cybersecurity team as a SOC analyst. One morning, you notice a sharp increase in CPU utilization on one of your backend servers. Your team scans and monitors the server and find out that an unknown process is running, which is consuming excessive resources. You further perform detailed forensic analysis and identify the presence of an unrecognized scheduled task that triggers a PowerShell script connecting to an unknown IP. What should you do to confirm whether this is an active attack?",
+    "options": [
+      {
+        "id": "20614241-0",
+        "text": "Review user access logs for unauthorized activity",
+        "isCorrect": false
+      },
+      {
+        "id": "20614241-1",
+        "text": "Check file integrity and detect recent unauthorized changes",
+        "isCorrect": false
+      },
+      {
+        "id": "20614241-2",
+        "text": "Analyze the network logs to identify external connections",
+        "isCorrect": true
+      },
+      {
+        "id": "20614241-3",
+        "text": "Analyze the system logs for unauthorized changes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1944587558",
+    "prompt": "The SOC team at GlobalTech has just finished patching a critical vulnerability exploited during a ransomware attack. The team is now restoring 2.3TB of encrypted data from their Veeam backup system, rebuilding 23 compromised workstations identified through SIEM logs and re-enabling network access for the finance department after validating the systems are clean. Which of the following Incident Response phase is this?",
+    "options": [
+      {
+        "id": "1944587558-0",
+        "text": "Post-incident Activities",
+        "isCorrect": false
+      },
+      {
+        "id": "1944587558-1",
+        "text": "Eradication",
+        "isCorrect": false
+      },
+      {
+        "id": "1944587558-2",
+        "text": "Recovery",
+        "isCorrect": true
+      },
+      {
+        "id": "1944587558-3",
+        "text": "Containment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "697384322",
+    "prompt": "A financial services company hosts an online banking platform accessible via a public web portal. The SOC team has deployed Snort IDS to monitor HTTP traffic for potential attacks targeting the login page. One day, a user attempts to log in multiple times, generating a series of failed authentication events. During this time, Snort IDS triggers an alert based on the following rule: alert tcp any any -> any 80 (msg:\"SQL Injection attempt detected\"; content:“‘ OR ’1‘=’l”; nocase; sid:1000001; rev:1;) The alert indicates that an incoming HTTP request contained the classic SQL injection payload ‘ OR ’1‘=’l, which is commonly used to bypass login authentication by always evaluating to true. The SIEM, integrated with Snort, receives this alert and correlates it with multiple failed login attempts from the same source IP. This triggers an automated response, temporarily blocking the suspicious IP address and notifying the SOC team. Which detection method is used by this rule?",
+    "options": [
+      {
+        "id": "697384322-0",
+        "text": "Behavioral-based detection",
+        "isCorrect": false
+      },
+      {
+        "id": "697384322-1",
+        "text": "Anomaly-based detection",
+        "isCorrect": false
+      },
+      {
+        "id": "697384322-2",
+        "text": "Statistical-based detection",
+        "isCorrect": false
+      },
+      {
+        "id": "697384322-3",
+        "text": "Signature-based detection",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1859659165",
+    "prompt": "A SOC team notices that malware-related incidents have increased over the past six months, targeting endpoints through phishing campaigns. They need to present a report to the security leadership team to justify investing in advanced email filtering solutions and end-user security training. Which SOC report will best support their case?",
+    "options": [
+      {
+        "id": "1859659165-0",
+        "text": "Trend Analysis Report",
+        "isCorrect": true
+      },
+      {
+        "id": "1859659165-1",
+        "text": "Incident Report",
+        "isCorrect": false
+      },
+      {
+        "id": "1859659165-2",
+        "text": "Monitoring Summary Report",
+        "isCorrect": false
+      },
+      {
+        "id": "1859659165-3",
+        "text": "Real-time Monitoring Report",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1741577984",
+    "prompt": "You are working with a team of SOC analysts in a large corporation company, the HR department receives an urgent email from someone impersonating a high-level executive, requesting immediate transfer of sensitive employee data. The email includes an official-looking document and a phone number for verification. Feeling pressured, the HR manager calls the number and confirms the request. After transfer of the data, you notice this unusual data transfer and your team investigates to discover that the email was fraudulent, and the executive had no knowledge of the request. What type of attack did your HR department face in this scenario?",
+    "options": [
+      {
+        "id": "1741577984-0",
+        "text": "Application Exploit",
+        "isCorrect": false
+      },
+      {
+        "id": "1741577984-1",
+        "text": "Credential Theft",
+        "isCorrect": false
+      },
+      {
+        "id": "1741577984-2",
+        "text": "Web-Based Intrusion",
+        "isCorrect": false
+      },
+      {
+        "id": "1741577984-3",
+        "text": "Social Engineering Attack",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "615585303",
+    "prompt": "The Security Operations Center (SOC) of a mid-sized financial institution is struggling with an overwhelming number of security alerts. The small team is bombarded with thousands of daily notifications, many of which are based on Indicators of Compromise (IOCs) such as suspicious IP addresses, hashes, and domains. However, these alerts lack critical context about whether they truly pose a threat to the organization. Analysts spend excessive time chasing low-priority incidents, while more severe threats may go unnoticed. Additionally, the team lacks the necessary tools and intelligence to correlate IOCs with real-world threats, making prioritization nearly impossible. As a result, alert fatigue is setting in, reducing efficiency and increasing the risk of missing an actual attack. Which of the following poses the greatest challenge in this environment?",
+    "options": [
+      {
+        "id": "615585303-0",
+        "text": "Malware-centric and CTI are not equivalent",
+        "isCorrect": false
+      },
+      {
+        "id": "615585303-1",
+        "text": "Distinguishing IoC from CTI",
+        "isCorrect": false
+      },
+      {
+        "id": "615585303-2",
+        "text": "Budget and Enterprise skill",
+        "isCorrect": false
+      },
+      {
+        "id": "615585303-3",
+        "text": "Information overload",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "60686387",
+    "prompt": "ABC is a highly reputed multinational company with multiple offices across the globe and you are working here as an L2 SOC Analyst. You are implementing a centralized logging solution to enhance security monitoring. You are responsible for ensuring that log messages from routers, firewalls, and servers across multiple remote offices are efficiently collected and forwarded to a central syslog server. To streamline this process, an intermediate component is deployed to receive log messages from different devices and forward them to the main syslog server. Which component in the syslog infrastructure performs this function?",
+    "options": [
+      {
+        "id": "60686387-0",
+        "text": "Syslog Collector",
+        "isCorrect": false
+      },
+      {
+        "id": "60686387-1",
+        "text": "Syslog Listener",
+        "isCorrect": false
+      },
+      {
+        "id": "60686387-2",
+        "text": "Syslog Database",
+        "isCorrect": false
+      },
+      {
+        "id": "60686387-3",
+        "text": "Syslog Relay",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "1838062210",
+    "prompt": "A multinational financial institution notices unusual network activity during a routine security audit. The SOC (Security Operations Center) detects multiple failed login attempts, followed by a successful access attempt using an administrator's credentials from an unrecognized IP address. Shortly after, sensitive customer records are accessed without authorization. The company suspects a potential security breach and calls in the forensic investigation team to analyze the incident. During evidence collection, the forensic team creates a detailed record that tracks every individual who handled the evidence, its storage location, and timestamps of transfers. What is this process called?",
+    "options": [
+      {
+        "id": "1838062210-0",
+        "text": "Data Imaging",
+        "isCorrect": false
+      },
+      {
+        "id": "1838062210-1",
+        "text": "Chain of Custody",
+        "isCorrect": true
+      },
+      {
+        "id": "1838062210-2",
+        "text": "Incident Documentation",
+        "isCorrect": false
+      },
+      {
+        "id": "1838062210-3",
+        "text": "Digital Fingerprinting",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "950323620",
+    "prompt": "A large financial services company has experienced an increasing number of sophisticated cyber threats targeting its critical assets. The company has a Security Operations Center (SOC) that primarily focuses on log collection and basic threat monitoring. However, recent security incidents have revealed gaps in its ability to detect and respond to advanced threats proactively. Senior management has decided to enhance the SOC's maturity by adopting the SOC Capability Maturity Model (CMM). The SOC team conducted an initial assessment using the CMM framework and found that their current state aligns with Level 1. The organization aims to reach Level 3. To achieve this, the SOC must enhance incident response procedures, improve threat intelligence integration, and establish key performance metrics. Additionally, the organization plans to automate incident triage, implement behavior-based analytics, and establish a continuous SOC training program. Based on the SOC Capability Maturity Model, which of the following should be the first priority in transitioning the SOC from Level 1 to Level 3?",
+    "options": [
+      {
+        "id": "950323620-0",
+        "text": "Establishing well-defined and repeatable incident response processes.",
+        "isCorrect": true
+      },
+      {
+        "id": "950323620-1",
+        "text": "Outsourcing SOC operations to a Managed Security Service Provider (MSSP) for expertise.",
+        "isCorrect": false
+      },
+      {
+        "id": "950323620-2",
+        "text": "Implementing AI-driven automation for real-time threat detection and response.",
+        "isCorrect": false
+      },
+      {
+        "id": "950323620-3",
+        "text": "Deploying advanced deception technologies to lure attackers.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1421999765",
+    "prompt": "Jackson & Co., a mid-sized law firm, is concerned about potential web-based cyber threats targeting their employees. To enhance security, their IT team implements a solution that serves as an intermediary for all HTTP and HTTPS requests. This solution allows the SOC to inspect, filter and control web traffic, helping to detect and block malicious websites, phishing attempts, and other online threats before they reach users. Which containment method is the organization using to gain visibility and control over web traffic?",
+    "options": [
+      {
+        "id": "1421999765-0",
+        "text": "Blacklisting",
+        "isCorrect": false
+      },
+      {
+        "id": "1421999765-1",
+        "text": "Proxy Servers",
+        "isCorrect": true
+      },
+      {
+        "id": "1421999765-2",
+        "text": "Web Content Filtering",
+        "isCorrect": false
+      },
+      {
+        "id": "1421999765-3",
+        "text": "Whitelisting",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1721019281",
+    "prompt": "Global Security Firm, a multinational cybersecurity company, is looking to enhance its threat intelligence capabilities by integrating real-time threat feeds into its Microsoft Sentinel SIEM. These threat intelligence feeds contain valuable information about malicious IPs, domains, file hashes, and attack patterns, helping the SOC team proactively detect and respond to security threats. The firm requires a standardized protocol that allows automated threat intelligence sharing, ensuring that their Microsoft Sentinel environment continuously receives updated threat indicators from external intelligence sources. The ideal data connector should support a structured format for importing and managing threat intelligence feeds efficiently. Which Microsoft Sentinel data connector should Global Security Firm implement to integrate threat intelligence feeds using an industry-standard protocol?",
+    "options": [
+      {
+        "id": "1721019281-0",
+        "text": "Syslog connector",
+        "isCorrect": false
+      },
+      {
+        "id": "1721019281-1",
+        "text": "TAXII data connector",
+        "isCorrect": true
+      },
+      {
+        "id": "1721019281-2",
+        "text": "Threat Intelligence Platforms data connector",
+        "isCorrect": false
+      },
+      {
+        "id": "1721019281-3",
+        "text": "Microsoft Defender for Cloud (Legacy) connector",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1685841808",
+    "prompt": "You are a SOC analyst on duty during a high-severity incident involving a DDoS attack targeting your organization’s e-commerce platform. The attack is disrupting online transactions, and the incident response team has tasked you with analyzing live network traffic using the SOC’s SIEM tools and packet capture systems. After identifying unusual traffic patterns and dissecting communication protocols, you trace the activity back to several command-and-control (C2) servers directing a botnet. Your goal is to recommend an eradication strategy that will serve the attackers’ control over the infected devices and halt the attack. Based on this scenario, which of the following strategies will your team implement?",
+    "options": [
+      {
+        "id": "1685841808-0",
+        "text": "Neutralizing Handlers",
+        "isCorrect": true
+      },
+      {
+        "id": "1685841808-1",
+        "text": "Blocking Potential Attacks",
+        "isCorrect": false
+      },
+      {
+        "id": "1685841808-2",
+        "text": "Rate Limiting",
+        "isCorrect": false
+      },
+      {
+        "id": "1685841808-3",
+        "text": "Disabling Botnets",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2043060298",
+    "prompt": "One week after a ransomware attack disrupted operations, Sarah, a SOC analyst, leads a review meeting with the IT team, Security engineers, and business unit representatives. The group reviews the incident timeline, calculates a business impact of $157,000 due to downtime and data loss, and identifies seven critical improvements to enhance detection and response processes. Which of the following Incident Response phase is this?",
+    "options": [
+      {
+        "id": "2043060298-0",
+        "text": "Containment",
+        "isCorrect": false
+      },
+      {
+        "id": "2043060298-1",
+        "text": "Recovery",
+        "isCorrect": false
+      },
+      {
+        "id": "2043060298-2",
+        "text": "Eradication",
+        "isCorrect": false
+      },
+      {
+        "id": "2043060298-3",
+        "text": "Post-incident Activities",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "4255897",
+    "prompt": "David is working as a SOC analyst in an institution, responsible for monitoring the security of critical infrastructure. During routine system monitoring, he detects several unauthorized applications running on a high-privilege Windows server that is only accessible by a restricted set of users. These applications were not part of any approved software deployment, and no users have admitted to installing them. He noticed that the installations occurred outside of business hours, and the affected server logs indicate potential system configuration changes around the same timeframe. He suspects that an attacker may have exploited misconfigurations or gained unauthorized access to install malicious software. Which log file should he examine to determine when and how these installations occurred?",
+    "options": [
+      {
+        "id": "4255897-0",
+        "text": "System Event log",
+        "isCorrect": false
+      },
+      {
+        "id": "4255897-1",
+        "text": "Security Event log",
+        "isCorrect": false
+      },
+      {
+        "id": "4255897-2",
+        "text": "Setup Event log",
+        "isCorrect": true
+      },
+      {
+        "id": "4255897-3",
+        "text": "Application Event log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "535471208",
+    "prompt": "You are working in a team of Cyber Security Operation Center analysts for a Global Startup PayOnline that handles and provides back-end gateways for different payment-based applications and digital wallets, your team is responsible for monitoring security logs across various systems, including firewalls, authentication servers, and endpoint detection tools. Your team currently relies on manual log reviews to detect security threats, but the sheer volume of raw, unstructured logs is making this process inefficient, time-consuming, and prone to human error. During a recent security incident, you and your team struggled to quickly extract relevant details form disorganized log data which resulted in delay of threat detection and response. Your team has decided to improve efficiency by implementing an automated log parsing solution that can transform unstructured logs into a structured format. Which log parsing technique will you implement for this scenario to improve the log data structuring and enable efficient querying and analysis?",
+    "options": [
+      {
+        "id": "535471208-0",
+        "text": "Key-Value Extraction",
+        "isCorrect": false
+      },
+      {
+        "id": "535471208-1",
+        "text": "Semantic Parsing",
+        "isCorrect": false
+      },
+      {
+        "id": "535471208-2",
+        "text": "Delimited Parsing",
+        "isCorrect": false
+      },
+      {
+        "id": "535471208-3",
+        "text": "Grok Filters",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "461925192",
+    "prompt": "You are a Threat Hunter in the SOC team of a prestigious law firm specializing in high-profile corporate cases. Your firm has recently suffered a data breach, where confidential client documents were leaked on a dark web forum. As part of your proactive threat-hunting initiative, you analyze security logs, network traffic, and endpoint activity to trace the attacker’s steps using the Cyber Kill Chain framework. Your investigation reveals that the attacker initially bypassed the firm’s multi-factor authentication (MFA) by masquerading as a legitimate user. Once inside, they moved laterally within the internal network, accessed sensitive client records from a shared file repository, and exfiltrated the data over an extended period. You are tasked to identify the attack phase within the Cyber Kill Chain framework to strengthen defenses against similar attacks. Implement proactive threat hunting measures to detect future intrusions before data exfiltration occurs. At which Cyber Kill Chain phase was the attack identified?",
+    "options": [
+      {
+        "id": "461925192-0",
+        "text": "Exploitation",
+        "isCorrect": true
+      },
+      {
+        "id": "461925192-1",
+        "text": "Delivery",
+        "isCorrect": false
+      },
+      {
+        "id": "461925192-2",
+        "text": "Actions on Objectives",
+        "isCorrect": false
+      },
+      {
+        "id": "461925192-3",
+        "text": "Command & Control (C2)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2070528029",
+    "prompt": "As a Threat Hunter at a Cyber Security company, you notice that several endpoints in the organization are experiencing unusual outbound traffic to an unfamiliar IP address. The traffic is encrypted and occurs in small bursts at irregular intervals. There are no known IoCs associated with the destination, and traditional security tools have not flagged it as malicious. You decide to launch a threat-hunting initiative to determine whether this is an advanced persistent threat (APT) using sophisticated techniques to evade detection. The goal is to identify potential Indicators of Attack (IoAs) and map them against known adversary behaviors. What type of threat hunting approach would you choose that is suited for this situation?",
+    "options": [
+      {
+        "id": "2070528029-0",
+        "text": "Structured Hunting",
+        "isCorrect": true
+      },
+      {
+        "id": "2070528029-1",
+        "text": "Reactive Hunting",
+        "isCorrect": false
+      },
+      {
+        "id": "2070528029-2",
+        "text": "Situational or Entity-driven Hunting",
+        "isCorrect": false
+      },
+      {
+        "id": "2070528029-3",
+        "text": "Unstructured Hunting",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1208968766",
+    "prompt": "Sarah, a financial analyst at a multinational corporation, is suspected of leaking sensitive financial data to an unauthorized external party. The SOC team has observed anomalous data transfer patterns originating from her account, flagged by the SIEM system, indicating potential data exfiltration. The incident response team within the SOC has been tasked with containing the incident swiftly to minimize data loss and protect critical assets. As a SOC analyst, which of the following should be prioritized as the initial containment measure to address this threat?",
+    "options": [
+      {
+        "id": "1208968766-0",
+        "text": "Change Passwords Regularly",
+        "isCorrect": false
+      },
+      {
+        "id": "1208968766-1",
+        "text": "Access Control",
+        "isCorrect": true
+      },
+      {
+        "id": "1208968766-2",
+        "text": "Isolate the Storage",
+        "isCorrect": false
+      },
+      {
+        "id": "1208968766-3",
+        "text": "Data Centric Audit and Protection (DCAP)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "645272487",
+    "prompt": "At a large healthcare organization, the Security Operations Center (SOC) detects a surge of failed login attempts on employee accounts, indicating a possible brute-force attack. To contain the threat, the team quickly takes action to prevent unauthorized access. However, they also need to implement a security measure that strengthens account protection beyond just stopping the current attack, reducing the risk of similar incidents in the future. During the Containment Phase, which action would best enhance long-term account security against brute-force attacks?",
+    "options": [
+      {
+        "id": "645272487-0",
+        "text": "Block IP and enforce account lockout policies",
+        "isCorrect": false
+      },
+      {
+        "id": "645272487-1",
+        "text": "Cross-verify false positives",
+        "isCorrect": false
+      },
+      {
+        "id": "645272487-2",
+        "text": "Enable multi-factor authentication (MFA)",
+        "isCorrect": true
+      },
+      {
+        "id": "645272487-3",
+        "text": "Notify affected users",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1789541360",
+    "prompt": "A financial institution's SIEM is generating a high number of false positives, causing alert fatigue among SOC analysts. To reduce this burden and improve threat detection accuracy, the organization integrates AI capabilities into the SIEM. After implementation, the SOC team observes a significant decrease in redundant alerts, along with faster detection of genuine threats. Which AI capability contributed to this improvement?",
+    "options": [
+      {
+        "id": "1789541360-0",
+        "text": "Rule validation and testing",
+        "isCorrect": false
+      },
+      {
+        "id": "1789541360-1",
+        "text": "Dynamic rule optimization",
+        "isCorrect": true
+      },
+      {
+        "id": "1789541360-2",
+        "text": "Automated rule generation",
+        "isCorrect": false
+      },
+      {
+        "id": "1789541360-3",
+        "text": "Data integration enhancement",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "2102524127",
+    "prompt": "A company's SIEM is generating a high number of alerts, overwhelming the SOC team with false positives and irrelevant notifications. This issue is reducing the team's efficiency, as analysts struggle to identify genuine security incidents. To address this, the security team decides to refine their approach by defining clear threat detection scenarios that align with their environment and risk profile. This new approach is expected to improve detection accuracy and streamline incident response. Which process is the team implementing?",
+    "options": [
+      {
+        "id": "2102524127-0",
+        "text": "Log forensics",
+        "isCorrect": false
+      },
+      {
+        "id": "2102524127-1",
+        "text": "IT compliance",
+        "isCorrect": false
+      },
+      {
+        "id": "2102524127-2",
+        "text": "SIEM Use Case Management",
+        "isCorrect": true
+      },
+      {
+        "id": "2102524127-3",
+        "text": "Security analytics",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "947981186",
+    "prompt": "You are a SOC analyst working for a leading financial institution, and you have been assigned the task of developing a comprehensive threat model to safeguard the organization's critical assets. These assets include highly sensitive customer data, online banking applications, and real-time payment processing systems. Recently, your organization has observed an increase in targeted cyberattacks on financial entities, including credential theft, account takeovers, and sophisticated phishing campaigns. Senior management is particularly concerned about the potential financial and reputational damage that could result from a breach. To address these concerns, you must focus on intelligence that provides insights into high-level risks, geopolitical threats, and emerging cybercriminal strategies that could have long-term implications for your organization's security posture. Which type of threat intelligence are you seeking to obtain?",
+    "options": [
+      {
+        "id": "947981186-0",
+        "text": "Tactical Threat Intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "947981186-1",
+        "text": "Operational Threat Intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "947981186-2",
+        "text": "Technical Threat Intelligence",
+        "isCorrect": false
+      },
+      {
+        "id": "947981186-3",
+        "text": "Strategic Threat Intelligence",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "362179566",
+    "prompt": "You are a Threat Hunter in an IT company's security team that is working to enhance its threat hunting capabilities. You observed that relying solely on traditional security alerts often results in missed detections of sophisticated threats. To strengthen your approach, you decide to incorporate multiple data sources, including external threat intelligence feeds, internal security logs, network traffic data, and endpoint telemetry. To efficiently process this vast amount of data, you are implementing a new tool that can aggregate, normalize, and correlate threat intelligence with internal telemetry you aim to gain a more holistic understanding of emerging threats and enhance detection accuracy. What is the key capability of threat detection being leveraged in this scenario?",
+    "options": [
+      {
+        "id": "362179566-0",
+        "text": "Intelligence Buy-In",
+        "isCorrect": false
+      },
+      {
+        "id": "362179566-1",
+        "text": "Data Integration",
+        "isCorrect": true
+      },
+      {
+        "id": "362179566-2",
+        "text": "Threat Trending",
+        "isCorrect": false
+      },
+      {
+        "id": "362179566-3",
+        "text": "Threat Reports",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "1304927694",
+    "prompt": "Pearl is an L1 SOC analyst working for a global financial institution that relies on SQL Server databases to store and manage sensitive customer information. As part of her daily security monitoring, she notices an alert on her SOC dashboard indicating a brute-force attack attempt targeting the organization's web application login page. Upon investigating, she observes multiple failed login attempts originating from the same IP address, followed by a successful login as a server administrator. Recognizing the potential threat, she immediately shifts focus to the database server logs to analyze unauthorized access patterns. During detailed analysis of the logs, she uncovers that the attacker successfully brute-forced a privileged user account on the website and using the compromised credentials, they gained access to the SQL Server database. Which of the following logs will help her identify if the intruder performed any unauthorized modifications in the database?",
+    "options": [
+      {
+        "id": "1304927694-0",
+        "text": "Audit Log",
+        "isCorrect": true
+      },
+      {
+        "id": "1304927694-1",
+        "text": "Security Log",
+        "isCorrect": false
+      },
+      {
+        "id": "1304927694-2",
+        "text": "Transaction Log",
+        "isCorrect": false
+      },
+      {
+        "id": "1304927694-3",
+        "text": "Maintenance Log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "122817822",
+    "prompt": "Sarah Chen works as a Security Analyst at Midwest Financial, a regional bank headquartered in Chicago. At 2 AM, her SOC team detects unusual data exfiltration patterns and evidence of lateral movement across multiple servers containing sensitive customer data. The activity appears sophisticated and may require forensic analysis and system restoration. Which team should take primary responsibility for managing this complex security incident?",
+    "options": [
+      {
+        "id": "122817822-0",
+        "text": "IRT (Incident Response Team)",
+        "isCorrect": true
+      },
+      {
+        "id": "122817822-1",
+        "text": "SOC (Security Operations Center) Team",
+        "isCorrect": false
+      },
+      {
+        "id": "122817822-2",
+        "text": "Security Engineering Team",
+        "isCorrect": false
+      },
+      {
+        "id": "122817822-3",
+        "text": "Threat Intelligence Team",
+        "isCorrect": false
+      }
+    ]
+  }
+]
