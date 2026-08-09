@@ -59,3 +59,9 @@ export type QuizAnswerResult = {
 	correctOptionIds: string[];
 	completed: boolean;
 };
+
+
+export type WrongAnswerResult =
+	QuizAnswerResult & {
+		remainingCount: number;
+	};
