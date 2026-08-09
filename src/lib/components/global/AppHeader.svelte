@@ -28,7 +28,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-40 h-16 border-b border-surface-200-800 bg-surface-50-950/90 backdrop-blur"
+	class="sticky top-0 z-40 h-16 border-b border-surface-200-800 bg-surface-50-950"
 >
 	<div
 		class="mx-auto flex h-full w-full max-w-6xl items-center justify-between gap-4 px-4 md:px-6"
@@ -47,11 +47,11 @@
 			{#if user}
 				<details class="relative">
 					<summary
-						class="flex cursor-pointer list-none items-center gap-2 rounded-container p-1.5 transition hover:bg-surface-100-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+						class="flex cursor-pointer list-none items-center gap-2 rounded-lg p-1.5 transition hover:bg-surface-100-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
 						aria-label="開啟使用者選單"
 					>
 						<span
-							class="flex size-9 items-center justify-center rounded-full bg-primary-500 font-semibold text-primary-contrast-500"
+							class="preset-filled-primary-500 flex size-9 items-center justify-center rounded-full font-semibold"
 							aria-hidden="true"
 						>
 							{avatarLabel}
@@ -88,7 +88,7 @@
 
 						<a
 							href="/profile"
-							class="block rounded-base px-3 py-2 text-sm no-underline transition hover:bg-surface-100-900"
+							class="block rounded-lg px-3 py-2 text-sm no-underline transition hover:bg-surface-100-900"
 						>
 							個人資料
 						</a>
@@ -96,7 +96,7 @@
 						{#if user.isAdmin}
 							<a
 								href="/admin"
-								class="block rounded-base px-3 py-2 text-sm no-underline transition hover:bg-surface-100-900"
+								class="block rounded-lg px-3 py-2 text-sm no-underline transition hover:bg-surface-100-900"
 							>
 								管理後台
 							</a>
@@ -112,7 +112,7 @@
 						>
 							<button
 								type="submit"
-								class="w-full rounded-base px-3 py-2 text-left text-sm transition hover:bg-error-500/10 hover:text-error-700-300"
+								class="w-full rounded-lg px-3 py-2 text-left text-sm transition hover:bg-error-500/10 hover:text-error-700-300"
 							>
 								登出
 							</button>
