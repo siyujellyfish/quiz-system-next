@@ -8,7 +8,8 @@ import {
 
 
 config({
-	path: '.env.local'
+	path: '.env.local',
+	override: true
 });
 
 config();
