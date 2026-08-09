@@ -12,7 +12,9 @@ import {
 } from '$lib/server/quiz/bank.repository';
 
 import {
-	getPracticeProgress
+	deletePracticeProgress,
+	getPracticeProgress,
+	setPracticeCurrentIndex
 } from '$lib/server/quiz/practice.repository';
 
 import {
@@ -37,7 +39,6 @@ export const load: PageServerLoad =
 			);
 		}
 
-
 		/*
 		 * Guest 的 state 在 sessionStorage，
 		 * SSR 階段無法取得。
@@ -48,7 +49,6 @@ export const load: PageServerLoad =
 				practice: null
 			};
 		}
-
 
 		const progress =
 			await getPracticeProgress(
@@ -63,69 +63,89 @@ export const load: PageServerLoad =
 			);
 		}
 
-
 		const {
-			questionsState,
-			currentIndex
+			questionsState
 		} = progress;
-
 
 		const totalQuestions =
 			questionsState
 				.questions
 				.length;
 
+		if (totalQuestions === 0) {
+			await deletePracticeProgress(
+				locals.user.id,
+				bank.id
+			);
 
-		if (
-			totalQuestions === 0 ||
-			currentIndex >=
-				totalQuestions
-		) {
 			redirect(
 				303,
 				'/'
 			);
 		}
 
+		let currentIndex =
+			progress.currentIndex;
 
-		const questionState =
-			questionsState
-				.questions[
-					currentIndex
-				];
+		while (
+			currentIndex <
+			totalQuestions
+		) {
+			const questionState =
+				questionsState
+					.questions[
+						currentIndex
+					];
 
-
-		if (!questionState) {
-			error(
-				409,
-				'目前練習進度中的題目狀態不存在'
-			);
-		}
-
-
-		const question =
-			await getPublicPracticeQuestion(
-				bank.id,
-				questionState.questionId,
-				questionState.optionIds
-			);
-
-
-		if (!question) {
-			error(
-				409,
-				'目前題目已不存在或資料不完整'
-			);
-		}
-
-
-		return {
-			bank,
-
-			practice: {
-				currentIndex,
-				totalQuestions,
-				question
+			if (!questionState) {
+				currentIndex++;
+				continue;
 			}
-		};
+
+			const question =
+				await getPublicPracticeQuestion(
+					bank.id,
+					questionState.questionId,
+					questionState.optionIds
+				);
+
+			if (!question) {
+				currentIndex++;
+				continue;
+			}
+
+			if (
+				currentIndex !==
+				progress.currentIndex
+			) {
+				await setPracticeCurrentIndex(
+					locals.user.id,
+					bank.id,
+					currentIndex
+				);
+			}
+
+			return {
+				bank,
+
+				practice: {
+					currentIndex,
+					totalQuestions,
+					question
+				}
+			};
+		}
+
+		/*
+		 * 剩餘題目都已失效，視為本次練習完成。
+		 */
+		await deletePracticeProgress(
+			locals.user.id,
+			bank.id
+		);
+
+		redirect(
+			303,
+			'/'
+		);
 	};
