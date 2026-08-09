@@ -18,11 +18,10 @@
 	import QuestionCard
 		from '$lib/components/quiz/QuestionCard.svelte';
 
-
-type WrongView = {
-	remainingCount: number;
-	question: PublicQuizQuestion | null;
-};
+	type WrongView = {
+		remainingCount: number;
+		question: PublicQuizQuestion | null;
+	};
 
 
 	let {
@@ -243,7 +242,13 @@ type WrongView = {
 	</header>
 
 
-	{#if completed || remainingCount === 0}
+	{#if
+		completed ||
+		(
+			remainingCount === 0 &&
+			!question
+		)
+	}
 		<section
 			class="card preset-outlined p-8 text-center"
 		>
