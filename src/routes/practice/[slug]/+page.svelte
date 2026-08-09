@@ -41,12 +41,6 @@
 	}: PageProps = $props();
 
 
-	/*
-	 * Local practice 目前主要給 Guest 使用。
-	 *
-	 * 後續實作「下一題」時，也可以拿來保存
-	 * client-side 當下顯示狀態。
-	 */
 	let localPractice =
 		$state<PracticeView | null>(
 			null
@@ -63,13 +57,6 @@
 		);
 
 
-	/*
-	 * 登入使用者：
-	 * data.practice
-	 *
-	 * Guest：
-	 * localPractice
-	 */
 	let practice =
 		$derived(
 			localPractice ??
@@ -106,10 +93,6 @@
 
 
 	onMount(async () => {
-		/*
-		 * 登入使用者：
-		 * server load 已經提供 practice。
-		 */
 		if (data.practice) {
 			return;
 		}
@@ -177,68 +160,79 @@
 			return;
 		}
 
-		const currentIndex = 0;
-
-		const questionState =
-			state.questions[
-				currentIndex
-			];
-
-		if (!questionState) {
-			setGuestError(
-				'找不到目前題目。'
-			);
-
-			return;
-		}
-
 		try {
-			const response =
-				await fetch(
-					`/practice/${encodeURIComponent(
-						data.bank.slug
-					)}/question`,
-					{
-						method:
-							'POST',
+			for (
+				let index = 0;
+				index < state.questions.length;
+				index++
+			) {
+				const questionState =
+					state.questions[index];
 
-						headers: {
-							'content-type':
-								'application/json'
-						},
+				if (!questionState) {
+					continue;
+				}
 
-						body:
-							JSON.stringify({
-								questionId:
-									questionState
-										.questionId,
+				const response =
+					await fetch(
+						`/practice/${encodeURIComponent(
+							data.bank.slug
+						)}/question`,
+						{
+							method:
+								'POST',
 
-								optionIds:
-									questionState
-										.optionIds
-							})
-					}
-				);
+							headers: {
+								'content-type':
+									'application/json'
+							},
 
-			if (!response.ok) {
-				throw new Error(
-					'Failed to load question'
-				);
-			}
+							body:
+								JSON.stringify({
+									questionId:
+										questionState
+											.questionId,
 
-			const result =
-				await response.json() as {
+									optionIds:
+										questionState
+											.optionIds
+								})
+						}
+					);
+
+				if (
+					response.status === 404
+				) {
+					continue;
+				}
+
+				if (!response.ok) {
+					throw new Error(
+						'Failed to load question'
+					);
+				}
+
+				const result =
+					await response.json() as {
+						question:
+							PublicQuizQuestion;
+					};
+
+				localPractice = {
+					currentIndex:
+						index,
+					totalQuestions:
+						state.questions.length,
 					question:
-						PublicQuizQuestion;
+						result.question
 				};
 
-			localPractice = {
-				currentIndex,
-				totalQuestions:
-					state.questions.length,
-				question:
-					result.question
-			};
+				return;
+			}
+
+			setGuestError(
+				'這份練習的題目已全部失效，請重新開始。'
+			);
 		} catch {
 			errorMessage =
 				'無法載入題目，請重新開始練習。';
