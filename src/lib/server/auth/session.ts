@@ -43,6 +43,18 @@ function hashSessionToken(
 		.digest('hex');
 }
 
+export function getCurrentSessionTokenHash(
+	cookies: Cookies
+): string | null {
+	const token = cookies.get(
+		SESSION_COOKIE_NAME
+	);
+
+	return token
+		? hashSessionToken(token)
+		: null;
+}
+
 function getSessionExpiresAt(): Date {
 	return new Date(
 		Date.now() +
