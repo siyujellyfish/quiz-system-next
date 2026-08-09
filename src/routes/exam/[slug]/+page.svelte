@@ -4,6 +4,10 @@
 	} from '$app/navigation';
 
 	import {
+		Dialog,
+		Portal
+	} from '@skeletonlabs/skeleton-svelte';
+	import {
 		onMount
 	} from 'svelte';
 
@@ -972,143 +976,150 @@
 {/if}
 
 
-{#if showSubmitConfirm && session && !session.result}
-	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-		role="presentation"
-	>
-		<section
-			class="card preset-outlined w-full max-w-md p-6"
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="submit-exam-title"
+<Dialog
+	role="alertdialog"
+	open={
+		showSubmitConfirm &&
+		Boolean(session) &&
+		!session?.result
+	}
+	onOpenChange={(details) => {
+		showSubmitConfirm = details.open;
+	}}
+>
+	<Portal>
+		<Dialog.Backdrop
+			class="fixed inset-0 z-50 bg-black/60"
+		/>
+		<Dialog.Positioner
+			class="fixed inset-0 z-50 flex items-center justify-center p-4"
 		>
-			<h2
-				id="submit-exam-title"
-				class="text-xl font-bold"
+			<Dialog.Content
+				class="card w-full max-w-md bg-surface-50-950 p-6 shadow-xl"
 			>
-				確認交卷？
-			</h2>
-
-			<div
-				class="mt-5 grid grid-cols-2 gap-4"
-			>
-				<div
-					class="rounded-container bg-surface-100-900 p-4 text-center"
-				>
-					<p class="text-sm opacity-60">
-						已答
-					</p>
-					<p class="mt-1 text-2xl font-bold">
-						{answeredCount}
-					</p>
-				</div>
+				<Dialog.Title class="text-xl font-bold">
+					確認交卷？
+				</Dialog.Title>
 
 				<div
-					class="rounded-container bg-surface-100-900 p-4 text-center"
+					class="mt-5 grid grid-cols-2 gap-4"
 				>
-					<p class="text-sm opacity-60">
-						未答
-					</p>
-					<p
-						class="mt-1 text-2xl font-bold"
-						class:text-error-700-300={
-							unansweredCount > 0
-						}
+					<div
+						class="rounded-container bg-surface-100-900 p-4 text-center"
 					>
-						{unansweredCount}
-					</p>
+						<p class="text-sm opacity-60">
+							已答
+						</p>
+						<p class="mt-1 text-2xl font-bold">
+							{answeredCount}
+						</p>
+					</div>
+
+					<div
+						class="rounded-container bg-surface-100-900 p-4 text-center"
+					>
+						<p class="text-sm opacity-60">
+							未答
+						</p>
+						<p
+							class="mt-1 text-2xl font-bold"
+							class:text-error-700-300={
+								unansweredCount > 0
+							}
+						>
+							{unansweredCount}
+						</p>
+					</div>
 				</div>
-			</div>
 
-			{#if unansweredCount > 0}
-				<p
-					class="mt-4 text-sm text-error-700-300"
+				{#if unansweredCount > 0}
+					<Dialog.Description
+						class="mt-4 text-sm text-error-700-300"
+					>
+						未作答題目在交卷後會視為答錯。
+					</Dialog.Description>
+				{/if}
+
+				<div
+					class="mt-6 flex justify-end gap-3"
 				>
-					未作答題目在交卷後會視為答錯。
-				</p>
-			{/if}
+					<Dialog.CloseTrigger
+						type="button"
+						class="btn preset-tonal"
+						disabled={submitting}
+					>
+						繼續作答
+					</Dialog.CloseTrigger>
 
-			<div
-				class="mt-6 flex justify-end gap-3"
-			>
-				<button
-					type="button"
-					class="btn preset-tonal"
-					disabled={submitting}
-					onclick={() => {
-						showSubmitConfirm = false;
-					}}
-				>
-					繼續作答
-				</button>
-
-				<button
-					type="button"
-					class="btn preset-filled-primary-500"
-					disabled={submitting}
-					onclick={submitExam}
-				>
-					{submitting
-						? '交卷中...'
-						: '確認交卷'}
-				</button>
-			</div>
-		</section>
-	</div>
-{/if}
-
-
-{#if showQuestionGrid && session}
-	<div
-		class="fixed inset-0 z-50 flex items-end bg-black/60 p-4 lg:hidden"
-		role="presentation"
-	>
-		<section
-			class="card preset-outlined max-h-[80vh] w-full overflow-y-auto p-5"
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="question-grid-title"
-		>
-			<div
-				class="flex items-center justify-between gap-3"
-			>
-				<h2
-					id="question-grid-title"
-					class="text-lg font-bold"
-				>
-					題號
-				</h2>
-
-				<button
-					type="button"
-					class="btn preset-tonal"
-					onclick={() => {
-						showQuestionGrid = false;
-					}}
-				>
-					關閉
-				</button>
-			</div>
-
-			<div
-				class="mt-5 grid grid-cols-5 gap-2 sm:grid-cols-8"
-			>
-				{#each
-					session.questions as _, index
-				}
 					<button
 						type="button"
-						class={getQuestionButtonClass(
-							index
-						)}
-						onclick={() =>
-							goToQuestion(index)}
+						class="btn preset-filled-primary-500"
+						disabled={submitting}
+						onclick={submitExam}
 					>
-						{index + 1}
+						{submitting
+							? '交卷中...'
+							: '確認交卷'}
 					</button>
-				{/each}
-			</div>
-		</section>
-	</div>
-{/if}
+				</div>
+			</Dialog.Content>
+		</Dialog.Positioner>
+	</Portal>
+</Dialog>
+
+
+<Dialog
+	open={showQuestionGrid && Boolean(session)}
+	onOpenChange={(details) => {
+		showQuestionGrid = details.open;
+	}}
+>
+	<Portal>
+		<Dialog.Backdrop
+			class="fixed inset-0 z-50 bg-black/60 lg:hidden"
+		/>
+		<Dialog.Positioner
+			class="fixed inset-0 z-50 flex items-end p-4 lg:hidden"
+		>
+			<Dialog.Content
+				class="card max-h-[80vh] w-full overflow-y-auto bg-surface-50-950 p-5 shadow-xl"
+			>
+				<div
+					class="flex items-center justify-between gap-3"
+				>
+					<Dialog.Title class="text-lg font-bold">
+						題號
+					</Dialog.Title>
+
+					<Dialog.CloseTrigger
+						type="button"
+						class="btn preset-tonal"
+					>
+						關閉
+					</Dialog.CloseTrigger>
+				</div>
+
+				{#if session}
+					<div
+						class="mt-5 grid grid-cols-5 gap-2 sm:grid-cols-8"
+					>
+						{#each
+							session.questions as _, index
+						}
+							<button
+								type="button"
+								class={getQuestionButtonClass(
+									index
+								)}
+								onclick={() =>
+									goToQuestion(index)}
+							>
+								{index + 1}
+							</button>
+						{/each}
+					</div>
+				{/if}
+			</Dialog.Content>
+		</Dialog.Positioner>
+	</Portal>
+</Dialog>

@@ -7,6 +7,8 @@
 		PageProps
 	} from './$types';
 
+	import { toaster } from '$lib/ui/toaster';
+
 	let {
 		data,
 		form
@@ -16,6 +18,12 @@
 		if (!data.passwordChanged) {
 			return;
 		}
+
+		toaster.success({
+			title: '密碼已更新',
+			description:
+				'其他裝置與瀏覽器的登入工作階段已登出。'
+		});
 
 		const url = new URL(window.location.href);
 		url.searchParams.delete('passwordChanged');
@@ -44,15 +52,6 @@
 			查看帳號資訊與管理登入密碼。
 		</p>
 	</header>
-
-	{#if data.passwordChanged}
-		<div
-			class="card preset-tonal-success-500 mb-6 p-4 text-sm"
-			role="status"
-		>
-			密碼已更新，其他裝置與瀏覽器的登入工作階段已登出。
-		</div>
-	{/if}
 
 	<section
 		class="card preset-outlined p-6"

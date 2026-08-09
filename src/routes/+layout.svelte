@@ -7,6 +7,8 @@
 
 	import AppHeader
 		from '$lib/components/global/AppHeader.svelte';
+	import AppToaster
+		from '$lib/components/global/AppToaster.svelte';
 
 	let {
 		data,
@@ -21,3 +23,5 @@
 		{@render children()}
 	</main>
 </div>
+
+<AppToaster />
