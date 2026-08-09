@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
-		invalidateAll,
-		goto
+		goto,
+		invalidateAll
 	} from '$app/navigation';
 
 	import {
@@ -49,6 +49,16 @@
 
 	let localPractice =
 		$state<PracticeView | null>(
+			null
+		);
+
+	let localAnsweredCount =
+		$state<number | null>(
+			null
+		);
+
+	let localCorrectCount =
+		$state<number | null>(
 			null
 		);
 
@@ -102,6 +112,42 @@
 		$derived(
 			practice?.totalQuestions ??
 				0
+		);
+
+	let answeredCount =
+		$derived(
+			localAnsweredCount ??
+				data.practice
+					?.answeredCount ??
+				0
+		);
+
+	let correctCount =
+		$derived(
+			localCorrectCount ??
+				data.practice
+					?.correctCount ??
+				0
+		);
+
+	let accuracy =
+		$derived(
+			answeredCount === 0
+				? null
+				: correctCount /
+					answeredCount *
+					100
+		);
+
+	let accuracyText =
+		$derived(
+			accuracy === null
+				? '—'
+				: Number.isInteger(
+					accuracy
+				)
+					? `${accuracy}%`
+					: `${accuracy.toFixed(1)}%`
 		);
 
 	let loading =
@@ -174,6 +220,11 @@
 
 			return;
 		}
+
+		localAnsweredCount =
+			session.answeredCount;
+		localCorrectCount =
+			session.correctCount;
 
 		if (
 			session.questionsState
@@ -268,6 +319,11 @@
 				nextSession
 			);
 
+			localAnsweredCount =
+				nextSession.answeredCount;
+			localCorrectCount =
+				nextSession.correctCount;
+
 			localPractice = {
 				currentIndex: index,
 				totalQuestions:
@@ -331,6 +387,18 @@
 				await response.json() as
 					QuizAnswerResult;
 
+			const nextAnsweredCount =
+				answeredCount + 1;
+
+			const nextCorrectCount =
+				correctCount +
+				(result.correct ? 1 : 0);
+
+			localAnsweredCount =
+				nextAnsweredCount;
+			localCorrectCount =
+				nextCorrectCount;
+
 			if (isGuest) {
 				const session =
 					readGuestSession();
@@ -352,7 +420,11 @@
 				writeGuestSession({
 					...session,
 					currentIndex:
-						nextIndex
+						nextIndex,
+					answeredCount:
+						nextAnsweredCount,
+					correctCount:
+						nextCorrectCount
 				});
 
 				answerResult = {
@@ -406,7 +478,11 @@
 				}
 			} else {
 				localPractice = null;
+
 				await invalidateAll();
+
+				localAnsweredCount = null;
+				localCorrectCount = null;
 			}
 
 			selectedOptionId = null;
@@ -489,8 +565,12 @@
 				練習完成
 			</h2>
 
-			<p class="mt-2 opacity-60">
-				本次練習已全部作答完成。
+			<p class="mt-3 text-lg font-semibold">
+				正確率 {accuracyText}
+			</p>
+
+			<p class="mt-1 text-sm opacity-60">
+				正確 {correctCount} / 已答 {answeredCount}
 			</p>
 
 			<button
@@ -524,17 +604,38 @@
 
 	{:else}
 		<div
-			class="mb-4 flex items-center justify-between text-sm"
+			class="mb-4 flex items-end justify-between gap-4 text-sm"
 		>
-			<span class="opacity-60">
-				題目
-			</span>
+			<div>
+				<span class="opacity-60">
+					題目
+				</span>
 
-			<strong>
-				{currentIndex + 1}
-				/
-				{totalQuestions}
-			</strong>
+				<strong class="ml-2">
+					{currentIndex + 1}
+					/
+					{totalQuestions}
+				</strong>
+			</div>
+
+			<div class="text-right">
+				<span class="opacity-60">
+					即時正確率
+				</span>
+
+				<strong
+					class="ml-2"
+					class:text-success-700-300={
+						answeredCount > 0
+					}
+				>
+					{accuracyText}
+				</strong>
+
+				<span class="ml-2 opacity-60">
+					{correctCount} / {answeredCount}
+				</span>
+			</div>
 		</div>
 
 
@@ -563,19 +664,7 @@
 
 
 		{#if answerResult}
-			<div
-				class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-			>
-				<p
-					class:font-semibold={true}
-					class:text-success-700-300={answerResult.correct}
-					class:text-error-700-300={!answerResult.correct}
-				>
-					{answerResult.correct
-						? '✓ 回答正確'
-						: '✕ 回答錯誤'}
-				</p>
-
+			<div class="mt-5 flex justify-end">
 				{#if answerResult.completed}
 					<button
 						type="button"
