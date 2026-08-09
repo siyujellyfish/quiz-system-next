@@ -15,6 +15,17 @@
 		description:
 			form?.values?.description ?? ''
 	});
+
+	let nameError = $derived(
+		form?.errors && 'name' in form.errors
+			? form.errors.name
+			: undefined
+	);
+	let slugError = $derived(
+		form?.errors && 'slug' in form.errors
+			? form.errors.slug
+			: undefined
+	);
 </script>
 
 <svelte:head>
@@ -78,9 +89,9 @@
 				autocomplete="off"
 			/>
 
-			{#if form?.errors?.name}
+			{#if nameError}
 				<p class="mt-2 text-sm text-error-700-300">
-					{form.errors.name}
+					{nameError}
 				</p>
 			{/if}
 		</div>
@@ -104,9 +115,9 @@
 				placeholder="example-bank"
 			/>
 
-			{#if form?.errors?.slug}
+			{#if slugError}
 				<p class="mt-2 text-sm text-error-700-300">
-					{form.errors.slug}
+					{slugError}
 				</p>
 			{/if}
 		</div>
