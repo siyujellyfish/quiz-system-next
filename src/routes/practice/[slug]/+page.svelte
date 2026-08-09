@@ -4,6 +4,7 @@
 		invalidateAll
 	} from '$app/navigation';
 
+	import { Progress } from '@skeletonlabs/skeleton-svelte';
 	import {
 		onMount
 	} from 'svelte';
@@ -148,6 +149,15 @@
 				)
 					? `${accuracy}%`
 					: `${accuracy.toFixed(1)}%`
+		);
+
+	let progressValue =
+		$derived(
+			totalQuestions === 0
+				? 0
+				: (currentIndex + 1) /
+					totalQuestions *
+					100
 		);
 
 	let loading =
@@ -550,11 +560,20 @@
 
 	{#if loading}
 		<section
-			class="card preset-outlined p-8 text-center"
+			class="card preset-outlined space-y-4 p-6"
+			aria-label="正在載入題目"
 		>
-			<p class="opacity-60">
-				正在載入題目...
-			</p>
+			<div
+				class="placeholder h-7 w-2/3 animate-pulse"
+				aria-hidden="true"
+			></div>
+			<div class="space-y-3" aria-hidden="true">
+				<div class="placeholder h-14 animate-pulse"></div>
+				<div class="placeholder h-14 animate-pulse"></div>
+				<div class="placeholder h-14 animate-pulse"></div>
+				<div class="placeholder h-14 animate-pulse"></div>
+			</div>
+			<span class="sr-only">正在載入題目...</span>
 		</section>
 
 	{:else if practiceCompleted}
@@ -639,19 +658,15 @@
 		</div>
 
 
-		<div
-			class="mb-6 h-2 overflow-hidden rounded-full bg-surface-200-800"
+		<Progress
+			value={progressValue}
+			class="mb-6"
+			aria-label="練習進度"
 		>
-			<div
-				class="h-full bg-primary-500 transition-[width]"
-				style:width={`${(
-					(
-						currentIndex + 1
-					) /
-					totalQuestions
-				) * 100}%`}
-			></div>
-		</div>
+			<Progress.Track class="h-2 bg-surface-200-800">
+				<Progress.Range class="bg-primary-500" />
+			</Progress.Track>
+		</Progress>
 
 
 		<QuestionCard
