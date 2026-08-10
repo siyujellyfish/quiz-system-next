@@ -4,7 +4,6 @@
 		QuizAnswerResult
 	} from '$lib/types/quiz';
 
-
 	type Props = {
 		question: PublicQuizQuestion;
 		answerResult?: QuizAnswerResult | null;
@@ -15,7 +14,6 @@
 		) => void;
 	};
 
-
 	let {
 		question,
 		answerResult = null,
@@ -24,13 +22,11 @@
 		onSelect = () => {}
 	}: Props = $props();
 
-
 	let disabled =
 		$derived(
 			submitting ||
 			answerResult !== null
 		);
-
 
 	function getOptionLabel(
 		index: number
@@ -39,7 +35,6 @@
 			65 + index
 		);
 	}
-
 
 	function isCorrectOption(
 		optionId: string
@@ -52,7 +47,6 @@
 		);
 	}
 
-
 	function isIncorrectSelection(
 		optionId: string
 	): boolean {
@@ -64,18 +58,19 @@
 		);
 	}
 
-
 	function getOptionClass(
 		optionId: string
 	): string {
 		const classes = [
-			'card',
-			'preset-outlined',
 			'flex',
 			'w-full',
 			'items-center',
 			'gap-3',
-			'p-4',
+			'rounded-container',
+			'border',
+			'border-surface-300-700',
+			'bg-surface-100-900',
+			'p-3.5',
 			'text-left',
 			'transition',
 			'disabled:cursor-not-allowed'
@@ -84,7 +79,7 @@
 		if (isCorrectOption(optionId)) {
 			classes.push(
 				'border-success-500',
-				'bg-success-500/20',
+				'bg-success-500/15',
 				'ring-1',
 				'ring-success-500/40'
 			);
@@ -93,7 +88,7 @@
 		) {
 			classes.push(
 				'border-error-500',
-				'bg-error-500/20',
+				'bg-error-500/15',
 				'ring-1',
 				'ring-error-500/40'
 			);
@@ -110,13 +105,12 @@
 		} else if (!disabled) {
 			classes.push(
 				'hover:border-primary-500',
-				'hover:bg-primary-500/5'
+				'hover:bg-surface-200-800'
 			);
 		}
 
 		return classes.join(' ');
 	}
-
 
 	function getResultLabel(
 		optionId: string
@@ -136,16 +130,12 @@
 	}
 </script>
 
-
-<section
-	class="card preset-outlined p-5 md:p-7"
->
+<section class="app-panel p-5 md:p-6">
 	<h2
-		class="text-lg font-semibold leading-relaxed md:text-xl"
+		class="whitespace-pre-wrap text-lg font-bold leading-relaxed md:text-xl"
 	>
 		{question.prompt}
 	</h2>
-
 
 	<div class="mt-6 space-y-3">
 		{#each
@@ -167,7 +157,7 @@
 					)}
 			>
 				<span
-					class="flex size-7 shrink-0 items-center justify-center rounded-full border text-sm font-semibold"
+					class="flex size-7 shrink-0 items-center justify-center rounded-base border border-surface-400-600 bg-surface-50-950 font-mono text-xs font-bold"
 				>
 					{getOptionLabel(index)}
 				</span>
