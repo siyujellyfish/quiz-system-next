@@ -7,7 +7,7 @@
 		Dialog,
 		Portal
 	} from '@skeletonlabs/skeleton-svelte';
-	import { Trash2 } from 'lucide-svelte';
+	import { Trash2 } from '@lucide/svelte';
 
 	import type {
 		PageProps
