@@ -96,6 +96,7 @@
 	);
 
 	let dirty = $derived(
+		Boolean(message) ||
 		fingerprint(prompt, options) !== baseline
 	);
 
