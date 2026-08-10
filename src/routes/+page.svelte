@@ -29,7 +29,7 @@
 		Target,
 		Timer,
 		Trash2
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 
 	import QuestionBankPicker
 		from '$lib/components/quiz/QuestionBankPicker.svelte';
