@@ -3,9 +3,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { Pool } from '@neondatabase/serverless';
 import { config } from "dotenv";
 import { inArray } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle as drizzleNeon } from 'drizzle-orm/neon-serverless';
+import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import {
@@ -25,17 +27,51 @@ config({
 
 config();
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl =
+	process.env.DATABASE_URL_UNPOOLED ??
+	process.env.DATABASE_URL;
 
 if (!databaseUrl) {
-	throw new Error("DATABASE_URL is not defined");
+	throw new Error(
+		"DATABASE_URL_UNPOOLED or DATABASE_URL is not defined",
+	);
 }
 
-const client = postgres(databaseUrl);
+function createNeonDatabase(url: string) {
+	const pool = new Pool({
+		connectionString: url,
+	});
 
-const db = drizzle({
-	client,
-});
+	return {
+		db: drizzleNeon(pool),
+		close: () => pool.end(),
+	};
+}
+
+type Database = ReturnType<
+	typeof createNeonDatabase
+>["db"];
+
+function createDatabase(url: string): {
+	db: Database;
+	close: () => Promise<void>;
+} {
+	if (process.env.DATABASE_DRIVER === 'postgres-js') {
+		const client = postgres(url);
+
+		return {
+			db: drizzlePostgres({
+				client,
+			}) as unknown as Database,
+			close: () => client.end(),
+		};
+	}
+
+	return createNeonDatabase(url);
+}
+
+const database = createDatabase(databaseUrl);
+const db = database.db;
 
 type SourceOption = {
 	id: string;
@@ -263,5 +299,5 @@ main()
 		process.exitCode = 1;
 	})
 	.finally(async () => {
-		await client.end();
+		await database.close();
 	});
