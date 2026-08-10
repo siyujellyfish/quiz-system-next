@@ -9,7 +9,7 @@
 		Portal,
 		Progress
 	} from '@skeletonlabs/skeleton-svelte';
-	import { RotateCcw } from 'lucide-svelte';
+	import { RotateCcw } from '@lucide/svelte';
 	import {
 		onMount
 	} from 'svelte';
