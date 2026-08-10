@@ -95,6 +95,7 @@ export type ExamResult = {
 
 export type ExamSession = {
 	version: 1;
+	attemptId: string | null;
 	startedAt: number;
 	currentIndex: number;
 	questions: PublicQuizQuestion[];
