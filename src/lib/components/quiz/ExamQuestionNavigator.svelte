@@ -3,6 +3,9 @@
 		Popover,
 		Portal
 	} from '@skeletonlabs/skeleton-svelte';
+	import {
+		onDestroy
+	} from 'svelte';
 
 	import type {
 		ExamSession
@@ -22,6 +25,8 @@
 		compact?: boolean;
 	};
 
+	const PREVIEW_CLOSE_DELAY_MS = 140;
+
 	let {
 		session,
 		reviewMode,
@@ -32,6 +37,8 @@
 
 	let page = $state(0);
 	let previewIndex = $state<number | null>(null);
+	let previewCloseTimer:
+		ReturnType<typeof setTimeout> | null = null;
 
 	let answeredCount = $derived(
 		Object.values(session.answers).filter(
@@ -61,6 +68,39 @@
 			session.currentIndex
 		);
 	});
+
+	function clearPreviewCloseTimer(): void {
+		if (!previewCloseTimer) {
+			return;
+		}
+
+		clearTimeout(previewCloseTimer);
+		previewCloseTimer = null;
+	}
+
+	function openPreview(index: number): void {
+		clearPreviewCloseTimer();
+		previewIndex = index;
+	}
+
+	function schedulePreviewClose(
+		index: number
+	): void {
+		clearPreviewCloseTimer();
+
+		previewCloseTimer = setTimeout(() => {
+			if (previewIndex === index) {
+				previewIndex = null;
+			}
+
+			previewCloseTimer = null;
+		}, PREVIEW_CLOSE_DELAY_MS);
+	}
+
+	function closePreview(): void {
+		clearPreviewCloseTimer();
+		previewIndex = null;
+	}
 
 	function getSelectedOptionId(
 		questionId: string
@@ -110,7 +150,9 @@
 		) {
 			classes.push(
 				'border-primary-500',
-				'bg-primary-500/10'
+				'bg-primary-500/20',
+				'ring-1',
+				'ring-primary-500/35'
 			);
 		}
 
@@ -122,7 +164,7 @@
 		) {
 			classes.push(
 				'border-success-500',
-				'bg-success-500/10'
+				'bg-success-500/15'
 			);
 		}
 
@@ -134,8 +176,12 @@
 			Math.max(0, nextPage),
 			pageCount - 1
 		);
-		previewIndex = null;
+		closePreview();
 	}
+
+	onDestroy(() => {
+		clearPreviewCloseTimer();
+	});
 </script>
 
 <div>
@@ -169,30 +215,33 @@
 				autoFocus={false}
 				onOpenChange={(details) => {
 					if (!details.open && previewIndex === index) {
-						previewIndex = null;
+						closePreview();
 					}
 				}}
 				positioning={{
 					placement: compact ? 'top' : 'left',
-					gutter: 10
+					gutter: 8
 				}}
 			>
 				<Popover.Trigger
 					type="button"
 					class={getButtonClass(index)}
 					onmouseenter={() => {
-						previewIndex = index;
+						openPreview(index);
 					}}
 					onmouseleave={() => {
-						previewIndex = null;
+						schedulePreviewClose(index);
 					}}
 					onfocus={() => {
-						previewIndex = index;
+						openPreview(index);
 					}}
 					onblur={() => {
-						previewIndex = null;
+						schedulePreviewClose(index);
 					}}
-					onclick={() => onSelect(index)}
+					onclick={() => {
+						closePreview();
+						onSelect(index);
+					}}
 				>
 					{index + 1}
 				</Popover.Trigger>
@@ -202,10 +251,10 @@
 						<Popover.Content
 							class="card w-[min(24rem,calc(100vw-2rem))] border border-surface-300-700 bg-surface-50-950 p-4 shadow-xl"
 							onmouseenter={() => {
-								previewIndex = index;
+								openPreview(index);
 							}}
 							onmouseleave={() => {
-								previewIndex = null;
+								schedulePreviewClose(index);
 							}}
 						>
 							<div
