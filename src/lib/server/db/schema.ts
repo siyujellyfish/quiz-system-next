@@ -12,8 +12,10 @@ import {
 	varchar,
 	timestamp
 } from "drizzle-orm/pg-core";
+import { sql } from 'drizzle-orm';
 
 import type {
+	ExamAnswers,
 	PracticeQuestionsState
 } from '$lib/types/quiz';
 
@@ -246,6 +248,78 @@ export const userWrongQuestions = pgTable(
 	]
 );
 
+export const examAttempts = pgTable(
+	'exam_attempts',
+	{
+		id: uuid('id')
+			.defaultRandom()
+			.primaryKey(),
+
+		userId: uuid('user_id')
+			.notNull()
+			.references(
+				() => users.id,
+				{
+					onDelete: 'cascade'
+				}
+			),
+
+		bankId: uuid('bank_id')
+			.references(
+				() => questionBanks.id,
+				{
+					onDelete: 'set null'
+				}
+			),
+
+		bankName: varchar('bank_name', {
+			length: 128
+		}).notNull(),
+
+		startedAt: timestamp('started_at', {
+			withTimezone: true,
+			mode: 'date'
+		})
+			.defaultNow()
+			.notNull(),
+
+		submittedAt: timestamp('submitted_at', {
+			withTimezone: true,
+			mode: 'date'
+		}),
+
+		totalQuestions: integer('total_questions')
+			.notNull(),
+
+		answeredCount: integer('answered_count'),
+		correctCount: integer('correct_count'),
+		incorrectCount: integer('incorrect_count'),
+		elapsedSeconds: integer('elapsed_seconds'),
+
+		answers: jsonb('answers')
+			.$type<ExamAnswers>()
+	},
+	(table) => [
+		index('exam_attempts_user_submitted_at_idx')
+			.on(
+				table.userId,
+				table.submittedAt
+			),
+
+		index('exam_attempts_bank_id_idx')
+			.on(table.bankId),
+
+		uniqueIndex('exam_attempts_active_user_bank_uidx')
+			.on(
+				table.userId,
+				table.bankId
+			)
+			.where(
+				sql`${table.submittedAt} is null`
+			)
+	]
+);
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
@@ -260,3 +334,6 @@ export type NewQuestionOption = typeof questionOptions.$inferInsert;
 
 export type PracticeProgress = typeof practiceProgress.$inferSelect;
 export type NewPracticeProgress = typeof practiceProgress.$inferInsert;
+
+export type ExamAttempt = typeof examAttempts.$inferSelect;
+export type NewExamAttempt = typeof examAttempts.$inferInsert;
