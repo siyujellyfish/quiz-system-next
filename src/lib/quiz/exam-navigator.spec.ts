@@ -8,7 +8,8 @@ import {
 	EXAM_NAVIGATOR_PAGE_SIZE,
 	getExamNavigatorPage,
 	getExamNavigatorPageCount,
-	getExamNavigatorRange
+	getExamNavigatorRange,
+	getExamNavigatorRangeLabel
 } from './exam-navigator';
 
 describe('exam navigator paging', () => {
@@ -55,5 +56,20 @@ describe('exam navigator paging', () => {
 			start: 150,
 			end: 153
 		});
+	});
+
+	it('formats actual question ranges for pagination controls', () => {
+		expect(
+			getExamNavigatorRangeLabel(153, 0)
+		).toBe('1-50');
+		expect(
+			getExamNavigatorRangeLabel(153, 1)
+		).toBe('51-100');
+		expect(
+			getExamNavigatorRangeLabel(153, 2)
+		).toBe('101-150');
+		expect(
+			getExamNavigatorRangeLabel(153, 3)
+		).toBe('151-153');
 	});
 });
