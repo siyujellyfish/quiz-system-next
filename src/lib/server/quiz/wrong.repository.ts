@@ -1,7 +1,8 @@
 import {
 	and,
 	countDistinct,
-	eq
+	eq,
+	sql
 } from 'drizzle-orm';
 
 
@@ -157,4 +158,34 @@ export async function deleteWrongQuestion(
 				)
 			)
 		);
+}
+
+
+export async function deleteWrongQuestionsByBank(
+	userId: string,
+	bankId: string
+): Promise<number> {
+	const deleted = await db
+		.delete(userWrongQuestions)
+		.where(
+			and(
+				eq(
+					userWrongQuestions.userId,
+					userId
+				),
+				sql<boolean>`
+					${userWrongQuestions.questionId} in (
+						select ${questions.id}
+						from ${questions}
+						where ${questions.bankId} = ${bankId}
+					)
+				`
+			)
+		)
+		.returning({
+			questionId:
+				userWrongQuestions.questionId
+		});
+
+	return deleted.length;
 }
