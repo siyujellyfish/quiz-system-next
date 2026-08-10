@@ -16,13 +16,20 @@
 		optionContent?: Record<number, string>;
 	};
 
+	type LocalOption = OptionValue & {
+		key: string;
+	};
+
 	type Props = {
 		values: Values;
 		errors?: Errors;
 		message?: string;
 		submitLabel: string;
-		cancelHref: string;
+		cancelHref?: string;
 		formAction?: string;
+		hiddenFields?: Record<string, string>;
+		onDirtyChange?: (dirty: boolean) => void;
+		onCancel?: () => void;
 	};
 
 	let {
@@ -31,21 +38,49 @@
 		message,
 		submitLabel,
 		cancelHref,
-		formAction
+		formAction,
+		hiddenFields = {},
+		onDirtyChange,
+		onCancel
 	}: Props = $props();
 
-	let nextKey = $state(values.options.length);
+	let nextKey = $state(0);
+	let prompt = $state('');
+	let options = $state<LocalOption[]>([]);
+	let baseline = $state('');
 
-	let options = $state(
-		values.options.map(
+	function fingerprint(
+		promptValue: string,
+		optionValues: Array<Pick<LocalOption, 'id' | 'content' | 'isCorrect'>>
+	): string {
+		return JSON.stringify({
+			prompt: promptValue,
+			options: optionValues.map((option) => ({
+				id: option.id,
+				content: option.content,
+				isCorrect: option.isCorrect
+			}))
+		});
+	}
+
+	$effect(() => {
+		const incoming = values;
+
+		prompt = incoming.prompt;
+		options = incoming.options.map(
 			(option, index) => ({
 				...option,
 				key:
 					option.id ??
 					`new-${index}`
 			})
-		)
-	);
+		);
+		nextKey = incoming.options.length;
+		baseline = fingerprint(
+			incoming.prompt,
+			incoming.options
+		);
+	});
 
 	let serializedOptions = $derived(
 		JSON.stringify(
@@ -56,6 +91,14 @@
 			}))
 		)
 	);
+
+	let dirty = $derived(
+		fingerprint(prompt, options) !== baseline
+	);
+
+	$effect(() => {
+		onDirtyChange?.(dirty);
+	});
 
 	function addOption(): void {
 		options.push({
@@ -132,6 +175,10 @@
 		value={serializedOptions}
 	/>
 
+	{#each Object.entries(hiddenFields) as [name, value]}
+		<input type="hidden" {name} {value} />
+	{/each}
+
 	<label class="label">
 		<span class="label-text">
 			題目內容
@@ -142,7 +189,8 @@
 			name="prompt"
 			rows="5"
 			required
-		>{values.prompt}</textarea>
+			bind:value={prompt}
+		></textarea>
 
 		{#if errors?.prompt}
 			<span class="text-sm text-error-700-300">
@@ -271,12 +319,22 @@
 	<div
 		class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"
 	>
-		<a
-			href={cancelHref}
-			class="btn preset-tonal"
-		>
-			取消
-		</a>
+		{#if onCancel}
+			<button
+				type="button"
+				class="btn preset-tonal"
+				onclick={onCancel}
+			>
+				取消
+			</button>
+		{:else if cancelHref}
+			<a
+				href={cancelHref}
+				class="btn preset-tonal"
+			>
+				取消
+			</a>
+		{/if}
 
 		<button
 			type="submit"
