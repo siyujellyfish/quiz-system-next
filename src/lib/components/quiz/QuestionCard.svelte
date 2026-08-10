@@ -58,6 +58,15 @@
 		);
 	}
 
+	function isPendingSelection(
+		optionId: string
+	): boolean {
+		return (
+			!answerResult &&
+			selectedOptionId === optionId
+		);
+	}
+
 	function getOptionClass(
 		optionId: string
 	): string {
@@ -78,34 +87,86 @@
 
 		if (isCorrectOption(optionId)) {
 			classes.push(
+				'border-2',
 				'border-success-500',
-				'bg-success-500/15',
-				'ring-1',
-				'ring-success-500/40'
+				'bg-success-500/20',
+				'ring-2',
+				'ring-success-500/30'
+			);
+		} else if (
+			isIncorrectSelection(optionId)
+		) {
+			classes.push(
+				'border-2',
+				'border-error-500',
+				'bg-error-500/20',
+				'ring-2',
+				'ring-error-500/30'
+			);
+		} else if (
+			isPendingSelection(optionId)
+		) {
+			classes.push(
+				'border-2',
+				'border-primary-500',
+				'bg-primary-500/20',
+				'ring-2',
+				'ring-primary-500/35',
+				'shadow-sm'
+			);
+		} else if (!disabled) {
+			classes.push(
+				'hover:border-primary-500',
+				'hover:bg-surface-200-800'
+			);
+		}
+
+		return classes.join(' ');
+	}
+
+	function getOptionMarkerClass(
+		optionId: string
+	): string {
+		const classes = [
+			'flex',
+			'size-7',
+			'shrink-0',
+			'items-center',
+			'justify-center',
+			'rounded-base',
+			'border',
+			'font-mono',
+			'text-xs',
+			'font-bold',
+			'transition'
+		];
+
+		if (isCorrectOption(optionId)) {
+			classes.push(
+				'border-success-500',
+				'bg-success-500',
+				'text-white'
 			);
 		} else if (
 			isIncorrectSelection(optionId)
 		) {
 			classes.push(
 				'border-error-500',
-				'bg-error-500/15',
-				'ring-1',
-				'ring-error-500/40'
+				'bg-error-500',
+				'text-white'
 			);
 		} else if (
-			!answerResult &&
-			selectedOptionId === optionId
+			isPendingSelection(optionId)
 		) {
 			classes.push(
 				'border-primary-500',
-				'bg-primary-500/10',
-				'ring-1',
-				'ring-primary-500/30'
+				'bg-primary-500',
+				'text-white'
 			);
-		} else if (!disabled) {
+		} else {
 			classes.push(
-				'hover:border-primary-500',
-				'hover:bg-surface-200-800'
+				'border-surface-400-600',
+				'bg-surface-50-950'
 			);
 		}
 
@@ -157,7 +218,9 @@
 					)}
 			>
 				<span
-					class="flex size-7 shrink-0 items-center justify-center rounded-base border border-surface-400-600 bg-surface-50-950 font-mono text-xs font-bold"
+					class={getOptionMarkerClass(
+						option.id
+					)}
 				>
 					{getOptionLabel(index)}
 				</span>

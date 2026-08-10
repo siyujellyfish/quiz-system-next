@@ -54,6 +54,12 @@ function getWorkspaceWhere(
 		sql<boolean>`(
 			${questions.prompt} ilike ${pattern}
 			or ${questions.id}::text ilike ${pattern}
+			or exists (
+				select 1
+				from ${questionOptions} as search_option
+				where search_option.question_id = ${questions.id}
+					and search_option.content ilike ${pattern}
+			)
 		)`
 	);
 }
