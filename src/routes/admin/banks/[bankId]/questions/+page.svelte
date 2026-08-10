@@ -23,15 +23,23 @@
 
 	import { toaster } from '$lib/ui/toaster';
 
+	type PendingNavigation = {
+		href: string;
+		keepFocus: boolean;
+		noScroll: boolean;
+		replaceState: boolean;
+	};
+
 	let {
 		data,
 		form
 	}: PageProps = $props();
 
 	let isDirty = $state(false);
-	let pendingHref = $state<string | null>(null);
+	let pendingNavigation = $state<PendingNavigation | null>(null);
 	let showUnsavedDialog = $state(false);
 	let searchValue = $state('');
+	let syncedServerQuery = $state('');
 	let healthValue = $state<'all' | 'healthy' | 'invalid'>('all');
 	let selectedQuestionId = $state('');
 	let searchTimer: ReturnType<typeof setTimeout> | null = null;
@@ -61,11 +69,25 @@
 	);
 
 	$effect(() => {
-		searchValue = data.filters.query;
+		const serverQuery = data.filters.query;
+
+		if (searchValue === syncedServerQuery) {
+			searchValue = serverQuery;
+		}
+
+		syncedServerQuery = serverQuery;
 		healthValue = data.filters.health;
 		selectedQuestionId =
 			data.workspace.currentQuestion?.id ?? '';
 	});
+
+	function normalizeSearch(
+		value: string
+	): string {
+		return value
+			.trim()
+			.slice(0, 200);
+	}
 
 	function buildWorkspaceHref(
 		input: {
@@ -75,9 +97,9 @@
 		}
 	): string {
 		const params = new URLSearchParams();
-		const query = (
+		const query = normalizeSearch(
 			input.query ?? data.filters.query
-		).trim();
+		);
 		const health =
 			input.health ?? data.filters.health;
 
@@ -103,32 +125,60 @@
 		}`;
 	}
 
-	function requestNavigation(href: string): void {
+	function performNavigation(
+		navigation: PendingNavigation
+	): void {
+		void goto(
+			navigation.href,
+			{
+				keepFocus: navigation.keepFocus,
+				noScroll: navigation.noScroll,
+				replaceState: navigation.replaceState
+			}
+		);
+	}
+
+	function requestNavigation(
+		href: string,
+		options: {
+			keepFocus?: boolean;
+			noScroll?: boolean;
+			replaceState?: boolean;
+		} = {}
+	): void {
+		const navigation: PendingNavigation = {
+			href,
+			keepFocus: options.keepFocus ?? false,
+			noScroll: options.noScroll ?? false,
+			replaceState: options.replaceState ?? false
+		};
+
 		if (isDirty) {
-			pendingHref = href;
+			pendingNavigation = navigation;
 			showUnsavedDialog = true;
 			return;
 		}
 
-		void goto(href);
+		performNavigation(navigation);
 	}
 
 	function discardAndNavigate(): void {
-		const href = pendingHref;
+		const navigation = pendingNavigation;
 
 		showUnsavedDialog = false;
-		pendingHref = null;
+		pendingNavigation = null;
 		isDirty = false;
 
-		if (href) {
-			void goto(href);
+		if (navigation) {
+			performNavigation(navigation);
 		}
 	}
 
 	function continueEditing(): void {
 		showUnsavedDialog = false;
-		pendingHref = null;
+		pendingNavigation = null;
 		searchValue = data.filters.query;
+		syncedServerQuery = data.filters.query;
 		healthValue = data.filters.health;
 		selectedQuestionId =
 			data.workspace.currentQuestion?.id ?? '';
@@ -140,9 +190,9 @@
 		}
 
 		searchTimer = setTimeout(() => {
-			const normalized = searchValue
-				.trim()
-				.slice(0, 200);
+			const normalized = normalizeSearch(
+				searchValue
+			);
 
 			if (normalized === data.filters.query) {
 				return;
@@ -153,7 +203,12 @@
 					query: normalized,
 					health: healthValue,
 					questionId: null
-				})
+				}),
+				{
+					keepFocus: true,
+					noScroll: true,
+					replaceState: true
+				}
 			);
 		}, 300);
 	}
@@ -180,7 +235,12 @@
 				query: searchValue,
 				health: value,
 				questionId: null
-			})
+			}),
+			{
+				keepFocus: true,
+				noScroll: true,
+				replaceState: true
+			}
 		);
 	}
 
@@ -198,7 +258,11 @@
 				query: searchValue,
 				health: healthValue,
 				questionId
-			})
+			}),
+			{
+				keepFocus: true,
+				noScroll: true
+			}
 		);
 	}
 
@@ -376,7 +440,12 @@
 				class="btn preset-tonal"
 				onclick={() =>
 					requestNavigation(
-						`/admin/banks/${data.bank.id}/questions`
+						`/admin/banks/${data.bank.id}/questions`,
+						{
+							keepFocus: true,
+							noScroll: true,
+							replaceState: true
+						}
 					)}
 			>
 				清除篩選
@@ -617,7 +686,7 @@
 	open={showUnsavedDialog}
 	onOpenChange={(details) => {
 		showUnsavedDialog = details.open;
-		if (!details.open && pendingHref) {
+		if (!details.open && pendingNavigation) {
 			continueEditing();
 		}
 	}}
