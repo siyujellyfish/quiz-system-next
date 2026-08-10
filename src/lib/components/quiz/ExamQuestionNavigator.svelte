@@ -330,31 +330,40 @@
 	</div>
 
 	{#if pageCount > 1}
-		<div
-			class="mt-4 flex items-center justify-between gap-2 border-t border-surface-300-700 pt-4"
+		<nav
+			class="mt-4 flex items-center justify-center border-t border-surface-300-700 pt-4"
+			aria-label="題號分頁"
 		>
-			<button
-				type="button"
-				class="btn preset-tonal"
-				disabled={page === 0}
-				onclick={() => goToPage(page - 1)}
+			<div
+				class="flex items-center divide-x divide-surface-300-700 overflow-hidden rounded-base border border-surface-300-700"
 			>
-				‹ 前 50 題
-			</button>
+				<button
+					type="button"
+					class="flex size-9 items-center justify-center transition hover:bg-surface-200-800 disabled:cursor-not-allowed disabled:opacity-30"
+					aria-label="前 50 題"
+					disabled={page === 0}
+					onclick={() => goToPage(page - 1)}
+				>
+					‹
+				</button>
 
-			<span class="text-xs font-semibold opacity-60">
-				{page + 1} / {pageCount}
-			</span>
+				<span
+					class="min-w-24 px-4 py-2 text-center text-sm font-semibold tabular-nums"
+				>
+					{range.start + 1}–{range.end}
+				</span>
 
-			<button
-				type="button"
-				class="btn preset-tonal"
-				disabled={page >= pageCount - 1}
-				onclick={() => goToPage(page + 1)}
-			>
-				後 50 題 ›
-			</button>
-		</div>
+				<button
+					type="button"
+					class="flex size-9 items-center justify-center transition hover:bg-surface-200-800 disabled:cursor-not-allowed disabled:opacity-30"
+					aria-label="後 50 題"
+					disabled={page >= pageCount - 1}
+					onclick={() => goToPage(page + 1)}
+				>
+					›
+				</button>
+			</div>
+		</nav>
 	{/if}
 </div>
 
