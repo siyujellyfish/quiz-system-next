@@ -135,6 +135,10 @@ export const load: PageServerLoad =
 						progress.answeredCount,
 					correctCount:
 						progress.correctCount,
+					coverage:
+						questionsState.coverage,
+					shuffleOptions:
+						questionsState.shuffleOptions,
 					question
 				}
 			};
