@@ -57,3 +57,19 @@ export function getExamNavigatorRange(
 		end
 	};
 }
+
+export function getExamNavigatorRangeLabel(
+	totalQuestions: number,
+	page: number
+): string {
+	const range = getExamNavigatorRange(
+		totalQuestions,
+		page
+	);
+
+	if (range.end <= range.start) {
+		return '';
+	}
+
+	return `${range.start + 1}-${range.end}`;
+}
