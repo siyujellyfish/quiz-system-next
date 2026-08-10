@@ -168,6 +168,7 @@ export async function createExamQuestions(
 					id: option.id,
 					content: option.content
 				})
+			)
 		})
 	);
 }
