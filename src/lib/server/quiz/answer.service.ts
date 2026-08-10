@@ -221,7 +221,7 @@ export async function answerUserPracticeQuestion(
 			}
 
 			if (completed) {
-				await tx
+				const deleted = await tx
 					.delete(practiceProgress)
 					.where(
 						and(
@@ -238,12 +238,23 @@ export async function answerUserPracticeQuestion(
 								progress.currentIndex
 							)
 						)
+					)
+					.returning({
+						userId:
+							practiceProgress.userId
+					});
+
+				if (deleted.length === 0) {
+					throw new PracticeAnswerError(
+						409,
+						'練習進度已被其他操作更新，請重新整理後再試'
 					);
+				}
 
 				return;
 			}
 
-			await tx
+			const updated = await tx
 				.update(practiceProgress)
 				.set({
 					currentIndex: nextIndex,
@@ -265,7 +276,18 @@ export async function answerUserPracticeQuestion(
 							progress.currentIndex
 						)
 					)
+				)
+				.returning({
+					currentIndex:
+						practiceProgress.currentIndex
+				});
+
+			if (updated.length === 0) {
+				throw new PracticeAnswerError(
+					409,
+					'練習進度已被其他操作更新，請重新整理後再試'
 				);
+			}
 		}
 	);
 

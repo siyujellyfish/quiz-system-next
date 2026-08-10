@@ -177,7 +177,8 @@ export async function createExamQuestions(
 export async function gradeExam(
 	bankId: string,
 	answers: ExamAnswers,
-	startedAt: number
+	startedAt: number,
+	endedAt = Date.now()
 ): Promise<ExamResult> {
 	const source =
 		await getExamSourceQuestions(
@@ -196,6 +197,17 @@ export async function gradeExam(
 		throw new ExamError(
 			400,
 			'考試開始時間無效'
+		);
+	}
+
+	if (
+		!Number.isFinite(endedAt) ||
+		endedAt < startedAt ||
+		endedAt > now + 60_000
+	) {
+		throw new ExamError(
+			400,
+			'考試結束時間無效'
 		);
 	}
 
@@ -283,8 +295,8 @@ export async function gradeExam(
 			Math.max(
 				0,
 				Math.floor(
-					(now - startedAt) /
-					1000
+					(endedAt - startedAt) /
+						1000
 				)
 			),
 		questions:
