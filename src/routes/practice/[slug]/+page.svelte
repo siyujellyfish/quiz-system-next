@@ -9,11 +9,9 @@
 		onMount
 	} from 'svelte';
 
-
 	import type {
 		PageProps
 	} from './$types';
-
 
 	import type {
 		GuestPracticeSession,
@@ -21,20 +19,16 @@
 		QuizAnswerResult
 	} from '$lib/types/quiz';
 
-
 	import QuestionCard
 		from '$lib/components/quiz/QuestionCard.svelte';
-
 
 	import {
 		getGuestPracticeStorageKey
 	} from '$lib/quiz/storage';
 
-
 	import {
 		parseGuestPracticeSession
 	} from '$lib/quiz/practice-state';
-
 
 	type PracticeView = {
 		currentIndex: number;
@@ -42,95 +36,74 @@
 		question: PublicQuizQuestion;
 	};
 
-
 	let {
 		data
 	}: PageProps = $props();
 
-
 	let localPractice =
-		$state<PracticeView | null>(
-			null
-		);
-
+		$state<PracticeView | null>(null);
 	let localAnsweredCount =
-		$state<number | null>(
-			null
-		);
-
+		$state<number | null>(null);
 	let localCorrectCount =
-		$state<number | null>(
-			null
-		);
-
+		$state<number | null>(null);
 	let guestInitialized =
 		$state(false);
-
 	let errorMessage =
-		$state<string | null>(
-			null
-		);
-
+		$state<string | null>(null);
 	let selectedOptionId =
-		$state<string | null>(
-			null
-		);
-
+		$state<string | null>(null);
 	let answerResult =
-		$state<QuizAnswerResult | null>(
-			null
-		);
-
+		$state<QuizAnswerResult | null>(null);
 	let submitting =
 		$state(false);
-
 	let loadingNext =
 		$state(false);
-
 	let practiceCompleted =
 		$state(false);
-
 
 	let practice =
 		$derived(
 			localPractice ??
 				data.practice
 		);
-
 	let question =
 		$derived(
-			practice?.question ??
-				null
+			practice?.question ?? null
 		);
-
 	let currentIndex =
 		$derived(
-			practice?.currentIndex ??
-				0
+			practice?.currentIndex ?? 0
 		);
-
 	let totalQuestions =
 		$derived(
-			practice?.totalQuestions ??
-				0
+			practice?.totalQuestions ?? 0
 		);
-
 	let answeredCount =
 		$derived(
 			localAnsweredCount ??
-				data.practice
-					?.answeredCount ??
+				data.practice?.answeredCount ??
 				0
 		);
-
 	let correctCount =
 		$derived(
 			localCorrectCount ??
-				data.practice
-					?.correctCount ??
+				data.practice?.correctCount ??
 				0
 		);
-
+	let incorrectCount =
+		$derived(
+			Math.max(
+				0,
+				answeredCount - correctCount
+			)
+		);
+	let unansweredCount =
+		$derived(
+			Math.max(
+				0,
+				totalQuestions - answeredCount
+			)
+		);
 	let accuracy =
 		$derived(
 			answeredCount === 0
@@ -139,38 +112,31 @@
 					answeredCount *
 					100
 		);
-
 	let accuracyText =
 		$derived(
 			accuracy === null
 				? '—'
-				: Number.isInteger(
-					accuracy
-				)
+				: Number.isInteger(accuracy)
 					? `${accuracy}%`
 					: `${accuracy.toFixed(1)}%`
 		);
-
 	let progressValue =
 		$derived(
 			totalQuestions === 0
 				? 0
-				: (currentIndex + 1) /
+				: answeredCount /
 					totalQuestions *
 					100
 		);
-
 	let loading =
 		$derived(
 			data.practice === null &&
 			!guestInitialized
 		);
-
 	let isGuest =
 		$derived(
 			data.practice === null
 		);
-
 
 	onMount(async () => {
 		if (data.practice) {
@@ -180,13 +146,11 @@
 		await loadGuestPractice();
 	});
 
-
 	function getGuestStorageKey(): string {
 		return getGuestPracticeStorageKey(
 			data.bank.slug
 		);
 	}
-
 
 	function readGuestSession():
 		GuestPracticeSession | null {
@@ -208,7 +172,6 @@
 		}
 	}
 
-
 	function writeGuestSession(
 		session: GuestPracticeSession
 	): void {
@@ -218,7 +181,6 @@
 		);
 	}
 
-
 	async function loadGuestPractice() {
 		const session =
 			readGuestSession();
@@ -227,7 +189,6 @@
 			setGuestError(
 				'找不到進行中的練習，請重新開始。'
 			);
-
 			return;
 		}
 
@@ -243,7 +204,6 @@
 			setGuestError(
 				'這份練習沒有可顯示的題目。'
 			);
-
 			return;
 		}
 
@@ -263,7 +223,6 @@
 			guestInitialized = true;
 		}
 	}
-
 
 	async function loadGuestQuestion(
 		session: GuestPracticeSession
@@ -349,7 +308,6 @@
 		return false;
 	}
 
-
 	async function submitAnswer(
 		optionId: string
 	) {
@@ -399,7 +357,6 @@
 
 			const nextAnsweredCount =
 				answeredCount + 1;
-
 			const nextCorrectCount =
 				correctCount +
 				(result.correct ? 1 : 0);
@@ -421,7 +378,6 @@
 
 				const nextIndex =
 					currentIndex + 1;
-
 				const completed =
 					nextIndex >=
 					session.questionsState
@@ -452,7 +408,6 @@
 			submitting = false;
 		}
 	}
-
 
 	async function nextQuestion() {
 		if (
@@ -488,9 +443,7 @@
 				}
 			} else {
 				localPractice = null;
-
 				await invalidateAll();
-
 				localAnsweredCount = null;
 				localCorrectCount = null;
 			}
@@ -505,7 +458,6 @@
 		}
 	}
 
-
 	async function finishPractice() {
 		if (isGuest) {
 			sessionStorage.removeItem(
@@ -516,7 +468,6 @@
 		await goto('/');
 	}
 
-
 	function setGuestError(
 		message: string
 	) {
@@ -525,189 +476,188 @@
 	}
 </script>
 
-
 <svelte:head>
-	<title>
-		{data.bank.name} | 練習
-	</title>
+	<title>{data.bank.name} | 練習</title>
 </svelte:head>
 
-
-<div
-	class="mx-auto w-full max-w-3xl p-4 md:p-6"
->
-	<header
-		class="mb-6 flex items-start justify-between gap-4"
-	>
-		<div>
-			<p class="text-sm opacity-60">
-				練習模式
-			</p>
-
-			<h1 class="mt-1 text-2xl font-bold">
-				{data.bank.name}
-			</h1>
-		</div>
-
-		<a
-			href="/"
-			class="btn preset-tonal"
+<div class="app-page">
+	<section class="app-panel overflow-hidden">
+		<header
+			class="flex flex-col gap-3 border-b border-surface-300-700 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6"
 		>
-			結束練習
-		</a>
-	</header>
-
-
-	{#if loading}
-		<section
-			class="card preset-outlined space-y-4 p-6"
-			aria-label="正在載入題目"
-		>
-			<div
-				class="placeholder h-7 w-2/3 animate-pulse"
-				aria-hidden="true"
-			></div>
-			<div class="space-y-3" aria-hidden="true">
-				<div class="placeholder h-14 animate-pulse"></div>
-				<div class="placeholder h-14 animate-pulse"></div>
-				<div class="placeholder h-14 animate-pulse"></div>
-				<div class="placeholder h-14 animate-pulse"></div>
+			<div>
+				<p class="quiz-eyebrow">PRACTICE MODE</p>
+				<h1 class="mt-1 text-2xl font-bold">練習模式</h1>
+				{#if question}
+					<p class="mt-1 text-sm opacity-60">
+						第 {currentIndex + 1} / {totalQuestions} 題 · 作答後立即判分。
+					</p>
+				{:else}
+					<p class="mt-1 text-sm opacity-60">{data.bank.name}</p>
+				{/if}
 			</div>
-			<span class="sr-only">正在載入題目...</span>
-		</section>
-
-	{:else if practiceCompleted}
-		<section
-			class="card preset-outlined p-8 text-center"
-		>
-			<h2 class="text-2xl font-bold">
-				練習完成
-			</h2>
-
-			<p class="mt-3 text-lg font-semibold">
-				正確率 {accuracyText}
-			</p>
-
-			<p class="mt-1 text-sm opacity-60">
-				正確 {correctCount} / 已答 {answeredCount}
-			</p>
-
-			<button
-				type="button"
-				class="btn preset-filled-primary-500 mt-6"
-				onclick={finishPractice}
-			>
-				返回首頁
-			</button>
-		</section>
-
-	{:else if !question}
-		<section
-			class="card preset-outlined p-8 text-center"
-		>
-			<h2 class="text-lg font-semibold">
-				無法繼續練習
-			</h2>
-
-			<p class="mt-2 opacity-60">
-				{errorMessage ?? '找不到目前題目。'}
-			</p>
 
 			<a
 				href="/"
-				class="btn preset-filled-primary-500 mt-6"
+				class="btn preset-tonal shrink-0"
 			>
-				返回首頁
+				結束練習
 			</a>
-		</section>
+		</header>
 
-	{:else}
-		<div
-			class="mb-4 flex items-end justify-between gap-4 text-sm"
-		>
-			<div>
-				<span class="opacity-60">
-					題目
-				</span>
-
-				<strong class="ml-2">
-					{currentIndex + 1}
-					/
-					{totalQuestions}
-				</strong>
-			</div>
-
-			<div class="text-right">
-				<span class="opacity-60">
-					即時正確率
-				</span>
-
-				<strong
-					class="ml-2"
-					class:text-success-700-300={
-						answeredCount > 0
-					}
+		{#if loading}
+			<div class="p-5 md:p-6">
+				<section
+					class="space-y-4"
+					aria-label="正在載入題目"
 				>
+					<div class="placeholder h-7 w-2/3 animate-pulse" aria-hidden="true"></div>
+					<div class="space-y-3" aria-hidden="true">
+						<div class="placeholder h-14 animate-pulse"></div>
+						<div class="placeholder h-14 animate-pulse"></div>
+						<div class="placeholder h-14 animate-pulse"></div>
+						<div class="placeholder h-14 animate-pulse"></div>
+					</div>
+					<span class="sr-only">正在載入題目...</span>
+				</section>
+			</div>
+
+		{:else if practiceCompleted}
+			<div class="p-8 text-center">
+				<p class="quiz-eyebrow">ROUND COMPLETE</p>
+				<h2 class="mt-2 text-3xl font-bold">練習完成</h2>
+				<p class="mt-4 text-4xl font-bold text-success-700-300">
 					{accuracyText}
-				</strong>
-
-				<span class="ml-2 opacity-60">
-					{correctCount} / {answeredCount}
-				</span>
+				</p>
+				<p class="mt-2 text-sm opacity-60">
+					正確 {correctCount} / 已答 {answeredCount}
+				</p>
+				<button
+					type="button"
+					class="btn preset-filled-primary-500 mt-6"
+					onclick={finishPractice}
+				>
+					返回首頁
+				</button>
 			</div>
-		</div>
 
-
-		<Progress
-			value={progressValue}
-			class="mb-6"
-			aria-label="練習進度"
-		>
-			<Progress.Track class="h-2 bg-surface-200-800">
-				<Progress.Range class="bg-primary-500" />
-			</Progress.Track>
-		</Progress>
-
-
-		<QuestionCard
-			{question}
-			{answerResult}
-			{selectedOptionId}
-			{submitting}
-			onSelect={submitAnswer}
-		/>
-
-
-		{#if answerResult}
-			<div class="mt-5 flex justify-end">
-				{#if answerResult.completed}
-					<button
-						type="button"
-						class="btn preset-filled-primary-500"
-						onclick={finishPractice}
-					>
-						完成練習
-					</button>
-				{:else}
-					<button
-						type="button"
-						class="btn preset-filled-primary-500"
-						disabled={loadingNext}
-						onclick={nextQuestion}
-					>
-						{loadingNext
-							? '載入中...'
-							: '下一題'}
-					</button>
-				{/if}
+		{:else if !question}
+			<div class="p-8 text-center">
+				<h2 class="text-lg font-semibold">無法繼續練習</h2>
+				<p class="mt-2 opacity-60">
+					{errorMessage ?? '找不到目前題目。'}
+				</p>
+				<a
+					href="/"
+					class="btn preset-filled-primary-500 mt-6"
+				>
+					返回首頁
+				</a>
 			</div>
-		{:else if errorMessage}
-			<p
-				class="mt-4 text-sm text-error-700-300"
-				role="alert"
+
+		{:else}
+			<div
+				class="grid gap-5 p-4 md:p-5 lg:grid-cols-[minmax(0,1fr)_18rem]"
 			>
-				{errorMessage}
-			</p>
+				<main class="min-w-0">
+					<div class="mb-3 flex items-center justify-between gap-3">
+						<p class="quiz-eyebrow">QUESTION {currentIndex + 1}</p>
+						<span class="badge preset-tonal-success">單選題</span>
+					</div>
+
+					<QuestionCard
+						{question}
+						{answerResult}
+						{selectedOptionId}
+						{submitting}
+						onSelect={submitAnswer}
+					/>
+
+					{#if errorMessage}
+						<p
+							class="mt-4 text-sm text-error-700-300"
+							role="alert"
+						>
+							{errorMessage}
+						</p>
+					{/if}
+				</main>
+
+				<aside>
+					<section class="quiz-side-panel lg:sticky lg:top-14">
+						<div class="flex items-center justify-between gap-3">
+							<h2 class="font-bold">本輪進度</h2>
+							<strong>{Math.round(progressValue)}%</strong>
+						</div>
+
+						<Progress
+							value={progressValue}
+							class="mt-3"
+							aria-label="練習進度"
+						>
+							<Progress.Track class="h-2 bg-surface-400-600">
+								<Progress.Range class="bg-primary-500" />
+							</Progress.Track>
+						</Progress>
+
+						<div class="mt-4 grid grid-cols-3 gap-2">
+							<div class="quiz-stat-tile border-success-500/50">
+								<p class="text-xs font-semibold text-success-700-300">正確</p>
+								<p class="mt-1 text-xl font-bold text-success-700-300">{correctCount}</p>
+							</div>
+							<div class="quiz-stat-tile border-error-500/50">
+								<p class="text-xs font-semibold text-error-700-300">錯誤</p>
+								<p class="mt-1 text-xl font-bold text-error-700-300">{incorrectCount}</p>
+							</div>
+							<div class="quiz-stat-tile">
+								<p class="text-xs font-semibold">未作答</p>
+								<p class="mt-1 text-xl font-bold">{unansweredCount}</p>
+							</div>
+						</div>
+
+						<div class="mt-4 flex items-center justify-between border-t border-surface-400-600 pt-4">
+							<span class="font-semibold">正確率</span>
+							<strong
+								class:text-success-700-300={answeredCount > 0}
+							>
+								{accuracyText}
+								<span class="ml-1 text-xs font-normal opacity-60">
+									({correctCount}/{answeredCount})
+								</span>
+							</strong>
+						</div>
+
+						<p class="mt-5 text-sm leading-relaxed opacity-65">
+							選項順序會依本輪設定固定；作答後顯示正解與下一題按鈕。
+						</p>
+
+						<div class="mt-6 text-center">
+							{#if answerResult}
+								{#if answerResult.completed}
+									<button
+										type="button"
+										class="btn preset-filled-primary-500 w-full"
+										onclick={finishPractice}
+									>
+										完成練習
+									</button>
+								{:else}
+									<button
+										type="button"
+										class="btn preset-filled-primary-500 w-full"
+										disabled={loadingNext}
+										onclick={nextQuestion}
+									>
+										{loadingNext ? '載入中...' : '下一題'}
+									</button>
+								{/if}
+							{:else}
+								<span class="text-sm font-semibold opacity-50">請先選擇答案</span>
+							{/if}
+						</div>
+					</section>
+				</aside>
+			</div>
 		{/if}
-	{/if}
+	</section>
 </div>
