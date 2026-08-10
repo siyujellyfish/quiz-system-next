@@ -143,11 +143,15 @@ export const load: PageServerLoad =
 
 						progress: {
 							completedQuestions,
-							totalQuestions
+							totalQuestions,
+							coverage:
+								progress.questionsState.coverage,
+							shuffleOptions:
+								progress.questionsState.shuffleOptions
 						}
 					};
-				}
-			)
+			}
+		)
 		};
 	};
 

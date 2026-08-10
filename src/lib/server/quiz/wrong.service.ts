@@ -18,6 +18,7 @@ import {
 
 import {
 	deleteWrongQuestion,
+	deleteWrongQuestionsByBank,
 	getWrongQuestionIds,
 	hasWrongQuestion
 } from './wrong.repository';
@@ -162,4 +163,15 @@ export async function answerWrongQuestion(
 			remainingCount === 0,
 		remainingCount
 	};
+}
+
+
+export async function clearWrongQuestions(
+	userId: string,
+	bankId: string
+): Promise<number> {
+	return deleteWrongQuestionsByBank(
+		userId,
+		bankId
+	);
 }

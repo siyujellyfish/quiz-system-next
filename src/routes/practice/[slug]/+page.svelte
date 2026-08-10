@@ -4,7 +4,12 @@
 		invalidateAll
 	} from '$app/navigation';
 
-	import { Progress } from '@skeletonlabs/skeleton-svelte';
+	import {
+		Dialog,
+		Portal,
+		Progress
+	} from '@skeletonlabs/skeleton-svelte';
+	import { RotateCcw } from '@lucide/svelte';
 	import {
 		onMount
 	} from 'svelte';
@@ -15,6 +20,8 @@
 
 	import type {
 		GuestPracticeSession,
+		PracticeCoverage,
+		PracticeQuestionsState,
 		PublicQuizQuestion,
 		QuizAnswerResult
 	} from '$lib/types/quiz';
@@ -33,6 +40,8 @@
 	type PracticeView = {
 		currentIndex: number;
 		totalQuestions: number;
+		coverage: PracticeCoverage;
+		shuffleOptions: boolean;
 		question: PublicQuizQuestion;
 	};
 
@@ -58,6 +67,8 @@
 		$state(false);
 	let loadingNext =
 		$state(false);
+	let restarting =
+		$state(false);
 	let practiceCompleted =
 		$state(false);
 
@@ -77,6 +88,14 @@
 	let totalQuestions =
 		$derived(
 			practice?.totalQuestions ?? 0
+		);
+	let coverage =
+		$derived(
+			practice?.coverage ?? 30
+		);
+	let shuffleOptions =
+		$derived(
+			practice?.shuffleOptions ?? true
 		);
 	let answeredCount =
 		$derived(
@@ -136,6 +155,10 @@
 	let isGuest =
 		$derived(
 			data.practice === null
+		);
+	let restartSettingText =
+		$derived(
+			`${coverage === 100 ? '全部題目' : `${coverage}% 題目`} · 選項${shuffleOptions ? '隨機' : '固定'}`
 		);
 
 	onMount(async () => {
@@ -298,6 +321,10 @@
 				totalQuestions:
 					session.questionsState
 						.questions.length,
+				coverage:
+					session.questionsState.coverage,
+				shuffleOptions:
+					session.questionsState.shuffleOptions,
 				question:
 					result.question
 			};
@@ -458,6 +485,89 @@
 		}
 	}
 
+	async function restartPractice() {
+		if (
+			restarting ||
+			!practice
+		) {
+			return;
+		}
+
+		restarting = true;
+		errorMessage = null;
+
+		try {
+			const response = await fetch(
+				`/practice/${encodeURIComponent(
+					data.bank.slug
+				)}/restart`,
+				{
+					method: 'POST',
+					headers: {
+						'content-type':
+							'application/json'
+					},
+					body: JSON.stringify({
+						coverage,
+						shuffleOptions
+					})
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(
+					'Failed to restart practice'
+				);
+			}
+
+			const result = await response.json() as {
+				questionsState:
+					PracticeQuestionsState;
+			};
+
+			selectedOptionId = null;
+			answerResult = null;
+			practiceCompleted = false;
+			localAnsweredCount = 0;
+			localCorrectCount = 0;
+
+			if (isGuest) {
+				const nextSession: GuestPracticeSession = {
+					questionsState:
+						result.questionsState,
+					currentIndex: 0,
+					answeredCount: 0,
+					correctCount: 0
+				};
+
+				writeGuestSession(
+					nextSession
+				);
+
+				const loaded =
+					await loadGuestQuestion(
+						nextSession
+					);
+
+				if (!loaded) {
+					throw new Error(
+						'Restarted practice has no question'
+					);
+				}
+			} else {
+				localPractice = null;
+				localAnsweredCount = null;
+				localCorrectCount = null;
+				await invalidateAll();
+			}
+		} catch {
+			errorMessage =
+				'無法重新開始練習，請再試一次。';
+		} finally {
+			restarting = false;
+		}
+	}
+
 	async function finishPractice() {
 		if (isGuest) {
 			sessionStorage.removeItem(
@@ -497,12 +607,50 @@
 				{/if}
 			</div>
 
-			<a
-				href="/"
-				class="btn preset-tonal shrink-0"
-			>
-				結束練習
-			</a>
+			<div class="flex flex-wrap items-center gap-2">
+				{#if practice}
+					<Dialog role="alertdialog">
+						<Dialog.Trigger
+							class="btn preset-tonal shrink-0"
+							disabled={restarting}
+						>
+							<RotateCcw size={16} aria-hidden="true" />
+							重新開始
+						</Dialog.Trigger>
+
+						<Portal>
+							<Dialog.Backdrop class="fixed inset-0 z-50 bg-black/60" />
+							<Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center p-4">
+								<Dialog.Content class="card w-full max-w-lg bg-surface-50-950 p-6 shadow-xl">
+									<Dialog.Title class="text-xl font-bold">重新開始本輪練習？</Dialog.Title>
+									<Dialog.Description class="mt-3 text-sm leading-relaxed opacity-70">
+										目前作答進度會清除，並以相同設定建立全新一輪：{restartSettingText}。題目會重新隨機抽取，既有錯題不受影響。
+									</Dialog.Description>
+									<div class="mt-6 flex justify-end gap-3">
+										<Dialog.CloseTrigger type="button" class="btn preset-tonal">取消</Dialog.CloseTrigger>
+										<Dialog.CloseTrigger
+											type="button"
+											class="btn preset-filled-primary-500"
+											disabled={restarting}
+											onclick={restartPractice}
+										>
+											<RotateCcw size={16} aria-hidden="true" />
+											{restarting ? '重新建立中...' : '重新開始'}
+										</Dialog.CloseTrigger>
+									</div>
+								</Dialog.Content>
+							</Dialog.Positioner>
+						</Portal>
+					</Dialog>
+				{/if}
+
+				<a
+					href="/"
+					class="btn preset-tonal shrink-0"
+				>
+					結束練習
+				</a>
+			</div>
 		</header>
 
 		{#if loading}
