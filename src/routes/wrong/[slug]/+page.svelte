@@ -190,7 +190,7 @@
 				<p class="quiz-eyebrow">WRONG ANSWER REVIEW</p>
 				<h1 class="mt-1 text-2xl font-bold">錯題模式</h1>
 				<p class="mt-1 text-sm opacity-60">
-					{data.bank.name} · 答對後會立即從錯題集合移除。
+					{data.bank.name} · 剩餘 {remainingCount} 題
 				</p>
 			</div>
 
@@ -266,28 +266,6 @@
 								{remainingCount}
 							</p>
 						</div>
-
-						{#if answerResult}
-							<div
-								class="mt-4 rounded-container border p-3 text-center"
-								class:border-success-500={answerResult.correct}
-								class:border-error-500={!answerResult.correct}
-							>
-								<p
-									class="font-bold"
-									class:text-success-700-300={answerResult.correct}
-									class:text-error-700-300={!answerResult.correct}
-								>
-									{answerResult.correct
-										? '本題已移除錯題集合'
-										: '本題仍保留在錯題集合'}
-								</p>
-							</div>
-						{/if}
-
-						<p class="mt-5 text-sm leading-relaxed opacity-65">
-							答錯不會改變錯題數；只有真正答對後才會移除。
-						</p>
 
 						<div class="mt-6 text-center">
 							{#if answerResult}

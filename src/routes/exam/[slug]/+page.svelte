@@ -7,15 +7,14 @@
 		Dialog,
 		Portal
 	} from '@skeletonlabs/skeleton-svelte';
+
 	import {
 		onMount
 	} from 'svelte';
 
-
 	import type {
 		PageProps
 	} from './$types';
-
 
 	import type {
 		ExamResult,
@@ -24,119 +23,81 @@
 		QuizAnswerResult
 	} from '$lib/types/quiz';
 
+	import ExamQuestionNavigator
+		from '$lib/components/quiz/ExamQuestionNavigator.svelte';
 
 	import QuestionCard
 		from '$lib/components/quiz/QuestionCard.svelte';
-
 
 	import {
 		parseExamSession
 	} from '$lib/quiz/exam-state';
 
-
 	import {
 		getExamStorageKey
 	} from '$lib/quiz/storage';
-
 
 	let {
 		data
 	}: PageProps = $props();
 
 	let session =
-		$state<ExamSession | null>(
-			null
-		);
-
-	let initialized =
-		$state(false);
-
-	let starting =
-		$state(false);
-
-	let submitting =
-		$state(false);
-
-	let reviewMode =
-		$state(false);
-
-	let showSubmitConfirm =
-		$state(false);
-
-	let showQuestionGrid =
-		$state(false);
-
+		$state<ExamSession | null>(null);
+	let initialized = $state(false);
+	let starting = $state(false);
+	let submitting = $state(false);
+	let reviewMode = $state(false);
+	let showSubmitConfirm = $state(false);
+	let showQuestionGrid = $state(false);
 	let errorMessage =
-		$state<string | null>(
-			null
-		);
+		$state<string | null>(null);
+	let now = $state(Date.now());
 
-	let now =
-		$state(Date.now());
-
-
-	let question =
-		$derived(
-			session?.questions[
-				session.currentIndex
+	let question = $derived(
+		session?.questions[
+			session.currentIndex
+		] ?? null
+	);
+	let selectedOptionId = $derived(
+		question && session
+			? session.answers[
+				question.id
 			] ?? null
-		);
-
-	let selectedOptionId =
-		$derived(
-			question && session
-				? session.answers[
-					question.id
-				] ?? null
-				: null
-		);
-
-	let answeredCount =
-		$derived(
-			session
-				? Object.values(
-					session.answers
-				).filter(
-					(optionId) =>
-						optionId !== null
-				).length
-				: 0
-		);
-
-	let totalQuestions =
-		$derived(
-			session?.questions.length ??
-				data.bank.questionCount
-		);
-
-	let unansweredCount =
-		$derived(
-			Math.max(
-				0,
-				totalQuestions -
-					answeredCount
-			)
-		);
-
-	let elapsedSeconds =
-		$derived(
-			session
-				? session.result
-					? session.result
-						.elapsedSeconds
-					: Math.max(
-						0,
-						Math.floor(
-							(
-								now -
-								session.startedAt
-							) /
+			: null
+	);
+	let answeredCount = $derived(
+		session
+			? Object.values(
+				session.answers
+			).filter(
+				(optionId) =>
+					optionId !== null
+			).length
+			: 0
+	);
+	let totalQuestions = $derived(
+		session?.questions.length ??
+			data.bank.questionCount
+	);
+	let unansweredCount = $derived(
+		Math.max(
+			0,
+			totalQuestions - answeredCount
+		)
+	);
+	let elapsedSeconds = $derived(
+		session
+			? session.result
+				? session.result.elapsedSeconds
+				: Math.max(
+					0,
+					Math.floor(
+						(now - session.startedAt) /
 							1000
-						)
 					)
-				: 0
-		);
-
+				)
+			: 0
+	);
 
 	onMount(() => {
 		const raw =
@@ -180,40 +141,31 @@
 		};
 	});
 
-
 	function getStorageKey(): string {
 		return getExamStorageKey(
 			data.bank.slug
 		);
 	}
 
-
 	function saveSession(
 		next: ExamSession
 	): void {
 		session = next;
-
 		sessionStorage.setItem(
 			getStorageKey(),
 			JSON.stringify(next)
 		);
 	}
 
-
 	function formatDuration(
 		seconds: number
 	): string {
 		const hours =
-			Math.floor(
-				seconds / 3600
-			);
-
+			Math.floor(seconds / 3600);
 		const minutes =
 			Math.floor(
-				(seconds % 3600) /
-				60
+				(seconds % 3600) / 60
 			);
-
 		const remainingSeconds =
 			seconds % 60;
 
@@ -229,7 +181,6 @@
 			)
 			.join(':');
 	}
-
 
 	async function startExam() {
 		if (starting) {
@@ -261,22 +212,18 @@
 					questions:
 						PublicQuizQuestion[];
 				};
-
 			const answers =
 				Object.fromEntries(
 					payload.questions.map(
-						(question) => [
-							question.id,
+						(item) => [
+							item.id,
 							null
 						]
 					)
 				);
-
-			const startedAt =
-				Date.now();
+			const startedAt = Date.now();
 
 			now = startedAt;
-
 			saveSession({
 				version: 1,
 				startedAt,
@@ -294,7 +241,6 @@
 		}
 	}
 
-
 	function selectOption(
 		optionId: string
 	): void {
@@ -311,12 +257,10 @@
 			...session,
 			answers: {
 				...session.answers,
-				[question.id]:
-					optionId
+				[question.id]: optionId
 			}
 		});
 	}
-
 
 	function goToQuestion(
 		index: number
@@ -324,42 +268,41 @@
 		if (
 			!session ||
 			index < 0 ||
-			index >=
-				session.questions.length
+			index >= session.questions.length
 		) {
 			return;
 		}
 
-		saveSession({
-			...session,
-			currentIndex: index
-		});
+		if (session.result) {
+			session = {
+				...session,
+				currentIndex: index
+			};
+		} else {
+			saveSession({
+				...session,
+				currentIndex: index
+			});
+		}
 
 		showQuestionGrid = false;
 	}
 
-
 	function previousQuestion(): void {
-		if (!session) {
-			return;
+		if (session) {
+			goToQuestion(
+				session.currentIndex - 1
+			);
 		}
-
-		goToQuestion(
-			session.currentIndex - 1
-		);
 	}
-
 
 	function nextQuestion(): void {
-		if (!session) {
-			return;
+		if (session) {
+			goToQuestion(
+				session.currentIndex + 1
+			);
 		}
-
-		goToQuestion(
-			session.currentIndex + 1
-		);
 	}
-
 
 	async function submitExam() {
 		if (
@@ -385,13 +328,12 @@
 							'content-type':
 								'application/json'
 						},
-						body:
-							JSON.stringify({
-								answers:
-									session.answers,
-								startedAt:
-									session.startedAt
-							})
+						body: JSON.stringify({
+							answers:
+								session.answers,
+							startedAt:
+								session.startedAt
+						})
 					}
 				);
 
@@ -406,11 +348,13 @@
 					result: ExamResult;
 				};
 
-			saveSession({
+			session = {
 				...session,
 				result: payload.result
-			});
-
+			};
+			sessionStorage.removeItem(
+				getStorageKey()
+			);
 			showSubmitConfirm = false;
 			reviewMode = false;
 		} catch {
@@ -420,7 +364,6 @@
 			submitting = false;
 		}
 	}
-
 
 	function getReviewAnswerResult():
 		QuizAnswerResult | null {
@@ -435,8 +378,7 @@
 		const result =
 			session.result.questions.find(
 				(item) =>
-					item.questionId ===
-						question.id
+					item.questionId === question.id
 			);
 
 		if (!result) {
@@ -446,55 +388,46 @@
 		return {
 			selectedOptionId:
 				result.selectedOptionId,
-			correct:
-				result.correct,
+			correct: result.correct,
 			correctOptionIds:
 				result.correctOptionIds,
 			completed: false
 		};
 	}
 
-
 	function getQuestionButtonClass(
 		index: number
 	): string {
 		if (!session) {
-			return 'btn preset-tonal';
+			return 'btn preset-tonal min-w-10 justify-center';
 		}
 
-		if (
-			index === session.currentIndex
-		) {
-			return 'btn preset-filled-primary-500';
+		if (index === session.currentIndex) {
+			return 'btn preset-filled-primary-500 min-w-10 justify-center';
 		}
 
-		const item =
-			session.questions[index];
+		const item = session.questions[index];
 
 		if (!item) {
-			return 'btn preset-tonal';
+			return 'btn preset-tonal min-w-10 justify-center';
 		}
 
 		if (reviewMode && session.result) {
 			const result =
 				session.result.questions.find(
 					(entry) =>
-						entry.questionId ===
-							item.id
+						entry.questionId === item.id
 				);
 
-			if (result?.correct) {
-				return 'btn preset-tonal-success';
-			}
-
-			return 'btn preset-tonal-error';
+			return result?.correct
+				? 'btn preset-tonal-success min-w-10 justify-center'
+				: 'btn preset-tonal-error min-w-10 justify-center';
 		}
 
 		return session.answers[item.id]
-			? 'btn preset-tonal-primary'
-			: 'btn preset-tonal';
+			? 'btn preset-tonal-primary min-w-10 justify-center'
+			: 'btn preset-tonal min-w-10 justify-center';
 	}
-
 
 	function viewAnswers(): void {
 		if (!session?.result) {
@@ -505,63 +438,42 @@
 		goToQuestion(0);
 	}
 
-
 	function backToResult(): void {
 		reviewMode = false;
 		showQuestionGrid = false;
 	}
 
-
 	async function restartExam() {
 		sessionStorage.removeItem(
 			getStorageKey()
 		);
-
 		session = null;
 		reviewMode = false;
 		errorMessage = null;
-
 		await startExam();
 	}
-
 
 	async function backHome() {
 		await goto('/');
 	}
 </script>
 
-
 <svelte:head>
-	<title>
-		{data.bank.name} | 考試練習
-	</title>
+	<title>{data.bank.name} | 考試練習</title>
 </svelte:head>
 
-
 {#if !initialized}
-	<div
-		class="mx-auto w-full max-w-3xl p-4 md:p-6"
-	>
-		<section
-			class="card preset-outlined p-8 text-center"
-		>
+	<div class="app-page max-w-3xl">
+		<section class="app-panel p-8 text-center">
 			<p class="opacity-60">
 				正在載入考試狀態...
 			</p>
 		</section>
 	</div>
-
 {:else if !session}
-	<div
-		class="mx-auto w-full max-w-3xl p-4 md:p-6"
-	>
-		<section
-			class="card preset-outlined p-6 md:p-8"
-		>
-			<p class="text-sm opacity-60">
-				考試模式
-			</p>
-
+	<div class="app-page max-w-3xl">
+		<section class="app-panel p-6 md:p-8">
+			<p class="quiz-eyebrow">EXAM MODE</p>
 			<h1 class="mt-1 text-3xl font-bold">
 				{data.bank.name}
 			</h1>
@@ -570,51 +482,22 @@
 				準備開始考試？
 			</h2>
 
-			<div
-				class="mt-5 grid gap-3 sm:grid-cols-2"
-			>
-				<div
-					class="rounded-container bg-surface-100-900 p-4"
-				>
-					<p class="text-sm opacity-60">
-						題目數量
-					</p>
-					<p class="mt-1 font-semibold">
-						全部 {data.bank.questionCount} 題
-					</p>
+			<div class="mt-5 grid gap-3 sm:grid-cols-2">
+				<div class="quiz-stat-tile text-left">
+					<p class="text-sm opacity-60">題目數量</p>
+					<p class="mt-1 font-semibold">全部 {data.bank.questionCount} 題</p>
 				</div>
-
-				<div
-					class="rounded-container bg-surface-100-900 p-4"
-				>
-					<p class="text-sm opacity-60">
-						計時方式
-					</p>
-					<p class="mt-1 font-semibold">
-						正數計時
-					</p>
+				<div class="quiz-stat-tile text-left">
+					<p class="text-sm opacity-60">計時方式</p>
+					<p class="mt-1 font-semibold">正數計時</p>
 				</div>
-
-				<div
-					class="rounded-container bg-surface-100-900 p-4"
-				>
-					<p class="text-sm opacity-60">
-						題目與選項
-					</p>
-					<p class="mt-1 font-semibold">
-						全部隨機排列
-					</p>
+				<div class="quiz-stat-tile text-left">
+					<p class="text-sm opacity-60">題目與選項</p>
+					<p class="mt-1 font-semibold">全部隨機排列</p>
 				</div>
-
-				<div
-					class="rounded-container bg-surface-100-900 p-4"
-				>
-					<p class="text-sm opacity-60">
-						答案公布
-					</p>
-					<p class="mt-1 font-semibold">
-						交卷後顯示
-					</p>
+				<div class="quiz-stat-tile text-left">
+					<p class="text-sm opacity-60">答案公布</p>
+					<p class="mt-1 font-semibold">交卷後顯示</p>
 				</div>
 			</div>
 
@@ -631,16 +514,8 @@
 				</p>
 			{/if}
 
-			<div
-				class="mt-8 flex flex-wrap justify-end gap-3"
-			>
-				<a
-					href="/"
-					class="btn preset-tonal"
-				>
-					取消
-				</a>
-
+			<div class="mt-8 flex flex-wrap justify-end gap-3">
+				<a href="/" class="btn preset-tonal">取消</a>
 				<button
 					type="button"
 					class="btn preset-filled-primary-500"
@@ -650,104 +525,57 @@
 				}
 					onclick={startExam}
 				>
-					{starting
-						? '準備中...'
-						: '開始考試'}
+					{starting ? '準備中...' : '開始考試'}
 				</button>
 			</div>
 		</section>
 	</div>
-
 {:else if session.result && !reviewMode}
-	<div
-		class="mx-auto w-full max-w-4xl p-4 md:p-6"
-	>
-		<section
-			class="card preset-outlined p-6 md:p-8"
-		>
-			<p class="text-sm opacity-60">
-				{data.bank.name}
-			</p>
-
-			<h1 class="mt-1 text-3xl font-bold">
-				考試結果
-			</h1>
+	<div class="app-page max-w-4xl">
+		<section class="app-panel p-6 md:p-8">
+			<p class="quiz-eyebrow">{data.bank.name}</p>
+			<h1 class="mt-1 text-3xl font-bold">考試結果</h1>
 
 			<div class="mt-8 text-center">
 				<p class="text-5xl font-bold">
-					{session.result.correctCount}
-					/
-					{session.result.totalQuestions}
+					{session.result.correctCount} / {session.result.totalQuestions}
 				</p>
-
 				<p class="mt-3 text-xl font-semibold">
-					正確率
-					{session.result.accuracy.toFixed(1)}%
+					正確率 {session.result.accuracy.toFixed(1)}%
 				</p>
-
 				<p class="mt-2 opacity-60">
-					作答時間
-					{formatDuration(
-						session.result.elapsedSeconds
-					)}
+					作答時間 {formatDuration(session.result.elapsedSeconds)}
 				</p>
 			</div>
 
-			<div
-				class="mt-8 grid gap-4 sm:grid-cols-4"
-			>
-				<div
-					class="rounded-container bg-surface-100-900 p-4 text-center"
-				>
-					<p class="text-sm opacity-60">
-						正確
-					</p>
-					<p
-						class="mt-1 text-2xl font-bold text-success-700-300"
-					>
+			<div class="mt-8 grid gap-4 sm:grid-cols-4">
+				<div class="quiz-stat-tile">
+					<p class="text-sm opacity-60">正確</p>
+					<p class="mt-1 text-2xl font-bold text-success-700-300">
 						{session.result.correctCount}
 					</p>
 				</div>
-
-				<div
-					class="rounded-container bg-surface-100-900 p-4 text-center"
-				>
-					<p class="text-sm opacity-60">
-						錯誤
-					</p>
-					<p
-						class="mt-1 text-2xl font-bold text-error-700-300"
-					>
+				<div class="quiz-stat-tile">
+					<p class="text-sm opacity-60">錯誤</p>
+					<p class="mt-1 text-2xl font-bold text-error-700-300">
 						{session.result.incorrectCount}
 					</p>
 				</div>
-
-				<div
-					class="rounded-container bg-surface-100-900 p-4 text-center"
-				>
-					<p class="text-sm opacity-60">
-						已答
-					</p>
+				<div class="quiz-stat-tile">
+					<p class="text-sm opacity-60">已答</p>
 					<p class="mt-1 text-2xl font-bold">
 						{session.result.answeredCount}
 					</p>
 				</div>
-
-				<div
-					class="rounded-container bg-surface-100-900 p-4 text-center"
-				>
-					<p class="text-sm opacity-60">
-						未答
-					</p>
+				<div class="quiz-stat-tile">
+					<p class="text-sm opacity-60">未答</p>
 					<p class="mt-1 text-2xl font-bold">
 						{session.result.unansweredCount}
 					</p>
 				</div>
 			</div>
 
-			<div
-				class="mt-8 flex flex-wrap justify-center gap-3"
-			>
+			<div class="mt-8 flex flex-wrap justify-center gap-3">
 				<button
 					type="button"
 					class="btn preset-filled-primary-500"
@@ -755,7 +583,6 @@
 				>
 					查看答案
 				</button>
-
 				<button
 					type="button"
 					class="btn preset-tonal"
@@ -763,7 +590,6 @@
 				>
 					再考一次
 				</button>
-
 				<button
 					type="button"
 					class="btn preset-tonal"
@@ -774,207 +600,131 @@
 			</div>
 		</section>
 	</div>
-
 {:else}
-	<div
-		class="mx-auto w-full max-w-7xl p-4 md:p-6"
-	>
-		<header
-			class="mb-6 flex flex-wrap items-center justify-between gap-4"
-		>
-			<div>
-				<p class="text-sm opacity-60">
-					{reviewMode
-						? '答案檢視'
-						: '考試模式'}
-				</p>
+	<div class="app-page">
+		<section class="app-panel overflow-hidden">
+			<header
+				class="flex flex-wrap items-center justify-between gap-4 border-b border-surface-300-700 px-5 py-4 md:px-6"
+			>
+				<div>
+					<p class="quiz-eyebrow">
+						{reviewMode ? 'ANSWER REVIEW' : 'EXAM MODE'}
+					</p>
+					<h1 class="mt-1 text-2xl font-bold">
+						{data.bank.name}
+					</h1>
+				</div>
 
-				<h1 class="mt-1 text-2xl font-bold">
-					{data.bank.name}
-				</h1>
-			</div>
+				<div class="flex items-center gap-3">
+					<div class="font-mono text-lg font-semibold tabular-nums">
+						{formatDuration(elapsedSeconds)}
+					</div>
+
+					{#if reviewMode}
+						<button
+							type="button"
+							class="btn preset-tonal"
+							onclick={backToResult}
+						>
+							返回成績
+						</button>
+					{:else}
+						<button
+							type="button"
+							class="btn preset-filled-primary-500"
+							onclick={() => {
+								showSubmitConfirm = true;
+							}}
+						>
+							交卷
+						</button>
+					{/if}
+				</div>
+			</header>
 
 			<div
-				class="flex items-center gap-3"
+				class="grid gap-5 p-4 md:p-5 lg:grid-cols-[minmax(0,1fr)_18rem]"
 			>
-				<div
-					class="font-mono text-lg font-semibold tabular-nums"
-				>
-					{formatDuration(
-						elapsedSeconds
-					)}
-				</div>
-
-				{#if reviewMode}
-					<button
-						type="button"
-						class="btn preset-tonal"
-						onclick={backToResult}
-					>
-						返回成績
-					</button>
-				{:else}
-					<button
-						type="button"
-						class="btn preset-filled-primary-500"
-						onclick={() => {
-							showSubmitConfirm = true;
-						}}
-					>
-						交卷
-					</button>
-				{/if}
-			</div>
-		</header>
-
-
-		<div
-			class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]"
-		>
-			<main>
-				<div
-					class="mb-4 flex items-center justify-between text-sm"
-				>
-					<span class="opacity-60">
-						Question
-					</span>
-
-					<strong>
-						{session.currentIndex + 1}
-						/
-						{session.questions.length}
-					</strong>
-				</div>
-
-				{#if question}
-					<QuestionCard
-						{question}
-						{selectedOptionId}
-						answerResult={
-							reviewMode
-								? getReviewAnswerResult()
-								: null
-						}
-						onSelect={selectOption}
-					/>
-				{/if}
-
-				{#if errorMessage}
-					<p
-						class="mt-4 text-sm text-error-700-300"
-						role="alert"
-					>
-						{errorMessage}
-					</p>
-				{/if}
-
-				<div
-					class="mt-5 flex items-center justify-between gap-3"
-				>
-					<button
-						type="button"
-						class="btn preset-tonal"
-						disabled={
-							session.currentIndex === 0
-						}
-						onclick={previousQuestion}
-					>
-						上一題
-					</button>
-
-					<button
-						type="button"
-						class="btn preset-tonal lg:hidden"
-						onclick={() => {
-							showQuestionGrid = true;
-						}}
-					>
-						題號
-					</button>
-
-					<button
-						type="button"
-						class="btn preset-filled-primary-500"
-						disabled={
-							session.currentIndex >=
-							session.questions.length - 1
-						}
-						onclick={nextQuestion}
-					>
-						下一題
-					</button>
-				</div>
-			</main>
-
-
-			<aside
-				class="hidden lg:block"
-			>
-				<section
-					class="card preset-outlined sticky top-6 p-4"
-				>
-					<div
-						class="flex items-center justify-between gap-3"
-					>
-						<h2 class="font-semibold">
-							題號
-						</h2>
-
-						{#if !reviewMode}
-							<span class="text-sm opacity-60">
-								已答 {answeredCount}
-							</span>
-						{/if}
+				<main class="min-w-0">
+					<div class="mb-3 flex items-center justify-between gap-3">
+						<p class="quiz-eyebrow">
+							QUESTION {session.currentIndex + 1}
+						</p>
+						<strong class="text-sm">
+							{session.currentIndex + 1} / {session.questions.length}
+						</strong>
 					</div>
 
-					<div
-						class="mt-4 grid grid-cols-5 gap-2"
-					>
-						{#each
-							session.questions as _, index
-						}
-							<button
-								type="button"
-								class={getQuestionButtonClass(
-									index
-								)}
-								onclick={() =>
-									goToQuestion(index)}
-							>
-								{index + 1}
-							</button>
-						{/each}
-					</div>
-
-					{#if !reviewMode}
-						<div
-							class="mt-5 grid grid-cols-2 gap-3 text-sm"
-						>
-							<div>
-								<span class="opacity-60">
-									已答
-								</span>
-								<strong class="ml-1">
-									{answeredCount}
-								</strong>
-							</div>
-
-							<div>
-								<span class="opacity-60">
-									未答
-								</span>
-								<strong class="ml-1">
-									{unansweredCount}
-								</strong>
-							</div>
-						</div>
+					{#if question}
+						<QuestionCard
+							{question}
+							{selectedOptionId}
+							answerResult={
+								reviewMode
+									? getReviewAnswerResult()
+									: null
+							}
+							onSelect={selectOption}
+						/>
 					{/if}
-				</section>
-			</aside>
-		</div>
+
+					{#if errorMessage}
+						<p
+							class="mt-4 text-sm text-error-700-300"
+							role="alert"
+						>
+							{errorMessage}
+						</p>
+					{/if}
+
+					<div class="mt-5 flex items-center justify-between gap-3">
+						<button
+							type="button"
+							class="btn preset-tonal"
+							disabled={session.currentIndex === 0}
+							onclick={previousQuestion}
+						>
+							上一題
+						</button>
+
+						<button
+							type="button"
+							class="btn preset-tonal lg:hidden"
+							onclick={() => {
+								showQuestionGrid = true;
+							}}
+						>
+							題號
+						</button>
+
+						<button
+							type="button"
+							class="btn preset-filled-primary-500"
+							disabled={
+								session.currentIndex >=
+									session.questions.length - 1
+							}
+							onclick={nextQuestion}
+						>
+							下一題
+						</button>
+					</div>
+				</main>
+
+				<aside class="hidden lg:block">
+					<section class="quiz-side-panel sticky top-14">
+						<ExamQuestionNavigator
+							{session}
+							{reviewMode}
+							onSelect={goToQuestion}
+							getButtonClass={getQuestionButtonClass}
+						/>
+					</section>
+				</aside>
+			</div>
+		</section>
 	</div>
 {/if}
-
 
 <Dialog
 	role="alertdialog"
@@ -1001,26 +751,15 @@
 					確認交卷？
 				</Dialog.Title>
 
-				<div
-					class="mt-5 grid grid-cols-2 gap-4"
-				>
-					<div
-						class="rounded-container bg-surface-100-900 p-4 text-center"
-					>
-						<p class="text-sm opacity-60">
-							已答
-						</p>
+				<div class="mt-5 grid grid-cols-2 gap-4">
+					<div class="quiz-stat-tile">
+						<p class="text-sm opacity-60">已答</p>
 						<p class="mt-1 text-2xl font-bold">
 							{answeredCount}
 						</p>
 					</div>
-
-					<div
-						class="rounded-container bg-surface-100-900 p-4 text-center"
-					>
-						<p class="text-sm opacity-60">
-							未答
-						</p>
+					<div class="quiz-stat-tile">
+						<p class="text-sm opacity-60">未答</p>
 						<p
 							class="mt-1 text-2xl font-bold"
 							class:text-error-700-300={
@@ -1040,9 +779,7 @@
 					</Dialog.Description>
 				{/if}
 
-				<div
-					class="mt-6 flex justify-end gap-3"
-				>
+				<div class="mt-6 flex justify-end gap-3">
 					<Dialog.CloseTrigger
 						type="button"
 						class="btn preset-tonal"
@@ -1050,23 +787,19 @@
 					>
 						繼續作答
 					</Dialog.CloseTrigger>
-
 					<button
 						type="button"
 						class="btn preset-filled-primary-500"
 						disabled={submitting}
 						onclick={submitExam}
 					>
-						{submitting
-							? '交卷中...'
-							: '確認交卷'}
+						{submitting ? '交卷中...' : '確認交卷'}
 					</button>
 				</div>
 			</Dialog.Content>
 		</Dialog.Positioner>
 	</Portal>
 </Dialog>
-
 
 <Dialog
 	open={showQuestionGrid && Boolean(session)}
@@ -1082,15 +815,12 @@
 			class="fixed inset-0 z-50 flex items-end p-4 lg:hidden"
 		>
 			<Dialog.Content
-				class="card max-h-[80vh] w-full overflow-y-auto bg-surface-50-950 p-5 shadow-xl"
+				class="card max-h-[85vh] w-full overflow-y-auto bg-surface-50-950 p-5 shadow-xl"
 			>
-				<div
-					class="flex items-center justify-between gap-3"
-				>
+				<div class="mb-4 flex items-center justify-between gap-3">
 					<Dialog.Title class="text-lg font-bold">
 						題號
 					</Dialog.Title>
-
 					<Dialog.CloseTrigger
 						type="button"
 						class="btn preset-tonal"
@@ -1100,24 +830,13 @@
 				</div>
 
 				{#if session}
-					<div
-						class="mt-5 grid grid-cols-5 gap-2 sm:grid-cols-8"
-					>
-						{#each
-							session.questions as _, index
-						}
-							<button
-								type="button"
-								class={getQuestionButtonClass(
-									index
-								)}
-								onclick={() =>
-									goToQuestion(index)}
-							>
-								{index + 1}
-							</button>
-						{/each}
-					</div>
+					<ExamQuestionNavigator
+						{session}
+						{reviewMode}
+						compact
+						onSelect={goToQuestion}
+						getButtonClass={getQuestionButtonClass}
+					/>
 				{/if}
 			</Dialog.Content>
 		</Dialog.Positioner>

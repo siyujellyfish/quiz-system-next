@@ -10,12 +10,7 @@ import type {
 } from './$types';
 
 import {
-	getAdminQuestionBankById
-} from '$lib/server/admin/bank.repository';
-
-import {
-	deleteAdminQuestion,
-	getAdminQuestionEditor
+	deleteAdminQuestion
 } from '$lib/server/admin/question.repository';
 
 import {
@@ -33,27 +28,10 @@ import {
 export const load: PageServerLoad = async ({
 	params
 }) => {
-	const bank = await getAdminQuestionBankById(
-		params.bankId
+	redirect(
+		303,
+		`/admin/banks/${params.bankId}/questions?question=${encodeURIComponent(params.questionId)}`
 	);
-
-	if (!bank) {
-		error(404, '找不到指定的題庫');
-	}
-
-	const question = await getAdminQuestionEditor(
-		bank.id,
-		params.questionId
-	);
-
-	if (!question) {
-		error(404, '找不到指定的題目');
-	}
-
-	return {
-		bank,
-		question
-	};
 };
 
 export const actions: Actions = {
@@ -135,6 +113,7 @@ export const actions: Actions = {
 		}
 
 		const searchParams = new URLSearchParams({
+			question: params.questionId,
 			updated: '1'
 		});
 

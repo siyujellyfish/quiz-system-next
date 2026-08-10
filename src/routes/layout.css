@@ -43,6 +43,28 @@ body {
 	}
 }
 
+.quiz-toolbar [data-scope='tabs'][data-part='list'] {
+	min-height: 2.75rem;
+	align-items: center;
+	border-radius: 0 !important;
+	background: transparent !important;
+	padding: 0 !important;
+}
+
+.quiz-toolbar [data-scope='tabs'][data-part='trigger'] {
+	align-self: stretch;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.quiz-toolbar [data-scope='tabs'][data-part='indicator'] {
+	bottom: 0;
+	height: 2px;
+	border-radius: 0;
+	background: currentColor;
+}
+
 [role='dialog'].card {
 	@apply bg-surface-50 shadow-xl;
 }
