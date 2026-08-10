@@ -64,11 +64,6 @@ export function parseExamSession(
 
 	if (
 		session.version !== 1 ||
-		(
-			session.attemptId !== undefined &&
-			session.attemptId !== null &&
-			typeof session.attemptId !== 'string'
-		) ||
 		typeof session.startedAt !== 'number' ||
 		!Number.isFinite(session.startedAt) ||
 		typeof session.currentIndex !== 'number' ||
@@ -108,10 +103,6 @@ export function parseExamSession(
 
 	return {
 		version: 1,
-		attemptId:
-			typeof session.attemptId === 'string'
-				? session.attemptId
-				: null,
 		startedAt: session.startedAt,
 		currentIndex: session.currentIndex,
 		questions:
