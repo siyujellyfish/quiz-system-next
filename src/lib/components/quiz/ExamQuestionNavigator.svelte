@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		Popover,
 		Portal
 	} from '@skeletonlabs/skeleton-svelte';
 	import {
@@ -25,7 +24,8 @@
 		compact?: boolean;
 	};
 
-	const PREVIEW_CLOSE_DELAY_MS = 140;
+	const PREVIEW_OPEN_DELAY_MS = 180;
+	const PREVIEW_CLOSE_DELAY_MS = 120;
 
 	let {
 		session,
@@ -37,6 +37,11 @@
 
 	let page = $state(0);
 	let previewIndex = $state<number | null>(null);
+	let previewCandidateIndex = $state<number | null>(null);
+	let previewAnchorX = $state(0);
+	let previewAnchorY = $state(0);
+	let previewOpenTimer:
+		ReturnType<typeof setTimeout> | null = null;
 	let previewCloseTimer:
 		ReturnType<typeof setTimeout> | null = null;
 
@@ -62,12 +67,31 @@
 			range.end
 		)
 	);
+	let previewQuestion = $derived(
+		previewIndex === null
+			? null
+			: session.questions[previewIndex] ?? null
+	);
+	let previewSelectedId = $derived(
+		previewQuestion
+			? getSelectedOptionId(previewQuestion.id)
+			: null
+	);
 
 	$effect(() => {
 		page = getExamNavigatorPage(
 			session.currentIndex
 		);
 	});
+
+	function clearPreviewOpenTimer(): void {
+		if (!previewOpenTimer) {
+			return;
+		}
+
+		clearTimeout(previewOpenTimer);
+		previewOpenTimer = null;
+	}
 
 	function clearPreviewCloseTimer(): void {
 		if (!previewCloseTimer) {
@@ -78,28 +102,97 @@
 		previewCloseTimer = null;
 	}
 
-	function openPreview(index: number): void {
+	function clearPreviewTimers(): void {
+		clearPreviewOpenTimer();
 		clearPreviewCloseTimer();
+	}
+
+	function setPreviewAnchor(
+		button: HTMLButtonElement
+	): void {
+		const rect = button.getBoundingClientRect();
+		const centerY = rect.top + rect.height / 2;
+		const viewportPadding = 180;
+
+		previewAnchorX = rect.left - 10;
+		previewAnchorY = Math.min(
+			Math.max(centerY, viewportPadding),
+			Math.max(
+				viewportPadding,
+				window.innerHeight - viewportPadding
+			)
+		);
+	}
+
+	function schedulePreviewOpen(
+		index: number,
+		button: HTMLButtonElement
+	): void {
+		if (compact) {
+			return;
+		}
+
+		clearPreviewTimers();
+		setPreviewAnchor(button);
+
+		if (previewIndex !== index) {
+			previewIndex = null;
+		}
+
+		previewCandidateIndex = index;
+		previewOpenTimer = setTimeout(() => {
+			if (previewCandidateIndex === index) {
+				previewIndex = index;
+			}
+
+			previewOpenTimer = null;
+		}, PREVIEW_OPEN_DELAY_MS);
+	}
+
+	function openPreviewImmediately(
+		index: number,
+		button: HTMLButtonElement
+	): void {
+		if (compact) {
+			return;
+		}
+
+		clearPreviewTimers();
+		setPreviewAnchor(button);
+		previewCandidateIndex = index;
 		previewIndex = index;
 	}
 
-	function schedulePreviewClose(
-		index: number
-	): void {
+	function schedulePreviewClose(): void {
+		clearPreviewOpenTimer();
 		clearPreviewCloseTimer();
+		previewCandidateIndex = null;
 
 		previewCloseTimer = setTimeout(() => {
-			if (previewIndex === index) {
-				previewIndex = null;
-			}
-
+			previewIndex = null;
 			previewCloseTimer = null;
 		}, PREVIEW_CLOSE_DELAY_MS);
 	}
 
-	function closePreview(): void {
+	function keepPreviewOpen(): void {
 		clearPreviewCloseTimer();
+	}
+
+	function closePreview(): void {
+		clearPreviewTimers();
+		previewCandidateIndex = null;
 		previewIndex = null;
+	}
+
+	function handleTriggerFocus(
+		index: number,
+		button: HTMLButtonElement
+	): void {
+		if (!button.matches(':focus-visible')) {
+			return;
+		}
+
+		openPreviewImmediately(index, button);
 	}
 
 	function getSelectedOptionId(
@@ -180,7 +273,7 @@
 	}
 
 	onDestroy(() => {
-		clearPreviewCloseTimer();
+		clearPreviewTimers();
 	});
 </script>
 
@@ -209,109 +302,30 @@
 	>
 		{#each visibleQuestions as item, localIndex (item.id)}
 			{@const index = range.start + localIndex}
-			{@const selectedId = getSelectedOptionId(item.id)}
-			<Popover
-				open={previewIndex === index}
-				autoFocus={false}
-				onOpenChange={(details) => {
-					if (!details.open && previewIndex === index) {
-						closePreview();
-					}
+			<button
+				type="button"
+				class={getButtonClass(index)}
+				onmouseenter={(event) => {
+					schedulePreviewOpen(
+						index,
+						event.currentTarget
+					);
 				}}
-				positioning={{
-					placement: compact ? 'top' : 'left',
-					gutter: 8
+				onmouseleave={schedulePreviewClose}
+				onfocus={(event) => {
+					handleTriggerFocus(
+						index,
+						event.currentTarget
+					);
+				}}
+				onblur={schedulePreviewClose}
+				onclick={() => {
+					closePreview();
+					onSelect(index);
 				}}
 			>
-				<Popover.Trigger
-					type="button"
-					class={getButtonClass(index)}
-					onmouseenter={() => {
-						openPreview(index);
-					}}
-					onmouseleave={() => {
-						schedulePreviewClose(index);
-					}}
-					onfocus={() => {
-						openPreview(index);
-					}}
-					onblur={() => {
-						schedulePreviewClose(index);
-					}}
-					onclick={() => {
-						closePreview();
-						onSelect(index);
-					}}
-				>
-					{index + 1}
-				</Popover.Trigger>
-
-				<Portal>
-					<Popover.Positioner class="z-[90]">
-						<Popover.Content
-							class="card w-[min(24rem,calc(100vw-2rem))] border border-surface-300-700 bg-surface-50-950 p-4 shadow-xl"
-							onmouseenter={() => {
-								openPreview(index);
-							}}
-							onmouseleave={() => {
-								schedulePreviewClose(index);
-							}}
-						>
-							<div
-								class="mb-3 flex items-center justify-between gap-3"
-							>
-								<Popover.Title class="font-bold">
-									Question {index + 1}
-								</Popover.Title>
-								{#if selectedId}
-									<span class="badge preset-tonal-primary">
-										已作答
-									</span>
-								{/if}
-							</div>
-
-							<Popover.Description
-								class="line-clamp-4 whitespace-pre-wrap text-sm font-semibold leading-relaxed"
-							>
-								{item.prompt}
-							</Popover.Description>
-
-							<div class="mt-4 space-y-2">
-								{#each item.options as option, optionIndex}
-									<div
-										class={getPreviewOptionClass(
-											item.id,
-											option.id,
-											selectedId
-										)}
-									>
-										<div class="flex gap-2">
-											<strong>{String.fromCharCode(65 + optionIndex)}.</strong>
-											<span class="min-w-0 flex-1">
-												{option.content}
-											</span>
-										</div>
-
-										{#if selectedId === option.id}
-											<p
-												class="mt-1 font-semibold text-primary-700-300"
-											>
-												你的答案
-											</p>
-										{/if}
-									</div>
-								{/each}
-							</div>
-
-							<Popover.Arrow
-								class="[--arrow-size:--spacing(2)]"
-							>
-								<Popover.ArrowTip />
-							</Popover.Arrow>
-						</Popover.Content>
-					</Popover.Positioner>
-				</Portal>
-			</Popover>
+				{index + 1}
+			</button>
 		{/each}
 	</div>
 
@@ -343,3 +357,60 @@
 		</div>
 	{/if}
 </div>
+
+{#if !compact && previewQuestion && previewIndex !== null}
+	<Portal>
+		<div
+			id="exam-question-preview"
+			role="tooltip"
+			class="card fixed z-[90] w-[min(24rem,calc(100vw-2rem))] border border-surface-300-700 bg-surface-50-950 p-4 shadow-xl"
+			style={`left:${previewAnchorX}px;top:${previewAnchorY}px;transform:translate(-100%,-50%);`}
+			onmouseenter={keepPreviewOpen}
+			onmouseleave={schedulePreviewClose}
+		>
+			<div
+				class="mb-3 flex items-center justify-between gap-3"
+			>
+				<strong>Question {previewIndex + 1}</strong>
+				{#if previewSelectedId}
+					<span class="badge preset-tonal-primary">
+						已作答
+					</span>
+				{/if}
+			</div>
+
+			<p
+				class="line-clamp-4 whitespace-pre-wrap text-sm font-semibold leading-relaxed"
+			>
+				{previewQuestion.prompt}
+			</p>
+
+			<div class="mt-4 space-y-2">
+				{#each previewQuestion.options as option, optionIndex}
+					<div
+						class={getPreviewOptionClass(
+							previewQuestion.id,
+							option.id,
+							previewSelectedId
+						)}
+					>
+						<div class="flex gap-2">
+							<strong>{String.fromCharCode(65 + optionIndex)}.</strong>
+							<span class="min-w-0 flex-1">
+								{option.content}
+							</span>
+						</div>
+
+						{#if previewSelectedId === option.id}
+							<p
+								class="mt-1 font-semibold text-primary-700-300"
+							>
+								你的答案
+							</p>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	</Portal>
+{/if}
