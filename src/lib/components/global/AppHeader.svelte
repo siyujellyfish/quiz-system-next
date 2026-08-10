@@ -62,7 +62,7 @@
 	class="sticky top-0 z-30 border-b border-surface-200-800 bg-surface-50-950"
 >
 	<AppBar.Toolbar
-		class="mx-auto grid h-12 min-h-0 w-full max-w-6xl grid-cols-[1fr_auto] px-4 py-0 md:px-6"
+		class="mx-auto grid h-10 min-h-0 w-full max-w-6xl grid-cols-[1fr_auto] px-4 py-0 md:px-6"
 	>
 		<AppBar.Headline>
 			<a
@@ -114,7 +114,7 @@
 
 					<Portal>
 						<Menu.Positioner
-							class="z-[100] overflow-visible [--z-index:100]"
+							class="z-100 overflow-visible [--z-index:100] pt-2"
 						>
 							<Menu.Content
 								class="card isolate w-52 rounded-container border border-surface-200-800 bg-surface-50-950 p-1 shadow-2xl"
