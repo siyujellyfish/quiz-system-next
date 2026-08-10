@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
+	import ChartColumnIcon
+		from '@lucide/svelte/icons/chart-column';
 	import ChevronDownIcon
 		from '@lucide/svelte/icons/chevron-down';
 	import HistoryIcon
@@ -45,6 +47,11 @@
 
 		if (value === 'history') {
 			await goto('/history');
+			return;
+		}
+
+		if (value === 'analytics') {
+			await goto('/analytics');
 			return;
 		}
 
@@ -156,6 +163,17 @@
 											aria-hidden="true"
 										/>
 										<Menu.ItemText>測驗紀錄</Menu.ItemText>
+									</Menu.Item>
+
+									<Menu.Item
+										value="analytics"
+										class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
+									>
+										<ChartColumnIcon
+											class="size-4"
+											aria-hidden="true"
+										/>
+										<Menu.ItemText>學習統計</Menu.ItemText>
 									</Menu.Item>
 
 									{#if user.isAdmin}
