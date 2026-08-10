@@ -62,7 +62,7 @@
 	class="sticky top-0 z-30 border-b border-surface-200-800 bg-surface-50-950"
 >
 	<AppBar.Toolbar
-		class="mx-auto grid h-14 min-h-0 w-full max-w-6xl grid-cols-[1fr_auto] px-4 py-0 md:px-6"
+		class="mx-auto grid h-12 min-h-0 w-full max-w-6xl grid-cols-[1fr_auto] px-4 py-0 md:px-6"
 	>
 		<AppBar.Headline>
 			<a
@@ -79,7 +79,10 @@
 
 			{#if user}
 				<Menu
-					positioning={{ placement: 'bottom-end' }}
+					positioning={{
+						placement: 'bottom-end',
+						gutter: 10
+					}}
 					onSelect={(details) =>
 						handleMenuSelect(details.value)}
 				>
@@ -110,9 +113,11 @@
 					</Menu.Trigger>
 
 					<Portal>
-						<Menu.Positioner class="z-[80] pt-2">
+						<Menu.Positioner
+							class="z-[100] overflow-visible [--z-index:100]"
+						>
 							<Menu.Content
-								class="card w-52 border border-surface-200-800 bg-surface-50-950 p-1 shadow-xl"
+								class="card isolate w-52 rounded-container border border-surface-200-800 bg-surface-50-950 p-1 shadow-2xl"
 							>
 								<Menu.ItemGroup>
 									<Menu.ItemGroupLabel
