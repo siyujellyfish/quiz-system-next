@@ -13,7 +13,8 @@
 	import {
 		getExamNavigatorPage,
 		getExamNavigatorPageCount,
-		getExamNavigatorRange
+		getExamNavigatorRange,
+		getExamNavigatorRangeLabel
 	} from '$lib/quiz/exam-navigator';
 
 	type Props = {
@@ -60,6 +61,22 @@
 			session.questions.length,
 			page
 		)
+	);
+	let previousRangeLabel = $derived(
+		page > 0
+			? getExamNavigatorRangeLabel(
+					session.questions.length,
+					page - 1
+				)
+			: ''
+	);
+	let nextRangeLabel = $derived(
+		page < pageCount - 1
+			? getExamNavigatorRangeLabel(
+					session.questions.length,
+					page + 1
+				)
+			: ''
 	);
 	let visibleQuestions = $derived(
 		session.questions.slice(
@@ -331,28 +348,31 @@
 
 	{#if pageCount > 1}
 		<div
-			class="mt-4 flex items-center justify-between gap-2 border-t border-surface-300-700 pt-4"
+			class="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-t border-surface-300-700 pt-4"
 		>
 			<button
 				type="button"
-				class="btn preset-tonal"
+				class="btn preset-tonal justify-start"
 				disabled={page === 0}
 				onclick={() => goToPage(page - 1)}
 			>
-				‹ 前 50 題
+				‹{previousRangeLabel ? ` ${previousRangeLabel}` : ''}
 			</button>
 
-			<span class="text-xs font-semibold opacity-60">
-				{page + 1} / {pageCount}
+			<span
+				class="text-xs font-semibold opacity-45"
+				aria-hidden="true"
+			>
+				|
 			</span>
 
 			<button
 				type="button"
-				class="btn preset-tonal"
+				class="btn preset-tonal justify-end"
 				disabled={page >= pageCount - 1}
 				onclick={() => goToPage(page + 1)}
 			>
-				後 50 題 ›
+				{nextRangeLabel ? `${nextRangeLabel} ` : ''}›
 			</button>
 		</div>
 	{/if}
