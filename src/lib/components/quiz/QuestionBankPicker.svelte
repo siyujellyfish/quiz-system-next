@@ -8,7 +8,7 @@
 		Check,
 		ChevronDown,
 		Search
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 
 	type BankOption = {
 		id: string;
@@ -135,9 +135,7 @@
 							{#each filteredBanks as item (item.bank.id)}
 								<Dialog.CloseTrigger
 									type="button"
-									class="flex w-full items-start gap-3 rounded-container border px-4 py-3 text-left transition hover:border-primary-500 hover:bg-surface-100-900"
-									class:border-primary-500={item.index === selectedIndex}
-									class:border-surface-300-700={item.index !== selectedIndex}
+									class={`flex w-full items-start gap-3 rounded-container border px-4 py-3 text-left transition hover:border-primary-500 hover:bg-surface-100-900 ${item.index === selectedIndex ? 'border-primary-500' : 'border-surface-300-700'}`}
 									onclick={() => onSelect(item.index)}
 								>
 									<span
