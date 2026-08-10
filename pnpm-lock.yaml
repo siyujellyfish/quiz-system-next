@@ -11,13 +11,13 @@ importers:
       '@lucide/svelte':
         specifier: ^1.30.0
         version: 1.30.0(svelte@5.56.8)
+      '@neondatabase/serverless':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@node-rs/argon2':
         specifier: ^2.0.2
         version: 2.0.2
     devDependencies:
-      '@neondatabase/serverless':
-        specifier: ^1.1.0
-        version: 1.1.0
       '@skeletonlabs/skeleton':
         specifier: ^5.0.0
         version: 5.0.0(tailwindcss@4.3.3)
