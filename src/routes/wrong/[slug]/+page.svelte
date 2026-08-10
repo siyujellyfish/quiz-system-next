@@ -3,6 +3,12 @@
 		goto
 	} from '$app/navigation';
 
+	import {
+		Dialog,
+		Portal
+	} from '@skeletonlabs/skeleton-svelte';
+	import { Trash2 } from 'lucide-svelte';
+
 	import type {
 		PageProps
 	} from './$types';
@@ -14,6 +20,7 @@
 
 	import QuestionCard
 		from '$lib/components/quiz/QuestionCard.svelte';
+	import { toaster } from '$lib/ui/toaster';
 
 	type WrongView = {
 		remainingCount: number;
@@ -33,6 +40,8 @@
 	let submitting =
 		$state(false);
 	let loadingNext =
+		$state(false);
+	let clearingWrong =
 		$state(false);
 	let errorMessage =
 		$state<string | null>(null);
@@ -168,6 +177,58 @@
 		}
 	}
 
+	async function clearWrongSet(): Promise<void> {
+		if (
+			clearingWrong ||
+			remainingCount === 0
+		) {
+			return;
+		}
+
+		clearingWrong = true;
+		errorMessage = null;
+
+		try {
+			const response = await fetch(
+				`/wrong/${encodeURIComponent(
+					data.bank.slug
+				)}/clear`,
+				{
+					method: 'POST'
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(
+					'Failed to clear wrong questions'
+				);
+			}
+
+			const result = await response.json() as {
+				clearedCount: number;
+			};
+
+			localWrong = {
+				remainingCount: 0,
+				question: null
+			};
+			selectedOptionId = null;
+			answerResult = null;
+			completed = true;
+
+			toaster.success({
+				title: '錯題已清除',
+				description:
+					`已清除 ${data.bank.name} 的 ${result.clearedCount} 道錯題。`
+			});
+		} catch {
+			errorMessage =
+				'無法清除錯題，請再試一次。';
+		} finally {
+			clearingWrong = false;
+		}
+	}
+
 	function completeReview() {
 		completed = true;
 	}
@@ -194,12 +255,57 @@
 				</p>
 			</div>
 
-			<a
-				href="/"
-				class="btn preset-tonal shrink-0"
-			>
-				結束複習
-			</a>
+			<div class="flex flex-wrap items-center gap-2">
+				{#if remainingCount > 0}
+					<Dialog role="alertdialog">
+						<Dialog.Trigger
+							class="btn preset-tonal-error shrink-0"
+							disabled={clearingWrong}
+						>
+							<Trash2 size={16} aria-hidden="true" />
+							清除錯題
+						</Dialog.Trigger>
+
+						<Portal>
+							<Dialog.Backdrop class="fixed inset-0 z-50 bg-black/60" />
+							<Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center p-4">
+								<Dialog.Content class="card w-full max-w-lg bg-surface-50-950 p-6 shadow-xl">
+									<Dialog.Title class="text-xl font-bold text-error-700-300">
+										清除 {data.bank.name} 的錯題？
+									</Dialog.Title>
+									<Dialog.Description class="mt-3 text-sm leading-relaxed opacity-70">
+										將移除目前題庫的 {remainingCount} 道錯題。此操作無法復原，但不會刪除原始題目或 Practice 進度。
+									</Dialog.Description>
+									<div class="mt-6 flex justify-end gap-3">
+										<Dialog.CloseTrigger
+											type="button"
+											class="btn preset-tonal"
+										>
+											取消
+										</Dialog.CloseTrigger>
+										<Dialog.CloseTrigger
+											type="button"
+											class="btn preset-filled-error-500"
+											disabled={clearingWrong}
+											onclick={clearWrongSet}
+										>
+											<Trash2 size={16} aria-hidden="true" />
+											{clearingWrong ? '清除中...' : `清除 ${remainingCount} 道錯題`}
+										</Dialog.CloseTrigger>
+									</div>
+								</Dialog.Content>
+							</Dialog.Positioner>
+						</Portal>
+					</Dialog>
+				{/if}
+
+				<a
+					href="/"
+					class="btn preset-tonal shrink-0"
+				>
+					結束複習
+				</a>
+			</div>
 		</header>
 
 		{#if
