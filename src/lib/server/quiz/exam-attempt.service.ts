@@ -6,11 +6,11 @@ import type {
 import {
 	completeExamAttempt,
 	createExamAttempt,
-	getExamAttemptForUser
+	getExamAttemptForUser,
+	getLatestExamAttemptForUserBank
 } from '$lib/server/quiz/exam-attempt.repository';
 
 import {
-	ExamError,
 	gradeExam
 } from '$lib/server/quiz/exam.service';
 
@@ -67,27 +67,20 @@ async function gradeSubmittedAttempt(
 }
 
 export async function submitUserExamAttempt(input: {
-	attemptId: string;
 	userId: string;
 	bankId: string;
 	answers: ExamAnswers;
 }): Promise<ExamResult> {
-	const attempt = await getExamAttemptForUser(
-		input.attemptId,
-		input.userId
-	);
+	const attempt =
+		await getLatestExamAttemptForUserBank(
+			input.userId,
+			input.bankId
+		);
 
 	if (!attempt) {
 		throw new ExamAttemptError(
-		404,
-		'找不到指定的考試紀錄'
-		);
-	}
-
-	if (attempt.bankId !== input.bankId) {
-		throw new ExamAttemptError(
 		409,
-		'考試紀錄與目前題庫不一致'
+		'目前沒有可交卷的考試紀錄，請重新開始考試'
 		);
 	}
 
@@ -104,25 +97,15 @@ export async function submitUserExamAttempt(input: {
 	}
 
 	const submittedAt = new Date();
-	let result: ExamResult;
-
-	try {
-		result = await gradeExam(
-			input.bankId,
-			input.answers,
-			attempt.startedAt.getTime(),
-			submittedAt.getTime()
-		);
-	} catch (caught) {
-		if (caught instanceof ExamError) {
-			throw caught;
-		}
-
-		throw caught;
-	}
+	const result = await gradeExam(
+		input.bankId,
+		input.answers,
+		attempt.startedAt.getTime(),
+		submittedAt.getTime()
+	);
 
 	const completed = await completeExamAttempt({
-		attemptId: input.attemptId,
+		attemptId: attempt.id,
 		userId: input.userId,
 		answers: input.answers,
 		result,
@@ -134,7 +117,7 @@ export async function submitUserExamAttempt(input: {
 	}
 
 	const latest = await getExamAttemptForUser(
-		input.attemptId,
+		attempt.id,
 		input.userId
 	);
 
