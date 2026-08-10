@@ -56,6 +56,7 @@ export default defineConfig({
 					name: 'integration',
 					environment: 'node',
 					include: ['src/**/*.integration.{test,spec}.{js,ts}'],
+					fileParallelism: false,
 					sequence: {
 						concurrent: false
 					}
