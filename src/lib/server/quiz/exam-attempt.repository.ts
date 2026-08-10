@@ -65,6 +65,33 @@ export async function createExamAttempt(input: {
 	});
 }
 
+export async function getLatestExamAttemptForUserBank(
+	userId: string,
+	bankId: string
+) {
+	const [attempt] = await db
+		.select()
+		.from(examAttempts)
+		.where(
+			and(
+				eq(
+					examAttempts.userId,
+					userId
+				),
+				eq(
+					examAttempts.bankId,
+					bankId
+				)
+			)
+		)
+		.orderBy(
+			desc(examAttempts.startedAt)
+		)
+		.limit(1);
+
+	return attempt ?? null;
+}
+
 export async function getExamAttemptForUser(
 	attemptId: string,
 	userId: string
