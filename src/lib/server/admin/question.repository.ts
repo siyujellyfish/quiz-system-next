@@ -29,6 +29,168 @@ export type AdminQuestionWriteInput = {
 	options: AdminQuestionOptionWriteInput[];
 };
 
+export type AdminQuestionHealthFilter =
+	| 'all'
+	| 'healthy'
+	| 'invalid';
+
+export type AdminQuestionListInput = {
+	bankId: string;
+	query: string;
+	health: AdminQuestionHealthFilter;
+	page: number;
+	pageSize: number;
+};
+
+function getAdminQuestionListWhere(
+	bankId: string,
+	query: string
+) {
+	const normalizedQuery = query.trim();
+
+	if (!normalizedQuery) {
+		return eq(
+			questions.bankId,
+			bankId
+		);
+	}
+
+	const pattern = `%${normalizedQuery}%`;
+
+	return and(
+		eq(
+			questions.bankId,
+			bankId
+		),
+		sql<boolean>`(
+			${questions.prompt} ilike ${pattern}
+			or ${questions.id}::text ilike ${pattern}
+		)`
+	);
+}
+
+function getAdminQuestionHealthHaving(
+	health: AdminQuestionHealthFilter
+) {
+	const optionCount =
+		sql<number>`count(${questionOptions.id})`;
+	const correctOptionCount =
+		sql<number>`count(*) filter (where ${questionOptions.isCorrect} = true)`;
+
+	switch (health) {
+		case 'healthy':
+			return sql<boolean>`
+				${optionCount} >= 2
+				and ${correctOptionCount} = 1
+			`;
+
+		case 'invalid':
+			return sql<boolean>`
+				${optionCount} < 2
+				or ${correctOptionCount} <> 1
+			`;
+
+		default:
+			return sql<boolean>`true`;
+	}
+}
+
+export async function getAdminQuestionList(
+	input: AdminQuestionListInput
+) {
+	const whereCondition =
+		getAdminQuestionListWhere(
+			input.bankId,
+			input.query
+		);
+	const healthHaving =
+		getAdminQuestionHealthHaving(
+			input.health
+		);
+
+	const filteredQuestions = db
+		.select({
+			id: questions.id
+		})
+		.from(questions)
+		.leftJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id
+			)
+		)
+		.where(whereCondition)
+		.groupBy(questions.id)
+		.having(healthHaving)
+		.as('filtered_admin_questions');
+
+	const [countRow] = await db
+		.select({
+			total: count()
+		})
+		.from(filteredQuestions);
+
+	const total = Number(
+		countRow?.total ?? 0
+	);
+	const totalPages = Math.max(
+		1,
+		Math.ceil(total / input.pageSize)
+	);
+	const page = Math.min(
+		Math.max(1, input.page),
+		totalPages
+	);
+
+	const rows = await db
+		.select({
+			id: questions.id,
+			prompt: questions.prompt,
+			optionCount: count(questionOptions.id),
+			correctOptionCount:
+				sql<number>`count(*) filter (where ${questionOptions.isCorrect} = true)`
+		})
+		.from(questions)
+		.leftJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id
+			)
+		)
+		.where(whereCondition)
+		.groupBy(
+			questions.id,
+			questions.prompt
+		)
+		.having(healthHaving)
+		.orderBy(
+			asc(questions.prompt),
+			asc(questions.id)
+		)
+		.limit(input.pageSize)
+		.offset(
+			(page - 1) * input.pageSize
+		);
+
+	return {
+		questions: rows.map(
+			(question) => ({
+				...question,
+				optionCount:
+					Number(question.optionCount),
+				correctOptionCount:
+					Number(question.correctOptionCount)
+			})
+		),
+		total,
+		page,
+		totalPages,
+		pageSize: input.pageSize
+	};
+}
+
 export async function getAdminQuestions(
 	bankId: string
 ) {
@@ -317,9 +479,9 @@ export async function updateAdminQuestion(
 				.delete(practiceProgress)
 				.where(
 					eq(
-						practiceProgress.bankId,
-						bankId
-					)
+					practiceProgress.bankId,
+					bankId
+				)
 				);
 		}
 
@@ -362,10 +524,10 @@ export async function deleteAdminQuestion(
 			.delete(practiceProgress)
 			.where(
 				eq(
-					practiceProgress.bankId,
-					bankId
-				)
-			);
+				practiceProgress.bankId,
+				bankId
+			)
+		);
 
 		return deleted;
 	});
