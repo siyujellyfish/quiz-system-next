@@ -22,6 +22,7 @@
 
 	type Props = {
 		values: Values;
+		baselineValues?: Values;
 		errors?: Errors;
 		message?: string;
 		submitLabel: string;
@@ -34,6 +35,7 @@
 
 	let {
 		values,
+		baselineValues,
 		errors,
 		message,
 		submitLabel,
@@ -65,6 +67,7 @@
 
 	$effect(() => {
 		const incoming = values;
+		const persisted = baselineValues ?? incoming;
 
 		prompt = incoming.prompt;
 		options = incoming.options.map(
@@ -77,8 +80,8 @@
 		);
 		nextKey = incoming.options.length;
 		baseline = fingerprint(
-			incoming.prompt,
-			incoming.options
+			persisted.prompt,
+			persisted.options
 		);
 	});
 
