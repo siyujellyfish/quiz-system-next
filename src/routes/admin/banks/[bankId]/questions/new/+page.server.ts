@@ -92,11 +92,14 @@ export const actions: Actions = {
 			});
 		}
 
+		let createdQuestion;
+
 		try {
-			await createValidatedAdminQuestion(
-				bank.id,
-				validation
-			);
+			createdQuestion =
+				await createValidatedAdminQuestion(
+					bank.id,
+					validation
+				);
 		} catch (caughtError) {
 			if (
 				caughtError instanceof
@@ -114,7 +117,7 @@ export const actions: Actions = {
 
 		redirect(
 			303,
-			`/admin/banks/${bank.id}/questions`
+			`/admin/banks/${bank.id}/questions?question=${encodeURIComponent(createdQuestion.id)}&created=1`
 		);
 	}
 };
