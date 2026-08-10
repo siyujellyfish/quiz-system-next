@@ -3,6 +3,8 @@
 
 	import ChevronDownIcon
 		from '@lucide/svelte/icons/chevron-down';
+	import HistoryIcon
+		from '@lucide/svelte/icons/history';
 	import {
 		AppBar,
 		Avatar,
@@ -38,6 +40,11 @@
 	): Promise<void> {
 		if (value === 'profile') {
 			await goto('/profile');
+			return;
+		}
+
+		if (value === 'history') {
+			await goto('/history');
 			return;
 		}
 
@@ -138,6 +145,17 @@
 										class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
 									>
 										<Menu.ItemText>個人資料</Menu.ItemText>
+									</Menu.Item>
+
+									<Menu.Item
+										value="history"
+										class="rounded-lg px-3 py-2 text-sm hover:bg-surface-100-900"
+									>
+										<HistoryIcon
+											class="size-4"
+											aria-hidden="true"
+										/>
+										<Menu.ItemText>測驗紀錄</Menu.ItemText>
 									</Menu.Item>
 
 									{#if user.isAdmin}
