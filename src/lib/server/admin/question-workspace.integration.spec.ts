@@ -108,6 +108,59 @@ describe('admin question workbench', () => {
 		).toBeNull();
 	});
 
+	it('filters by option content without changing question health counts', async () => {
+		const bankId = randomUUID();
+		const matchingQuestionId = randomUUID();
+		const otherQuestionId = randomUUID();
+
+		await sql`
+			INSERT INTO question_banks (id, slug, name)
+			VALUES (${bankId}, 'option-search-bank', 'Option Search Bank')
+		`;
+
+		await sql`
+			INSERT INTO questions (id, bank_id, prompt)
+			VALUES
+				(${matchingQuestionId}, ${bankId}, 'Choose the best architecture'),
+				(${otherQuestionId}, ${bankId}, 'Choose the best recovery process')
+		`;
+
+		await sql`
+			INSERT INTO question_options (
+				id,
+				question_id,
+				content,
+				is_correct,
+				position
+			)
+			VALUES
+				(${randomUUID()}, ${matchingQuestionId}, 'Centralized SIEM implementation', true, 0),
+				(${randomUUID()}, ${matchingQuestionId}, 'Standalone endpoint logging', false, 1),
+				(${randomUUID()}, ${matchingQuestionId}, 'Manual audit review', false, 2),
+				(${randomUUID()}, ${otherQuestionId}, 'Warm site recovery', true, 0),
+				(${randomUUID()}, ${otherQuestionId}, 'Cold site recovery', false, 1)
+		`;
+
+		const workspace =
+			await getAdminQuestionWorkspace({
+				bankId,
+				query: 'centralized siem',
+				health: 'healthy',
+				questionId: null
+			});
+
+		expect(workspace.total).toBe(1);
+		expect(
+			workspace.currentQuestion?.id
+		).toBe(matchingQuestionId);
+		expect(
+			workspace.currentSummary?.optionCount
+		).toBe(3);
+		expect(
+			workspace.currentSummary?.correctOptionCount
+		).toBe(1);
+	});
+
 	it('filters invalid questions by aggregate option health', async () => {
 		const bankId = randomUUID();
 		const healthyId = randomUUID();
