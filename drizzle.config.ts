@@ -6,24 +6,21 @@ import {
 	defineConfig
 } from 'drizzle-kit';
 
-
 config({
-	path: '.env.local',
-	override: true
+	path: '.env.local'
 });
 
 config();
 
-
 const databaseUrl =
+	process.env.DATABASE_URL_UNPOOLED ??
 	process.env.DATABASE_URL;
 
 if (!databaseUrl) {
 	throw new Error(
-		'DATABASE_URL is not set'
+		'DATABASE_URL_UNPOOLED or DATABASE_URL is not set'
 	);
 }
-
 
 export default defineConfig({
 	out: './drizzle',
