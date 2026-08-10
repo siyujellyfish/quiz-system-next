@@ -64,7 +64,6 @@ export const POST: RequestHandler = async ({
 	let body: {
 		answers?: unknown;
 		startedAt?: unknown;
-		attemptId?: unknown;
 	};
 
 	try {
@@ -81,18 +80,7 @@ export const POST: RequestHandler = async ({
 
 	try {
 		if (locals.user) {
-			if (
-				typeof body.attemptId !== 'string' ||
-				!body.attemptId
-			) {
-				error(
-					400,
-					'考試紀錄識別碼格式錯誤'
-				);
-			}
-
 			const result = await submitUserExamAttempt({
-				attemptId: body.attemptId,
 				userId: locals.user.id,
 				bankId: bank.id,
 				answers
