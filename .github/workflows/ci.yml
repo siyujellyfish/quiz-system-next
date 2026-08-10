@@ -23,6 +23,7 @@ jobs:
     timeout-minutes: 20
     env:
       CI: true
+      DATABASE_DRIVER: postgres-js
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/quiz_ci
 
     services:
