@@ -25,6 +25,7 @@
 		compact?: boolean;
 	};
 
+	const PREVIEW_OPEN_DELAY_MS = 180;
 	const PREVIEW_CLOSE_DELAY_MS = 140;
 
 	let {
@@ -37,6 +38,9 @@
 
 	let page = $state(0);
 	let previewIndex = $state<number | null>(null);
+	let pendingPreviewIndex = $state<number | null>(null);
+	let previewOpenTimer:
+		ReturnType<typeof setTimeout> | null = null;
 	let previewCloseTimer:
 		ReturnType<typeof setTimeout> | null = null;
 
@@ -69,6 +73,15 @@
 		);
 	});
 
+	function clearPreviewOpenTimer(): void {
+		if (previewOpenTimer) {
+			clearTimeout(previewOpenTimer);
+			previewOpenTimer = null;
+		}
+
+		pendingPreviewIndex = null;
+	}
+
 	function clearPreviewCloseTimer(): void {
 		if (!previewCloseTimer) {
 			return;
@@ -78,14 +91,55 @@
 		previewCloseTimer = null;
 	}
 
-	function openPreview(index: number): void {
+	function openPreviewImmediately(
+		index: number
+	): void {
+		clearPreviewOpenTimer();
 		clearPreviewCloseTimer();
 		previewIndex = index;
+	}
+
+	function schedulePreviewOpen(
+		index: number
+	): void {
+		if (previewIndex === index) {
+			clearPreviewOpenTimer();
+			clearPreviewCloseTimer();
+			return;
+		}
+
+		clearPreviewOpenTimer();
+		pendingPreviewIndex = index;
+
+		previewOpenTimer = setTimeout(() => {
+			if (pendingPreviewIndex === index) {
+				previewIndex = index;
+				pendingPreviewIndex = null;
+			}
+
+			previewOpenTimer = null;
+		}, PREVIEW_OPEN_DELAY_MS);
+	}
+
+	function cancelPreviewOpen(
+		index: number
+	): void {
+		if (pendingPreviewIndex !== index) {
+			return;
+		}
+
+		clearPreviewOpenTimer();
 	}
 
 	function schedulePreviewClose(
 		index: number
 	): void {
+		cancelPreviewOpen(index);
+
+		if (previewIndex !== index) {
+			return;
+		}
+
 		clearPreviewCloseTimer();
 
 		previewCloseTimer = setTimeout(() => {
@@ -97,7 +151,18 @@
 		}, PREVIEW_CLOSE_DELAY_MS);
 	}
 
+	function keepPreviewOpen(
+		index: number
+	): void {
+		clearPreviewOpenTimer();
+
+		if (previewIndex === index) {
+			clearPreviewCloseTimer();
+		}
+	}
+
 	function closePreview(): void {
+		clearPreviewOpenTimer();
 		clearPreviewCloseTimer();
 		previewIndex = null;
 	}
@@ -180,6 +245,7 @@
 	}
 
 	onDestroy(() => {
+		clearPreviewOpenTimer();
 		clearPreviewCloseTimer();
 	});
 </script>
@@ -227,13 +293,13 @@
 					type="button"
 					class={getButtonClass(index)}
 					onmouseenter={() => {
-						openPreview(index);
+						schedulePreviewOpen(index);
 					}}
 					onmouseleave={() => {
 						schedulePreviewClose(index);
 					}}
 					onfocus={() => {
-						openPreview(index);
+						openPreviewImmediately(index);
 					}}
 					onblur={() => {
 						schedulePreviewClose(index);
@@ -251,7 +317,7 @@
 						<Popover.Content
 							class="card w-[min(24rem,calc(100vw-2rem))] border border-surface-300-700 bg-surface-50-950 p-4 shadow-xl"
 							onmouseenter={() => {
-								openPreview(index);
+								keepPreviewOpen(index);
 							}}
 							onmouseleave={() => {
 								schedulePreviewClose(index);
