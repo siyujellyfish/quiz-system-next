@@ -89,6 +89,46 @@
 			?.correctOptionIds.includes(optionId) ?? false;
 	}
 
+	function getPreviewOptionClass(
+		questionId: string,
+		optionId: string,
+		selectedId: string | null
+	): string {
+		const classes = [
+			'rounded-base',
+			'border',
+			'border-surface-300-700',
+			'px-3',
+			'py-2',
+			'text-xs',
+			'leading-relaxed'
+		];
+
+		if (
+			selectedId === optionId &&
+			!reviewMode
+		) {
+			classes.push(
+				'border-primary-500',
+				'bg-primary-500/10'
+			);
+		}
+
+		if (
+			isCorrectOption(
+				questionId,
+				optionId
+			)
+		) {
+			classes.push(
+				'border-success-500',
+				'bg-success-500/10'
+			);
+		}
+
+		return classes.join(' ');
+	}
+
 	function goToPage(nextPage: number): void {
 		page = Math.min(
 			Math.max(0, nextPage),
@@ -190,11 +230,11 @@
 							<div class="mt-4 space-y-2">
 								{#each item.options as option, optionIndex}
 									<div
-										class="rounded-base border border-surface-300-700 px-3 py-2 text-xs leading-relaxed"
-										class:border-primary-500={selectedId === option.id && !reviewMode}
-										class:bg-primary-500/10={selectedId === option.id && !reviewMode}
-										class:border-success-500={isCorrectOption(item.id, option.id)}
-										class:bg-success-500/10={isCorrectOption(item.id, option.id)}
+										class={getPreviewOptionClass(
+											item.id,
+											option.id,
+											selectedId
+										)}
 									>
 										<div class="flex gap-2">
 											<strong>{String.fromCharCode(65 + optionIndex)}.</strong>
@@ -215,7 +255,7 @@
 							</div>
 
 							<Popover.Arrow
-								class="[--arrow-background:var(--color-surface-50-950)] [--arrow-size:--spacing(2)]"
+								class="[--arrow-size:--spacing(2)]"
 							>
 								<Popover.ArrowTip />
 							</Popover.Arrow>
