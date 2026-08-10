@@ -8,7 +8,11 @@
 		ExamSession
 	} from '$lib/types/quiz';
 
-	const PAGE_SIZE = 50;
+	import {
+		getExamNavigatorPage,
+		getExamNavigatorPageCount,
+		getExamNavigatorRange
+	} from '$lib/quiz/exam-navigator';
 
 	type Props = {
 		session: ExamSession;
@@ -35,33 +39,26 @@
 		).length
 	);
 	let pageCount = $derived(
-		Math.max(
-			1,
-			Math.ceil(
-				session.questions.length /
-					PAGE_SIZE
-			)
+		getExamNavigatorPageCount(
+			session.questions.length
 		)
 	);
-	let pageStart = $derived(
-		page * PAGE_SIZE
-	);
-	let pageEnd = $derived(
-		Math.min(
+	let range = $derived(
+		getExamNavigatorRange(
 			session.questions.length,
-			pageStart + PAGE_SIZE
+			page
 		)
 	);
 	let visibleQuestions = $derived(
 		session.questions.slice(
-			pageStart,
-			pageEnd
+			range.start,
+			range.end
 		)
 	);
 
 	$effect(() => {
-		page = Math.floor(
-			session.currentIndex / PAGE_SIZE
+		page = getExamNavigatorPage(
+			session.currentIndex
 		);
 	});
 
@@ -108,7 +105,7 @@
 		<div>
 			<h2 class="font-semibold">題號</h2>
 			<p class="mt-1 text-xs opacity-55">
-				{pageStart + 1}–{pageEnd} / {session.questions.length}
+				{range.start + 1}–{range.end} / {session.questions.length}
 			</p>
 		</div>
 
@@ -125,7 +122,7 @@
 			: 'mt-4 grid grid-cols-5 gap-2'}
 	>
 		{#each visibleQuestions as item, localIndex (item.id)}
-			{@const index = pageStart + localIndex}
+			{@const index = range.start + localIndex}
 			{@const selectedId = getSelectedOptionId(item.id)}
 			<Popover
 				open={previewIndex === index}
