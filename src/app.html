@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="cerberus">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<link
+			id="app-favicon"
+			rel="icon"
+			type="image/svg+xml"
+			href="/quiz-icon-light.svg"
+		/>
+		<script>
+			(() => {
+				const root = document.documentElement;
+				const storedMode =
+					localStorage.getItem('mode');
+
+				const mode =
+					storedMode === 'light' ||
+					storedMode === 'dark'
+						? storedMode
+						: matchMedia(
+							'(prefers-color-scheme: dark)'
+						).matches
+							? 'dark'
+							: 'light';
+
+				function updateFavicon(
+					currentMode
+				) {
+					const favicon =
+						document.getElementById(
+							'app-favicon'
+						);
+
+					if (!favicon) {
+						return;
+					}
+
+					favicon.setAttribute(
+						'href',
+						currentMode === 'dark'
+							? '/quiz-icon-dark.svg'
+							: '/quiz-icon-light.svg'
+					);
+				}
+
+				root.setAttribute(
+					'data-mode',
+					mode
+				);
+				updateFavicon(mode);
+
+				new MutationObserver(() => {
+					updateFavicon(
+						root.getAttribute(
+							'data-mode'
+						)
+					);
+				}).observe(
+					root,
+					{
+						attributes: true,
+						attributeFilter: [
+							'data-mode'
+						]
+					}
+				);
+			})();
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

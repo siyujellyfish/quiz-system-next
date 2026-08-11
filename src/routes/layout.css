@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton-svelte';
+@import '@skeletonlabs/skeleton/themes/cerberus';
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+html,
+body {
+	min-height: 100%;
+}
+
+body {
+	margin: 0;
+	@apply bg-surface-100-900 text-surface-950-50 antialiased;
+}
+
+@layer components {
+	.app-page {
+		@apply mx-auto w-full max-w-7xl p-3 sm:p-4 md:p-5;
+	}
+
+	.app-panel {
+		@apply rounded-container border border-surface-300-700 bg-surface-50-950 shadow-sm;
+	}
+
+	.quiz-toolbar {
+		@apply rounded-container border border-surface-300-700 bg-surface-50-950 p-3 shadow-sm;
+	}
+
+	.quiz-eyebrow {
+		@apply text-[11px] font-bold uppercase tracking-[0.2em] opacity-55;
+	}
+
+	.quiz-stat-tile {
+		@apply rounded-container border border-surface-300-700 bg-surface-100-900 p-3 text-center;
+	}
+
+	.quiz-side-panel {
+		@apply rounded-container border border-surface-300-700 bg-surface-200-800 p-4 shadow-sm;
+	}
+}
+
+.quiz-toolbar [data-scope='tabs'][data-part='list'] {
+	min-height: 2.75rem;
+	align-items: center;
+	border-radius: 0 !important;
+	background: transparent !important;
+	padding: 0 !important;
+}
+
+.quiz-toolbar [data-scope='tabs'][data-part='trigger'] {
+	align-self: stretch;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.quiz-toolbar [data-scope='tabs'][data-part='indicator'] {
+	bottom: 0;
+	height: 2px;
+	border-radius: 0;
+	background: currentColor;
+}
+
+[role='dialog'].card {
+	@apply bg-surface-50 shadow-xl;
+}
+
+[data-mode='dark'] [role='dialog'].card {
+	@apply bg-surface-950;
+}
