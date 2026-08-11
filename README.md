@@ -1,6 +1,6 @@
 # Quiz System
 
-一個以 **SvelteKit 5 + PostgreSQL + Drizzle ORM** 建構的題庫練習與模擬測驗系統，支援訪客練習、會員進度保存、錯題複習、模擬測驗、學習統計，以及管理員題庫與使用者管理。
+一個以 **SvelteKit + Svelte 5 + PostgreSQL + Drizzle ORM** 建構的題庫練習與模擬測驗系統，支援訪客練習、會員進度保存、錯題複習、模擬測驗、學習統計，以及管理員題庫與使用者管理。
 
 目前正式站：**https://exam.azubot.xyz**
 
@@ -85,18 +85,20 @@
 
 ## 技術棧
 
-- [SvelteKit](https://svelte.dev/docs/kit)
-- [Svelte 5](https://svelte.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [Skeleton](https://www.skeleton.dev/)
-- [Drizzle ORM](https://orm.drizzle.team/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Neon](https://neon.com/)
-- [Vercel](https://vercel.com/)
-- [Vitest](https://vitest.dev/)
-- [Playwright](https://playwright.dev/)
-- [Argon2](https://github.com/P-H-C/phc-winner-argon2)
+| 技術 | 本專案用途 |
+| --- | --- |
+| [SvelteKit](https://svelte.dev/docs/kit) | 應用程式框架與路由層，負責 SSR、Server Actions、API endpoints、頁面資料載入與 Vercel 部署整合。 |
+| [Svelte 5](https://svelte.dev/) | 建構互動式前端介面與元件，使用 runes 管理頁面狀態、表單與測驗互動流程。 |
+| [TypeScript](https://www.typescriptlang.org/) | 為前後端程式、資料模型、服務層與 API payload 提供靜態型別檢查。 |
+| [Tailwind CSS 4](https://tailwindcss.com/) | 負責版面配置、responsive design、間距、排版與視覺樣式。 |
+| [Skeleton](https://www.skeleton.dev/) | 提供與 Svelte 整合的 UI primitives，例如 Tabs、Dialog、Toast、Switch 與表單相關元件。 |
+| [Drizzle ORM](https://orm.drizzle.team/) | 定義 PostgreSQL schema、撰寫 type-safe queries、管理 migration，並作為 repository layer 的主要資料存取工具。 |
+| [PostgreSQL](https://www.postgresql.org/) | 儲存使用者、Session、題庫、題目、選項、練習進度、錯題、模擬測驗紀錄與學習統計資料。 |
+| [Neon](https://neon.com/) | 提供 Production PostgreSQL 服務與 serverless-friendly database connection。 |
+| [Vercel](https://vercel.com/) | Production hosting 與 SvelteKit serverless runtime，並由 GitHub `main` branch 觸發正式部署。 |
+| [Vitest](https://vitest.dev/) | 執行 service、validation 與其他程式邏輯的 unit tests，以及 PostgreSQL integration tests。 |
+| [Playwright](https://playwright.dev/) | 提供瀏覽器測試執行環境，驗證需要實際 browser runtime 的前端行為。 |
+| [Argon2](https://github.com/P-H-C/phc-winner-argon2) | 對使用者密碼進行安全雜湊與登入密碼驗證，避免保存明文密碼。 |
 
 ## 系統需求
 
