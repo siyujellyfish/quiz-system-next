@@ -18,9 +18,11 @@ export const ADMIN_BANK_IMPORT_MAX_QUESTIONS = 5000;
 export type AdminBankImportPreview = {
 	questionCount: number;
 	optionCount: number;
+	explanationCount: number;
 	sampleQuestions: Array<{
 		prompt: string;
 		optionCount: number;
+		hasExplanation: boolean;
 	}>;
 };
 
@@ -95,6 +97,7 @@ export function parseAdminBankImportJson(
 
 	const questions: AdminBankTransferQuestion[] = [];
 	let optionCount = 0;
+	let explanationCount = 0;
 
 	for (
 		let questionIndex = 0;
@@ -102,9 +105,7 @@ export function parseAdminBankImportJson(
 		questionIndex += 1
 	) {
 		const item = parsed[questionIndex];
-		const prefix = getQuestionErrorPrefix(
-			questionIndex
-		);
+		const prefix = getQuestionErrorPrefix(questionIndex);
 
 		if (!isRecord(item)) {
 			return {
@@ -128,6 +129,22 @@ export function parseAdminBankImportJson(
 				message: `${prefix}：題目內容不可空白`
 			};
 		}
+
+		if (
+			item.explanation !== undefined &&
+			item.explanation !== null &&
+			typeof item.explanation !== 'string'
+		) {
+			return {
+				ok: false,
+				message: `${prefix}：explanation 必須是字串或 null`
+			};
+		}
+
+		const explanation =
+			typeof item.explanation === 'string'
+				? item.explanation.trim() || null
+				: null;
 
 		if (!Array.isArray(item.options)) {
 			return {
@@ -201,8 +218,13 @@ export function parseAdminBankImportJson(
 		}
 
 		optionCount += options.length;
+		if (explanation) {
+			explanationCount += 1;
+		}
+
 		questions.push({
 			prompt,
+			explanation,
 			options
 		});
 	}
@@ -213,12 +235,13 @@ export function parseAdminBankImportJson(
 		preview: {
 			questionCount: questions.length,
 			optionCount,
+			explanationCount,
 			sampleQuestions: questions
 				.slice(0, 3)
 				.map((question) => ({
 					prompt: question.prompt,
-					optionCount:
-						question.options.length
+					optionCount: question.options.length,
+					hasExplanation: question.explanation !== null
 				}))
 		},
 		payload: JSON.stringify(questions)
@@ -240,8 +263,7 @@ function isUniqueViolation(error: unknown) {
 	return typeof error === 'object' &&
 		error !== null &&
 		'code' in error &&
-		(error as { code?: unknown }).code ===
-			'23505';
+		(error as { code?: unknown }).code === '23505';
 }
 
 export async function importValidatedAdminQuestionBank(
