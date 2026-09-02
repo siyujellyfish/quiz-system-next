@@ -12,6 +12,7 @@ export type AdminQuestionOptionFormValue = {
 
 export type AdminQuestionFormValues = {
 	prompt: string;
+	explanation: string;
 	options: AdminQuestionOptionFormValue[];
 };
 
@@ -27,6 +28,7 @@ export type AdminQuestionValidationResult =
 		values: AdminQuestionFormValues;
 		input: {
 			prompt: string;
+			explanation: string | null;
 			options: Array<{
 				id: string | null;
 				content: string;
@@ -123,6 +125,7 @@ export function validateAdminQuestionForm(
 ): AdminQuestionValidationResult {
 	const normalized: AdminQuestionFormValues = {
 		prompt: values.prompt.trim(),
+		explanation: values.explanation.trim(),
 		options: values.options.map(
 			(option) => ({
 				id: option.id,
@@ -194,12 +197,12 @@ export function validateAdminQuestionForm(
 		values: normalized,
 		input: {
 			prompt: normalized.prompt,
+			explanation: normalized.explanation || null,
 			options: normalized.options.map(
 				(option, position) => ({
 					...option,
 					position
 				})
-			)
 		}
 	};
 }
