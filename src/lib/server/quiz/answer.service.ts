@@ -18,11 +18,17 @@ import {
 
 
 import type {
-	PracticeQuestionsState,
+	PracticeQuestionState,
 	PublicQuizQuestion,
 	QuizAnswerResult,
 	UserPracticeAnswerResult
 } from '$lib/types/quiz';
+
+
+import {
+	getPracticeAnswerProgress,
+	getPracticeQuestionStateAtIndex
+} from './practice.repository';
 
 
 import {
@@ -51,19 +57,26 @@ type NextPracticeQuestion = {
 
 
 async function findNextPracticeQuestion(
+	userId: string,
 	bankId: string,
-	questionsState: PracticeQuestionsState,
-	startIndex: number
+	totalQuestions: number,
+	startIndex: number,
+	initialQuestionState:
+		PracticeQuestionState | null
 ): Promise<NextPracticeQuestion | null> {
 	for (
 		let currentIndex = startIndex;
-		currentIndex < questionsState.questions.length;
+		currentIndex < totalQuestions;
 		currentIndex++
 	) {
 		const questionState =
-			questionsState.questions[
-				currentIndex
-			];
+			currentIndex === startIndex
+				? initialQuestionState
+				: await getPracticeQuestionStateAtIndex(
+					userId,
+					bankId,
+					currentIndex
+				);
 
 		if (!questionState) {
 			continue;
@@ -187,23 +200,11 @@ export async function answerUserPracticeQuestion(
 	questionId: string,
 	selectedOptionId: string
 ): Promise<UserPracticeAnswerResult> {
-	const [progress] =
-		await db
-			.select()
-			.from(practiceProgress)
-			.where(
-				and(
-					eq(
-						practiceProgress.userId,
-						userId
-					),
-					eq(
-						practiceProgress.bankId,
-						bankId
-					)
-				)
-			)
-			.limit(1);
+	const progress =
+		await getPracticeAnswerProgress(
+			userId,
+			bankId
+		);
 
 	if (!progress) {
 		throw new PracticeAnswerError(
@@ -213,10 +214,7 @@ export async function answerUserPracticeQuestion(
 	}
 
 	const questionState =
-		progress.questionsState
-			.questions[
-				progress.currentIndex
-			];
+		progress.questionState;
 
 	if (
 		!questionState ||
@@ -250,9 +248,11 @@ export async function answerUserPracticeQuestion(
 			selectedOptionId
 		),
 		findNextPracticeQuestion(
+			userId,
 			bankId,
-			progress.questionsState,
-			progress.currentIndex + 1
+			progress.totalQuestions,
+			progress.currentIndex + 1,
+			progress.nextQuestionState
 		)
 	]);
 
@@ -265,7 +265,7 @@ export async function answerUserPracticeQuestion(
 
 	const nextIndex =
 		next?.currentIndex ??
-		progress.questionsState.questions.length;
+		progress.totalQuestions;
 
 	const completed = next === null;
 
