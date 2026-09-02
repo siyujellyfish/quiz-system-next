@@ -11,6 +11,7 @@ import {
 
 
 import {
+	questionBanks,
 	questionOptions,
 	questions
 } from '$lib/server/db/schema';
@@ -99,6 +100,53 @@ export async function getQuestionWithOptionsByIdAndBank(
 					questions.bankId,
 					bankId
 				)
+			)
+		)
+		.orderBy(
+			asc(
+				questionOptions.position
+			)
+		);
+}
+
+
+export async function getQuestionWithOptionsByIdAndBankSlug(
+	questionId: string,
+	bankSlug: string
+) {
+	return db
+		.select({
+			questionId: questions.id,
+			prompt: questions.prompt,
+			optionId: questionOptions.id,
+			optionContent: questionOptions.content,
+			optionPosition: questionOptions.position
+		})
+		.from(questions)
+		.innerJoin(
+			questionBanks,
+			and(
+				eq(
+					questionBanks.id,
+					questions.bankId
+				),
+				eq(
+					questionBanks.slug,
+					bankSlug
+				)
+			)
+		)
+		.innerJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id
+			)
+		)
+		.where(
+			eq(
+				questions.id,
+				questionId
 			)
 		)
 		.orderBy(
