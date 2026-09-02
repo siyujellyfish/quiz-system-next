@@ -5,9 +5,18 @@ import type {
 
 
 import {
-	getQuestionByIdAndBank,
-	getQuestionOptions
+	getQuestionWithOptionsByIdAndBank,
+	getQuestionWithOptionsByIdAndBankSlug
 } from './question.repository';
+
+
+type PracticeQuestionRow = {
+	questionId: string;
+	prompt: string;
+	optionId: string;
+	optionContent: string;
+	optionPosition: number;
+};
 
 
 export async function getPublicPracticeQuestion(
@@ -15,24 +24,54 @@ export async function getPublicPracticeQuestion(
 	questionId: string,
 	optionIds: string[]
 ): Promise<PublicQuizQuestion | null> {
-	const question =
-		await getQuestionByIdAndBank(
+	const rows =
+		await getQuestionWithOptionsByIdAndBank(
 			questionId,
 			bankId
 		);
 
-	if (!question) {
-		return null;
-	}
+	return buildPublicPracticeQuestion(
+		rows,
+		optionIds
+	);
+}
 
-	const options =
-		await getQuestionOptions(
-			questionId
+
+export async function getPublicPracticeQuestionByBankSlug(
+	bankSlug: string,
+	questionId: string,
+	optionIds: string[]
+): Promise<PublicQuizQuestion | null> {
+	const rows =
+		await getQuestionWithOptionsByIdAndBankSlug(
+			questionId,
+			bankSlug
 		);
 
-	if (options.length === 0) {
+	return buildPublicPracticeQuestion(
+		rows,
+		optionIds
+	);
+}
+
+
+function buildPublicPracticeQuestion(
+	rows: PracticeQuestionRow[],
+	optionIds: string[]
+): PublicQuizQuestion | null {
+	const firstRow = rows[0];
+
+	if (!firstRow) {
 		return null;
 	}
+
+	const options = rows.map(
+		(row) => ({
+			id: row.optionId,
+			content: row.optionContent,
+			position: row.optionPosition
+		})
+	);
 
 	const optionMap =
 		new Map(
@@ -95,8 +134,8 @@ export async function getPublicPracticeQuestion(
 	}
 
 	return {
-		id: question.id,
-		prompt: question.prompt,
+		id: firstRow.questionId,
+		prompt: firstRow.prompt,
 		options: orderedOptions
 	};
 }

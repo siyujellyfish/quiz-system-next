@@ -12,8 +12,12 @@ import {
 } from '$lib/server/quiz/bank.repository';
 
 import {
+	getPracticeContextBySlug
+} from '$lib/server/quiz/practice-context.repository';
+
+import {
 	deletePracticeProgress,
-	getPracticeProgress,
+	getPracticeQuestionStateAtIndex,
 	setPracticeCurrentIndex
 } from '$lib/server/quiz/practice.repository';
 
@@ -27,50 +31,67 @@ export const load: PageServerLoad =
 		locals,
 		params
 	}) => {
-		const bank =
-			await getQuestionBankBySlug(
-				params.slug
-			);
-
-		if (!bank) {
-			error(
-				404,
-				'找不到指定的題庫'
-			);
-		}
-
 		/*
 		 * Guest 的 state 在 sessionStorage，
 		 * SSR 階段無法取得。
 		 */
 		if (!locals.user) {
+			const bank =
+				await getQuestionBankBySlug(
+					params.slug
+				);
+
+			if (!bank) {
+				error(
+					404,
+					'找不到指定的題庫'
+				);
+			}
+
 			return {
 				bank,
 				practice: null
 			};
 		}
 
-		const progress =
-			await getPracticeProgress(
+		const context =
+			await getPracticeContextBySlug(
 				locals.user.id,
-				bank.id
+				params.slug
 			);
 
-		if (!progress) {
+		if (!context) {
+			error(
+				404,
+				'找不到指定的題庫'
+			);
+		}
+
+		const bank = {
+			id: context.bankId,
+			slug: context.bankSlug,
+			name: context.bankName,
+			description:
+				context.bankDescription
+		};
+
+		if (
+			context.progressUserId === null ||
+			context.currentIndex === null ||
+			context.answeredCount === null ||
+			context.correctCount === null ||
+			context.totalQuestions === null ||
+			context.coverage === null ||
+			context.shuffleOptions === null
+		) {
 			redirect(
 				303,
 				'/'
 			);
 		}
 
-		const {
-			questionsState
-		} = progress;
-
 		const totalQuestions =
-			questionsState
-				.questions
-				.length;
+			context.totalQuestions;
 
 		if (totalQuestions === 0) {
 			await deletePracticeProgress(
@@ -85,17 +106,21 @@ export const load: PageServerLoad =
 		}
 
 		let currentIndex =
-			progress.currentIndex;
+			context.currentIndex;
 
 		while (
 			currentIndex <
 			totalQuestions
 		) {
 			const questionState =
-				questionsState
-					.questions[
+				currentIndex ===
+					context.currentIndex
+					? context.questionState
+					: await getPracticeQuestionStateAtIndex(
+						locals.user.id,
+						bank.id,
 						currentIndex
-					];
+					);
 
 			if (!questionState) {
 				currentIndex++;
@@ -116,7 +141,7 @@ export const load: PageServerLoad =
 
 			if (
 				currentIndex !==
-				progress.currentIndex
+				context.currentIndex
 			) {
 				await setPracticeCurrentIndex(
 					locals.user.id,
@@ -132,13 +157,13 @@ export const load: PageServerLoad =
 					currentIndex,
 					totalQuestions,
 					answeredCount:
-						progress.answeredCount,
+						context.answeredCount,
 					correctCount:
-						progress.correctCount,
+						context.correctCount,
 					coverage:
-						questionsState.coverage,
+						context.coverage,
 					shuffleOptions:
-						questionsState.shuffleOptions,
+						context.shuffleOptions,
 					question
 				}
 			};

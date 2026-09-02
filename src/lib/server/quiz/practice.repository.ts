@@ -1,7 +1,9 @@
 import {
 	and,
 	asc,
-	eq
+	eq,
+	inArray,
+	sql
 } from 'drizzle-orm';
 
 
@@ -17,11 +19,10 @@ import {
 } from '$lib/server/db/schema';
 
 
-type PracticeProgressInsert =
-	typeof practiceProgress.$inferInsert;
-
-type PracticeQuestionsState =
-	PracticeProgressInsert['questionsState'];
+import type {
+	PracticeQuestionState,
+	PracticeQuestionsState
+} from '$lib/types/quiz';
 
 
 export type PracticeSourceRow = {
@@ -29,6 +30,75 @@ export type PracticeSourceRow = {
 	optionId: string;
 	optionPosition: number;
 };
+
+
+const eligibleQuestionIds = db
+	.selectDistinct({
+		questionId:
+			questionOptions.questionId
+	})
+	.from(questionOptions)
+	.as('practice_eligible_question_ids');
+
+
+export async function getPracticeQuestionIds(
+	bankId: string
+): Promise<string[]> {
+	const rows = await db
+		.select({
+			questionId: questions.id
+		})
+		.from(questions)
+		.innerJoin(
+			eligibleQuestionIds,
+			eq(
+				eligibleQuestionIds.questionId,
+				questions.id
+			)
+		)
+		.where(
+			eq(
+				questions.bankId,
+				bankId
+			)
+		)
+		.orderBy(
+			asc(questions.id)
+		);
+
+	return rows.map(
+		(row) => row.questionId
+	);
+}
+
+
+export async function getPracticeOptionRows(
+	questionIds: string[]
+): Promise<PracticeSourceRow[]> {
+	if (questionIds.length === 0) {
+		return [];
+	}
+
+	return db
+		.select({
+			questionId:
+				questionOptions.questionId,
+			optionId: questionOptions.id,
+			optionPosition:
+				questionOptions.position
+		})
+		.from(questionOptions)
+		.where(
+			inArray(
+				questionOptions.questionId,
+				questionIds
+			)
+		)
+		.orderBy(
+			asc(questionOptions.questionId),
+			asc(questionOptions.position)
+		);
+}
 
 
 export async function getPracticeSourceRows(
@@ -102,7 +172,38 @@ export async function getPracticeProgress(
 ) {
 	const [progress] =
 		await db
-			.select()
+			.select({
+				currentIndex:
+					practiceProgress.currentIndex,
+				answeredCount:
+					practiceProgress.answeredCount,
+				correctCount:
+					practiceProgress.correctCount,
+				totalQuestions:
+					sql<number>`
+						jsonb_array_length(
+							${practiceProgress.questionsState}->'questions'
+						)
+					`,
+				coverage:
+					sql<PracticeQuestionsState['coverage']>`
+						(
+							${practiceProgress.questionsState}->>'coverage'
+						)::int
+					`,
+				shuffleOptions:
+					sql<boolean>`
+						(
+							${practiceProgress.questionsState}->>'shuffleOptions'
+						)::boolean
+					`,
+				questionState:
+					sql<PracticeQuestionState | null>`
+						${practiceProgress.questionsState}
+							->'questions'
+							->${practiceProgress.currentIndex}
+					`
+			})
 			.from(
 				practiceProgress
 			)
@@ -121,6 +222,90 @@ export async function getPracticeProgress(
 			.limit(1);
 
 	return progress ?? null;
+}
+
+
+export async function getPracticeAnswerProgress(
+	userId: string,
+	bankId: string
+) {
+	const [progress] =
+		await db
+			.select({
+				currentIndex:
+					practiceProgress.currentIndex,
+				answeredCount:
+					practiceProgress.answeredCount,
+				correctCount:
+					practiceProgress.correctCount,
+				totalQuestions:
+					sql<number>`
+						jsonb_array_length(
+							${practiceProgress.questionsState}->'questions'
+						)
+					`,
+				questionState:
+					sql<PracticeQuestionState | null>`
+						${practiceProgress.questionsState}
+							->'questions'
+							->${practiceProgress.currentIndex}
+					`,
+				nextQuestionState:
+					sql<PracticeQuestionState | null>`
+						${practiceProgress.questionsState}
+							->'questions'
+							->(${practiceProgress.currentIndex} + 1)
+					`
+			})
+			.from(practiceProgress)
+			.where(
+				and(
+					eq(
+						practiceProgress.userId,
+						userId
+					),
+					eq(
+						practiceProgress.bankId,
+						bankId
+					)
+				)
+			)
+			.limit(1);
+
+	return progress ?? null;
+}
+
+
+export async function getPracticeQuestionStateAtIndex(
+	userId: string,
+	bankId: string,
+	currentIndex: number
+): Promise<PracticeQuestionState | null> {
+	const [row] = await db
+		.select({
+			questionState:
+				sql<PracticeQuestionState | null>`
+					${practiceProgress.questionsState}
+						->'questions'
+						->(${currentIndex}::int)
+				`
+		})
+		.from(practiceProgress)
+		.where(
+			and(
+				eq(
+					practiceProgress.userId,
+					userId
+				),
+				eq(
+					practiceProgress.bankId,
+					bankId
+				)
+			)
+		)
+		.limit(1);
+
+	return row?.questionState ?? null;
 }
 
 
@@ -170,7 +355,7 @@ export async function deletePracticeProgress(
 }
 
 
-export async function getPracticeProgressesByUser(
+export async function getPracticeProgressSummariesByUser(
 	userId: string
 ) {
 	return db
@@ -181,14 +366,26 @@ export async function getPracticeProgressesByUser(
 			currentIndex:
 				practiceProgress.currentIndex,
 
-			answeredCount:
-				practiceProgress.answeredCount,
+			totalQuestions:
+				sql<number>`
+					jsonb_array_length(
+						${practiceProgress.questionsState}->'questions'
+					)
+				`,
 
-			correctCount:
-				practiceProgress.correctCount,
+			coverage:
+				sql<PracticeQuestionsState['coverage']>`
+					(
+						${practiceProgress.questionsState}->>'coverage'
+					)::int
+				`,
 
-			questionsState:
-				practiceProgress.questionsState
+			shuffleOptions:
+				sql<boolean>`
+					(
+						${practiceProgress.questionsState}->>'shuffleOptions'
+					)::boolean
+				`
 		})
 		.from(practiceProgress)
 		.where(

@@ -6,6 +6,8 @@ import type {
 
 
 import {
+	getPracticeOptionRows,
+	getPracticeQuestionIds,
 	getPracticeSourceRows,
 	replacePracticeProgress
 } from './practice.repository';
@@ -57,17 +59,130 @@ export async function generatePracticeState(
 	bankId: string,
 	config: PracticeConfig
 ): Promise<PracticeQuestionsState> {
-	const rows =
-		await getPracticeSourceRows(
-			bankId
-		);
+	const allQuestions =
+		config.coverage === 100
+			? await loadAllQuestionSources(
+				bankId
+			)
+			: await loadSampledQuestionSources(
+				bankId,
+				config.coverage
+			);
 
-	if (rows.length === 0) {
+	if (allQuestions.length === 0) {
 		throw new PracticeStateError(
 			'此題庫沒有可供練習的題目'
 		);
 	}
 
+	const selectedQuestions =
+		config.coverage === 100
+			? shuffle(allQuestions)
+			: allQuestions;
+
+	const questions:
+		PracticeQuestionState[] =
+		selectedQuestions.map(
+			(question) => ({
+				questionId:
+					question.questionId,
+
+				optionIds:
+					config.shuffleOptions
+						? shuffle(
+							question.optionIds
+						)
+						: [
+							...question.optionIds
+						]
+			})
+		);
+
+	return {
+		version: 1,
+		coverage:
+			config.coverage,
+		shuffleOptions:
+			config.shuffleOptions,
+		questions
+	};
+}
+
+
+async function loadAllQuestionSources(
+	bankId: string
+): Promise<QuestionSource[]> {
+	const rows =
+		await getPracticeSourceRows(
+			bankId
+		);
+
+	return groupQuestionSources(rows);
+}
+
+
+async function loadSampledQuestionSources(
+	bankId: string,
+	coverage: Exclude<
+		PracticeConfig['coverage'],
+		100
+	>
+): Promise<QuestionSource[]> {
+	const questionIds =
+		await getPracticeQuestionIds(
+			bankId
+		);
+
+	if (questionIds.length === 0) {
+		return [];
+	}
+
+	const questionCount =
+		calculateQuestionCount(
+			questionIds.length,
+			coverage
+		);
+
+	const selectedQuestionIds =
+		shuffle(questionIds)
+			.slice(
+				0,
+				questionCount
+			);
+
+	const rows =
+		await getPracticeOptionRows(
+			selectedQuestionIds
+		);
+
+	const sourceMap = new Map(
+		groupQuestionSources(rows)
+			.map(
+				(question) => [
+					question.questionId,
+					question
+				] as const
+			)
+	);
+
+	return selectedQuestionIds
+		.map(
+			(questionId) =>
+				sourceMap.get(questionId)
+		)
+		.filter(
+			(question): question is QuestionSource =>
+				question !== undefined
+		);
+}
+
+
+function groupQuestionSources(
+	rows: Array<{
+		questionId: string;
+		optionId: string;
+	}>
+): QuestionSource[] {
 	const questionMap =
 		new Map<string, QuestionSource>();
 
@@ -98,49 +213,9 @@ export async function generatePracticeState(
 		);
 	}
 
-	const allQuestions = [
+	return [
 		...questionMap.values()
 	];
-
-	const questionCount =
-		calculateQuestionCount(
-			allQuestions.length,
-			config.coverage
-		);
-
-	const selectedQuestions =
-		shuffle(allQuestions)
-			.slice(
-				0,
-				questionCount
-			);
-
-	const questions:
-		PracticeQuestionState[] =
-		selectedQuestions.map(
-			(question) => ({
-				questionId:
-					question.questionId,
-
-				optionIds:
-					config.shuffleOptions
-						? shuffle(
-							question.optionIds
-						)
-						: [
-							...question.optionIds
-						]
-			})
-		);
-
-	return {
-		version: 1,
-		coverage:
-			config.coverage,
-		shuffleOptions:
-			config.shuffleOptions,
-		questions
-	};
 }
 
 

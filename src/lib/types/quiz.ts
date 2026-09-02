@@ -61,6 +61,15 @@ export type QuizAnswerResult = {
 };
 
 
+export type UserPracticeAnswerResult =
+	QuizAnswerResult & {
+		currentIndex: number;
+		answeredCount: number;
+		correctCount: number;
+		nextQuestion: PublicQuizQuestion | null;
+	};
+
+
 export type WrongAnswerResult =
 	QuizAnswerResult & {
 		remainingCount: number;

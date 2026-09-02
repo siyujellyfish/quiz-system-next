@@ -22,7 +22,7 @@ import {
 
 
 import {
-	getPracticeProgressesByUser
+	getPracticeProgressSummariesByUser
 } from '$lib/server/quiz/practice.repository';
 
 
@@ -76,7 +76,7 @@ export const load: PageServerLoad =
 			progresses,
 			wrongCounts
 		] = await Promise.all([
-			getPracticeProgressesByUser(
+			getPracticeProgressSummariesByUser(
 				locals.user.id
 			),
 			getWrongQuestionCountsByUser(
@@ -125,16 +125,10 @@ export const load: PageServerLoad =
 						};
 					}
 
-					const totalQuestions =
-						progress
-							.questionsState
-							.questions
-							.length;
-
 					const completedQuestions =
 						Math.min(
 							progress.currentIndex,
-							totalQuestions
+							progress.totalQuestions
 						);
 
 					return {
@@ -143,11 +137,12 @@ export const load: PageServerLoad =
 
 						progress: {
 							completedQuestions,
-							totalQuestions,
+							totalQuestions:
+								progress.totalQuestions,
 							coverage:
-								progress.questionsState.coverage,
+								progress.coverage,
 							shuffleOptions:
-								progress.questionsState.shuffleOptions
+								progress.shuffleOptions
 						}
 					};
 			}

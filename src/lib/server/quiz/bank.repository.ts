@@ -1,6 +1,6 @@
 import {
 	asc,
-	countDistinct,
+	count,
 	eq
 } from 'drizzle-orm';
 
@@ -17,7 +17,24 @@ import {
 } from '$lib/server/db/schema';
 
 
+function getOptionQuestionIdsSubquery() {
+	return db
+		.select({
+			questionId:
+				questionOptions.questionId
+		})
+		.from(questionOptions)
+		.groupBy(
+			questionOptions.questionId
+		)
+		.as('option_question_ids');
+}
+
+
 export async function getQuestionBanksWithCount() {
+	const optionQuestionIds =
+		getOptionQuestionIdsSubquery();
+
 	return db
 		.select({
 			id: questionBanks.id,
@@ -26,8 +43,8 @@ export async function getQuestionBanksWithCount() {
 			description: questionBanks.description,
 
 			questionCount:
-				countDistinct(
-					questionOptions.questionId
+				count(
+					optionQuestionIds.questionId
 				)
 		})
 		.from(questionBanks)
@@ -39,9 +56,9 @@ export async function getQuestionBanksWithCount() {
 			)
 		)
 		.leftJoin(
-			questionOptions,
+			optionQuestionIds,
 			eq(
-				questionOptions.questionId,
+				optionQuestionIds.questionId,
 				questions.id
 			)
 		)
@@ -108,6 +125,9 @@ export async function getQuestionBankBySlug(
 export async function getQuestionBankWithCountBySlug(
 	slug: string
 ) {
+	const optionQuestionIds =
+		getOptionQuestionIdsSubquery();
+
 	const [bank] = await db
 		.select({
 			id: questionBanks.id,
@@ -116,8 +136,8 @@ export async function getQuestionBankWithCountBySlug(
 			description:
 				questionBanks.description,
 			questionCount:
-				countDistinct(
-					questionOptions.questionId
+				count(
+					optionQuestionIds.questionId
 				)
 		})
 		.from(questionBanks)
@@ -129,9 +149,9 @@ export async function getQuestionBankWithCountBySlug(
 			)
 		)
 		.leftJoin(
-			questionOptions,
+			optionQuestionIds,
 			eq(
-				questionOptions.questionId,
+				optionQuestionIds.questionId,
 				questions.id
 			)
 		)

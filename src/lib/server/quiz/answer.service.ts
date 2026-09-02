@@ -11,6 +11,7 @@ import {
 
 import {
 	practiceProgress,
+	questionBanks,
 	questionOptions,
 	questions,
 	userWrongQuestions
@@ -18,8 +19,26 @@ import {
 
 
 import type {
-	QuizAnswerResult
+	PracticeQuestionState,
+	PublicQuizQuestion,
+	QuizAnswerResult,
+	UserPracticeAnswerResult
 } from '$lib/types/quiz';
+
+
+import {
+	getPracticeContextBySlug
+} from './practice-context.repository';
+
+
+import {
+	getPracticeQuestionStateAtIndex
+} from './practice.repository';
+
+
+import {
+	getPublicPracticeQuestion
+} from './question.service';
 
 
 export class PracticeAnswerError extends Error {
@@ -36,38 +55,69 @@ export class PracticeAnswerError extends Error {
 }
 
 
-export async function checkQuestionAnswer(
+type AnswerOption = {
+	id: string;
+	isCorrect: boolean;
+};
+
+
+type NextPracticeQuestion = {
+	currentIndex: number;
+	question: PublicQuizQuestion;
+};
+
+
+async function findNextPracticeQuestion(
+	userId: string,
 	bankId: string,
-	questionId: string,
-	selectedOptionId: string
-): Promise<QuizAnswerResult> {
-	const options =
-		await db
-			.select({
-				id: questionOptions.id,
-				isCorrect: questionOptions.isCorrect
-			})
-			.from(questionOptions)
-			.innerJoin(
-				questions,
-				and(
-					eq(
-						questions.id,
-						questionOptions.questionId
-					),
-					eq(
-						questions.bankId,
-						bankId
-					)
-				)
-			)
-			.where(
-				eq(
-					questionOptions.questionId,
-					questionId
-				)
+	totalQuestions: number,
+	startIndex: number,
+	initialQuestionState:
+		PracticeQuestionState | null
+): Promise<NextPracticeQuestion | null> {
+	for (
+		let currentIndex = startIndex;
+		currentIndex < totalQuestions;
+		currentIndex++
+	) {
+		const questionState =
+			currentIndex === startIndex
+				? initialQuestionState
+				: await getPracticeQuestionStateAtIndex(
+					userId,
+					bankId,
+					currentIndex
+				);
+
+		if (!questionState) {
+			continue;
+		}
+
+		const question =
+			await getPublicPracticeQuestion(
+				bankId,
+				questionState.questionId,
+				questionState.optionIds
 			);
 
+		if (!question) {
+			continue;
+		}
+
+		return {
+			currentIndex,
+			question
+		};
+	}
+
+	return null;
+}
+
+
+function createAnswerResult(
+	options: AnswerOption[],
+	selectedOptionId: string
+): QuizAnswerResult {
 	if (options.length === 0) {
 		throw new PracticeAnswerError(
 			404,
@@ -114,13 +164,98 @@ export async function checkQuestionAnswer(
 }
 
 
-export async function answerGuestPracticeQuestion(
+export async function checkQuestionAnswer(
 	bankId: string,
 	questionId: string,
 	selectedOptionId: string
 ): Promise<QuizAnswerResult> {
-	return checkQuestionAnswer(
-		bankId,
+	const options =
+		await db
+			.select({
+				id: questionOptions.id,
+				isCorrect: questionOptions.isCorrect
+			})
+			.from(questionOptions)
+			.innerJoin(
+				questions,
+				and(
+					eq(
+						questions.id,
+						questionOptions.questionId
+					),
+					eq(
+						questions.bankId,
+						bankId
+					)
+				)
+			)
+			.where(
+				eq(
+					questionOptions.questionId,
+					questionId
+				)
+			);
+
+	return createAnswerResult(
+		options,
+		selectedOptionId
+	);
+}
+
+
+async function checkQuestionAnswerByBankSlug(
+	bankSlug: string,
+	questionId: string,
+	selectedOptionId: string
+): Promise<QuizAnswerResult> {
+	const options =
+		await db
+			.select({
+				id: questionOptions.id,
+				isCorrect: questionOptions.isCorrect
+			})
+			.from(questionOptions)
+			.innerJoin(
+				questions,
+				eq(
+					questions.id,
+					questionOptions.questionId
+				)
+			)
+			.innerJoin(
+				questionBanks,
+				and(
+					eq(
+						questionBanks.id,
+						questions.bankId
+					),
+					eq(
+						questionBanks.slug,
+						bankSlug
+					)
+				)
+			)
+			.where(
+				eq(
+					questionOptions.questionId,
+					questionId
+				)
+			);
+
+	return createAnswerResult(
+		options,
+		selectedOptionId
+	);
+}
+
+
+export async function answerGuestPracticeQuestion(
+	bankSlug: string,
+	questionId: string,
+	selectedOptionId: string
+): Promise<QuizAnswerResult> {
+	return checkQuestionAnswerByBankSlug(
+		bankSlug,
 		questionId,
 		selectedOptionId
 	);
@@ -129,40 +264,46 @@ export async function answerGuestPracticeQuestion(
 
 export async function answerUserPracticeQuestion(
 	userId: string,
-	bankId: string,
+	bankSlug: string,
 	questionId: string,
 	selectedOptionId: string
-): Promise<QuizAnswerResult> {
-	const [progress] =
-		await db
-			.select()
-			.from(practiceProgress)
-			.where(
-				and(
-					eq(
-						practiceProgress.userId,
-						userId
-					),
-					eq(
-						practiceProgress.bankId,
-						bankId
-					)
-				)
-			)
-			.limit(1);
+): Promise<UserPracticeAnswerResult> {
+	const context =
+		await getPracticeContextBySlug(
+			userId,
+			bankSlug
+		);
 
-	if (!progress) {
+	if (!context) {
+		throw new PracticeAnswerError(
+			404,
+			'找不到指定的題庫'
+		);
+	}
+
+	if (
+		context.progressUserId === null ||
+		context.currentIndex === null ||
+		context.answeredCount === null ||
+		context.correctCount === null ||
+		context.totalQuestions === null
+	) {
 		throw new PracticeAnswerError(
 			409,
 			'目前沒有進行中的練習'
 		);
 	}
 
+	const bankId = context.bankId;
+	const currentIndex = context.currentIndex;
+	const previousAnsweredCount =
+		context.answeredCount;
+	const previousCorrectCount =
+		context.correctCount;
+	const totalQuestions =
+		context.totalQuestions;
 	const questionState =
-		progress.questionsState
-			.questions[
-				progress.currentIndex
-			];
+		context.questionState;
 
 	if (
 		!questionState ||
@@ -186,27 +327,36 @@ export async function answerUserPracticeQuestion(
 		);
 	}
 
-	const result =
-		await checkQuestionAnswer(
+	const [
+		result,
+		next
+	] = await Promise.all([
+		checkQuestionAnswer(
 			bankId,
 			questionId,
 			selectedOptionId
-		);
-
-	const nextIndex =
-		progress.currentIndex + 1;
+		),
+		findNextPracticeQuestion(
+			userId,
+			bankId,
+			totalQuestions,
+			currentIndex + 1,
+			context.nextQuestionState
+		)
+	]);
 
 	const answeredCount =
-		progress.answeredCount + 1;
+		previousAnsweredCount + 1;
 
 	const correctCount =
-		progress.correctCount +
+		previousCorrectCount +
 		(result.correct ? 1 : 0);
 
-	const completed =
-		nextIndex >=
-		progress.questionsState
-			.questions.length;
+	const nextIndex =
+		next?.currentIndex ??
+		totalQuestions;
+
+	const completed = next === null;
 
 	await db.transaction(
 		async (tx) => {
@@ -235,7 +385,7 @@ export async function answerUserPracticeQuestion(
 							),
 							eq(
 								practiceProgress.currentIndex,
-								progress.currentIndex
+								currentIndex
 							)
 						)
 					)
@@ -273,7 +423,7 @@ export async function answerUserPracticeQuestion(
 						),
 						eq(
 							practiceProgress.currentIndex,
-							progress.currentIndex
+							currentIndex
 						)
 					)
 				)
@@ -293,6 +443,11 @@ export async function answerUserPracticeQuestion(
 
 	return {
 		...result,
-		completed
+		completed,
+		currentIndex: nextIndex,
+		answeredCount,
+		correctCount,
+		nextQuestion:
+			next?.question ?? null
 	};
 }

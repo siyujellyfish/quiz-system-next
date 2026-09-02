@@ -10,11 +10,6 @@ import type {
 
 
 import {
-	getQuestionBankBySlug
-} from '$lib/server/quiz/bank.repository';
-
-
-import {
 	answerGuestPracticeQuestion,
 	answerUserPracticeQuestion,
 	PracticeAnswerError
@@ -33,18 +28,6 @@ export const POST: RequestHandler =
 		params,
 		request
 	}) => {
-		const bank =
-			await getQuestionBankBySlug(
-				params.slug
-			);
-
-		if (!bank) {
-			error(
-				404,
-				'找不到指定的題庫'
-			);
-		}
-
 		let body: AnswerRequest;
 
 		try {
@@ -84,12 +67,12 @@ export const POST: RequestHandler =
 			const result = locals.user
 				? await answerUserPracticeQuestion(
 					locals.user.id,
-					bank.id,
+					params.slug,
 					body.questionId,
 					body.selectedOptionId
 				)
 				: await answerGuestPracticeQuestion(
-					bank.id,
+					params.slug,
 					body.questionId,
 					body.selectedOptionId
 				);

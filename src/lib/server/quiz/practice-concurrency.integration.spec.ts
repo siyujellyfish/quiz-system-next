@@ -137,13 +137,13 @@ describe('practice answer concurrency', () => {
 		const results = await Promise.allSettled([
 			answerUserPracticeQuestion(
 				userId,
-				bankId,
+				'concurrency-bank',
 				firstQuestionId,
 				firstWrongOptionId
 			),
 			answerUserPracticeQuestion(
 				userId,
-				bankId,
+				'concurrency-bank',
 				firstQuestionId,
 				firstWrongOptionId
 			)
@@ -158,6 +158,37 @@ describe('practice answer concurrency', () => {
 
 		expect(fulfilled).toHaveLength(1);
 		expect(rejected).toHaveLength(1);
+
+		const fulfilledValue =
+			fulfilled[0]?.status === 'fulfilled'
+				? fulfilled[0].value
+				: null;
+
+		expect(fulfilledValue).toEqual({
+			selectedOptionId: firstWrongOptionId,
+			correct: false,
+			correctOptionIds: [
+				firstCorrectOptionId
+			],
+			completed: false,
+			currentIndex: 1,
+			answeredCount: 1,
+			correctCount: 0,
+			nextQuestion: {
+				id: secondQuestionId,
+				prompt: 'Second question',
+				options: [
+					{
+						id: secondCorrectOptionId,
+						content: 'Second correct'
+					},
+					{
+						id: secondWrongOptionId,
+						content: 'Second wrong'
+					}
+				]
+			}
+		});
 
 		const rejectedReason =
 			rejected[0]?.status === 'rejected'
