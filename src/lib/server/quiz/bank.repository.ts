@@ -1,7 +1,7 @@
 import {
 	asc,
-	eq,
-	sql
+	count,
+	eq
 } from 'drizzle-orm';
 
 
@@ -17,31 +17,57 @@ import {
 } from '$lib/server/db/schema';
 
 
-const validQuestionCount = sql<number>`
-	(
-		select count(*)::int
-		from ${questions}
-		where ${questions.bankId} = ${questionBanks.id}
-			and exists (
-				select 1
-				from ${questionOptions}
-				where ${questionOptions.questionId} = ${questions.id}
-			)
-	)
-`;
+function getOptionQuestionIdsSubquery() {
+	return db
+		.select({
+			questionId:
+				questionOptions.questionId
+		})
+		.from(questionOptions)
+		.groupBy(
+			questionOptions.questionId
+		)
+		.as('option_question_ids');
+}
 
 
 export async function getQuestionBanksWithCount() {
+	const optionQuestionIds =
+		getOptionQuestionIdsSubquery();
+
 	return db
 		.select({
 			id: questionBanks.id,
 			slug: questionBanks.slug,
 			name: questionBanks.name,
 			description: questionBanks.description,
+
 			questionCount:
-				validQuestionCount
+				count(
+					optionQuestionIds.questionId
+				)
 		})
 		.from(questionBanks)
+		.leftJoin(
+			questions,
+			eq(
+				questions.bankId,
+				questionBanks.id
+			)
+		)
+		.leftJoin(
+			optionQuestionIds,
+			eq(
+				optionQuestionIds.questionId,
+				questions.id
+			)
+		)
+		.groupBy(
+			questionBanks.id,
+			questionBanks.slug,
+			questionBanks.name,
+			questionBanks.description
+		)
 		.orderBy(
 			asc(questionBanks.name)
 		);
@@ -99,6 +125,9 @@ export async function getQuestionBankBySlug(
 export async function getQuestionBankWithCountBySlug(
 	slug: string
 ) {
+	const optionQuestionIds =
+		getOptionQuestionIdsSubquery();
+
 	const [bank] = await db
 		.select({
 			id: questionBanks.id,
@@ -107,14 +136,36 @@ export async function getQuestionBankWithCountBySlug(
 			description:
 				questionBanks.description,
 			questionCount:
-				validQuestionCount
+				count(
+					optionQuestionIds.questionId
+				)
 		})
 		.from(questionBanks)
+		.leftJoin(
+			questions,
+			eq(
+				questions.bankId,
+				questionBanks.id
+			)
+		)
+		.leftJoin(
+			optionQuestionIds,
+			eq(
+				optionQuestionIds.questionId,
+				questions.id
+			)
+		)
 		.where(
 			eq(
 				questionBanks.slug,
 				slug
 			)
+		)
+		.groupBy(
+			questionBanks.id,
+			questionBanks.slug,
+			questionBanks.name,
+			questionBanks.description
 		)
 		.limit(1);
 
