@@ -11,6 +11,7 @@ import {
 const validQuestion = {
 	id: 'source-question-1',
 	prompt: 'Which option is correct?',
+	explanation: 'The second option is correct.',
 	options: [
 		{
 			id: 'source-option-1',
@@ -26,7 +27,7 @@ const validQuestion = {
 };
 
 describe('parseAdminBankImportJson', () => {
-	it('accepts the existing seed JSON shape and strips source ids', () => {
+	it('accepts the seed JSON shape, keeps explanation, and strips source ids', () => {
 		const result = parseAdminBankImportJson(
 			JSON.stringify([validQuestion])
 		);
@@ -40,6 +41,7 @@ describe('parseAdminBankImportJson', () => {
 		expect(result.questions).toEqual([
 			{
 				prompt: 'Which option is correct?',
+				explanation: 'The second option is correct.',
 				options: [
 					{
 						text: 'Wrong',
@@ -54,7 +56,40 @@ describe('parseAdminBankImportJson', () => {
 		]);
 		expect(result.preview).toMatchObject({
 			questionCount: 1,
-			optionCount: 2
+			optionCount: 2,
+			explanationCount: 1
+		});
+	});
+
+	it('normalizes omitted or blank explanation to null', () => {
+		const result = parseAdminBankImportJson(
+			JSON.stringify([
+				{
+					...validQuestion,
+				explanation: '   '
+				}
+			])
+		);
+
+		expect(result.ok).toBe(true);
+		if (result.ok) {
+			expect(result.questions[0]?.explanation).toBeNull();
+		}
+	});
+
+	it('rejects an invalid explanation type', () => {
+		const result = parseAdminBankImportJson(
+			JSON.stringify([
+				{
+					...validQuestion,
+				explanation: 123
+				}
+			])
+		);
+
+		expect(result).toEqual({
+			ok: false,
+			message: '第 1 題：explanation 必須是字串或 null'
 		});
 	});
 
