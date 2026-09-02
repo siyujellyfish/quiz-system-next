@@ -101,16 +101,12 @@ export const externalAccounts = pgTable(
 			length: 320
 		}),
 
-		accessTokenEncrypted: text('access_token_encrypted')
-			.notNull(),
+		planType: varchar('plan_type', {
+			length: 64
+		}),
 
-		refreshTokenEncrypted: text('refresh_token_encrypted'),
-
-		scope: text('scope'),
-
-		tokenExpiresAt: timestamp('token_expires_at', {
-			withTimezone: true,
-			mode: 'date'
+		codexProfileId: varchar('codex_profile_id', {
+			length: 255
 		}),
 
 		createdAt: timestamp('created_at', {
