@@ -1,18 +1,19 @@
 import type {
-	ChatgptOAuthConfig,
+	CodexChatRequest,
+	CodexDeviceLoginStatus,
+	CodexGatewayAccount,
 	CodexUsage
-} from '$lib/server/integrations/chatgpt';
+} from '$lib/server/integrations/codex-gateway';
 
 import {
-	decryptChatgptToken,
-	encryptChatgptToken,
-	exchangeChatgptCode,
-	fetchChatgptUserInfo,
-	fetchCodexUsage,
-	getChatgptOAuthConfig,
-	getTokenExpiresAt,
-	refreshChatgptToken
-} from '$lib/server/integrations/chatgpt';
+	getCodexAccount,
+	getCodexDeviceLoginStatus,
+	getCodexUsage,
+	isCodexGatewayConfigured,
+	logoutCodexAccount,
+	sendCodexChat,
+	startCodexDeviceLogin
+} from '$lib/server/integrations/codex-gateway';
 
 import {
 	deleteChatgptConnection,
@@ -20,186 +21,202 @@ import {
 	upsertChatgptConnection
 } from './external-account.repository';
 
-const TOKEN_REFRESH_SKEW_MS = 60_000;
-
 export type ChatgptProfileConnection = {
 	displayName: string;
 	email: string | null;
+	planType: string | null;
 	usage: CodexUsage | null;
 	usageAvailable: boolean;
 	usageError: boolean;
 };
 
-function shouldRefreshToken(
-	expiresAt: Date | null
-) {
-	return expiresAt !== null &&
-		expiresAt.getTime() <=
-			Date.now() + TOKEN_REFRESH_SKEW_MS;
+export class ChatgptNotConnectedError extends Error {
+	constructor() {
+		super('ChatGPT account is not connected');
+		this.name = 'ChatgptNotConnectedError';
+	}
 }
 
-async function getCurrentAccessToken(
-	config: ChatgptOAuthConfig,
+function profileFromStoredConnection(
 	connection: NonNullable<
 		Awaited<ReturnType<typeof getChatgptConnection>>
-	>
-) {
-	if (!shouldRefreshToken(connection.tokenExpiresAt)) {
-		return decryptChatgptToken(
-			connection.accessTokenEncrypted
-		);
-	}
-
-	if (!connection.refreshTokenEncrypted) {
-		throw new Error(
-			'ChatGPT access token has expired and no refresh token is available'
-		);
-	}
-
-	const previousRefreshToken = decryptChatgptToken(
-		connection.refreshTokenEncrypted
-	);
-	const refreshed = await refreshChatgptToken(
-		config,
-		previousRefreshToken
-	);
-	const nextRefreshToken =
-		refreshed.refreshToken ??
-		previousRefreshToken;
-
-	await upsertChatgptConnection({
-		userId: connection.userId,
-		providerAccountId:
-			connection.providerAccountId,
-		displayName: connection.displayName,
+	>,
+	usageError: boolean
+): ChatgptProfileConnection {
+	return {
+		displayName:
+			connection.displayName ??
+			connection.email ??
+			'ChatGPT 使用者',
 		email: connection.email,
-		accessTokenEncrypted: encryptChatgptToken(
-			refreshed.accessToken
-		),
-		refreshTokenEncrypted: encryptChatgptToken(
-			nextRefreshToken
-		),
-		scope:
-			refreshed.scope ?? connection.scope,
-		tokenExpiresAt: getTokenExpiresAt(
-			refreshed.expiresIn
-		)
-	});
-
-	return refreshed.accessToken;
+		planType: connection.planType,
+		usage: null,
+		usageAvailable: usageError,
+		usageError
+	};
 }
 
-export function isChatgptConnectionConfigured() {
-	return getChatgptOAuthConfig() !== null;
-}
-
-export async function connectChatgptAccount(
+async function persistGatewayAccount(
 	userId: string,
-	code: string,
-	redirectUri: string,
-	verifier: string
+	account: CodexGatewayAccount
 ) {
-	const config = getChatgptOAuthConfig();
-
-	if (!config) {
-		throw new Error(
-			'ChatGPT OAuth is not configured'
-		);
-	}
-
-	const tokens = await exchangeChatgptCode(
-		config,
-		code,
-		redirectUri,
-		verifier
-	);
-	const userInfo = await fetchChatgptUserInfo(
-		config,
-		tokens.accessToken
-	);
+	const providerAccountId =
+		account.email ?? `codex:${userId}`;
 
 	return upsertChatgptConnection({
 		userId,
-		providerAccountId: userInfo.id,
-		displayName: userInfo.displayName,
-		email: userInfo.email,
-		accessTokenEncrypted: encryptChatgptToken(
-			tokens.accessToken
-		),
-		refreshTokenEncrypted: tokens.refreshToken
-			? encryptChatgptToken(
-				tokens.refreshToken
-			)
-			: null,
-		scope: tokens.scope,
-		tokenExpiresAt: getTokenExpiresAt(
-			tokens.expiresIn
-		)
+		providerAccountId,
+		displayName:
+			account.email ?? 'ChatGPT 使用者',
+		email: account.email,
+		planType: account.planType,
+		codexProfileId: userId
 	});
+}
+
+export function isChatgptConnectionConfigured() {
+	return isCodexGatewayConfigured();
+}
+
+export async function startChatgptDeviceLogin(
+	userId: string
+) {
+	return startCodexDeviceLogin(userId);
+}
+
+export async function getChatgptDeviceLoginStatus(
+	userId: string,
+	loginId: string
+): Promise<CodexDeviceLoginStatus> {
+	const status = await getCodexDeviceLoginStatus(
+		userId,
+		loginId
+	);
+
+	if (status.status !== 'succeeded') {
+		return status;
+	}
+
+	const account =
+		status.account ?? await getCodexAccount(userId);
+
+	if (!account) {
+		return {
+			status: 'failed',
+			error: 'ChatGPT 授權完成，但無法讀取帳號資訊。',
+			account: null
+		};
+	}
+
+	await persistGatewayAccount(
+		userId,
+		account
+	);
+
+	return {
+		status: 'succeeded',
+		error: null,
+		account
+	};
 }
 
 export async function getChatgptProfileConnection(
 	userId: string
 ): Promise<ChatgptProfileConnection | null> {
-	const connection = await getChatgptConnection(
-		userId
-	);
+	const storedConnection =
+		await getChatgptConnection(userId);
 
-	if (!connection) {
+	if (!isCodexGatewayConfigured()) {
+		return storedConnection
+			? profileFromStoredConnection(
+				storedConnection,
+				false
+			)
+			: null;
+	}
+
+	let account: CodexGatewayAccount | null;
+
+	try {
+		account = await getCodexAccount(userId);
+	} catch (caughtError) {
+		console.error(
+			'Unable to load ChatGPT account from Codex Gateway',
+			caughtError
+		);
+
+		return storedConnection
+			? profileFromStoredConnection(
+				storedConnection,
+				true
+			)
+			: null;
+	}
+
+	if (!account) {
+		if (storedConnection) {
+			await deleteChatgptConnection(userId);
+		}
+
 		return null;
 	}
 
-	const displayName =
-		connection.displayName ??
-		connection.email ??
-		connection.providerAccountId;
-	const config = getChatgptOAuthConfig();
-
-	if (!config || !config.usageUrl) {
-		return {
-			displayName,
-			email: connection.email,
-			usage: null,
-			usageAvailable: false,
-			usageError: false
-		};
-	}
+	const connection = await persistGatewayAccount(
+		userId,
+		account
+	);
 
 	try {
-		const accessToken = await getCurrentAccessToken(
-			config,
-			connection
-		);
-		const usage = await fetchCodexUsage(
-			config,
-			accessToken
-		);
+		const usage = await getCodexUsage(userId);
 
 		return {
-			displayName,
+			displayName:
+				connection.displayName ??
+				connection.email ??
+				'ChatGPT 使用者',
 			email: connection.email,
+			planType: connection.planType,
 			usage,
-			usageAvailable: usage !== null,
+			usageAvailable: true,
 			usageError: false
 		};
-	} catch (error) {
+	} catch (caughtError) {
 		console.error(
-			'Unable to load Codex usage',
-			error
+			'Unable to load Codex usage from Codex Gateway',
+			caughtError
 		);
 
-		return {
-			displayName,
-			email: connection.email,
-			usage: null,
-			usageAvailable: true,
-			usageError: true
-		};
+		return profileFromStoredConnection(
+			connection,
+			true
+		);
 	}
 }
 
 export async function disconnectChatgptAccount(
 	userId: string
 ) {
+	if (isCodexGatewayConfigured()) {
+		await logoutCodexAccount(userId);
+	}
+
 	await deleteChatgptConnection(userId);
+}
+
+export async function sendChatgptMessage(
+	userId: string,
+	request: CodexChatRequest
+) {
+	const connection = await getChatgptConnection(
+		userId
+	);
+
+	if (!connection) {
+		throw new ChatgptNotConnectedError();
+	}
+
+	return sendCodexChat(
+		userId,
+		request
+	);
 }
