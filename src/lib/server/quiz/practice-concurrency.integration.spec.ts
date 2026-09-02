@@ -137,13 +137,13 @@ describe('practice answer concurrency', () => {
 		const results = await Promise.allSettled([
 			answerUserPracticeQuestion(
 				userId,
-				bankId,
+				'concurrency-bank',
 				firstQuestionId,
 				firstWrongOptionId
 			),
 			answerUserPracticeQuestion(
 				userId,
-				bankId,
+				'concurrency-bank',
 				firstQuestionId,
 				firstWrongOptionId
 			)
