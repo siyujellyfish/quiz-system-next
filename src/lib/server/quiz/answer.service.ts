@@ -18,8 +18,16 @@ import {
 
 
 import type {
-	QuizAnswerResult
+	PracticeQuestionsState,
+	PublicQuizQuestion,
+	QuizAnswerResult,
+	UserPracticeAnswerResult
 } from '$lib/types/quiz';
+
+
+import {
+	getPublicPracticeQuestion
+} from './question.service';
 
 
 export class PracticeAnswerError extends Error {
@@ -33,6 +41,52 @@ export class PracticeAnswerError extends Error {
 		this.name = 'PracticeAnswerError';
 		this.status = status;
 	}
+}
+
+
+type NextPracticeQuestion = {
+	currentIndex: number;
+	question: PublicQuizQuestion;
+};
+
+
+async function findNextPracticeQuestion(
+	bankId: string,
+	questionsState: PracticeQuestionsState,
+	startIndex: number
+): Promise<NextPracticeQuestion | null> {
+	for (
+		let currentIndex = startIndex;
+		currentIndex < questionsState.questions.length;
+		currentIndex++
+	) {
+		const questionState =
+			questionsState.questions[
+				currentIndex
+			];
+
+		if (!questionState) {
+			continue;
+		}
+
+		const question =
+			await getPublicPracticeQuestion(
+				bankId,
+				questionState.questionId,
+				questionState.optionIds
+			);
+
+		if (!question) {
+			continue;
+		}
+
+		return {
+			currentIndex,
+			question
+		};
+	}
+
+	return null;
 }
 
 
@@ -132,7 +186,7 @@ export async function answerUserPracticeQuestion(
 	bankId: string,
 	questionId: string,
 	selectedOptionId: string
-): Promise<QuizAnswerResult> {
+): Promise<UserPracticeAnswerResult> {
 	const [progress] =
 		await db
 			.select()
@@ -193,9 +247,6 @@ export async function answerUserPracticeQuestion(
 			selectedOptionId
 		);
 
-	const nextIndex =
-		progress.currentIndex + 1;
-
 	const answeredCount =
 		progress.answeredCount + 1;
 
@@ -203,10 +254,18 @@ export async function answerUserPracticeQuestion(
 		progress.correctCount +
 		(result.correct ? 1 : 0);
 
-	const completed =
-		nextIndex >=
-		progress.questionsState
-			.questions.length;
+	const next =
+		await findNextPracticeQuestion(
+			bankId,
+			progress.questionsState,
+			progress.currentIndex + 1
+		);
+
+	const nextIndex =
+		next?.currentIndex ??
+		progress.questionsState.questions.length;
+
+	const completed = next === null;
 
 	await db.transaction(
 		async (tx) => {
@@ -293,6 +352,11 @@ export async function answerUserPracticeQuestion(
 
 	return {
 		...result,
-		completed
+		completed,
+		currentIndex: nextIndex,
+		answeredCount,
+		correctCount,
+		nextQuestion:
+			next?.question ?? null
 	};
 }
