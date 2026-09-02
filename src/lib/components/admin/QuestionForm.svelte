@@ -74,7 +74,7 @@
 		const persisted = baselineValues ?? incoming;
 
 		prompt = incoming.prompt;
-		explanation = incoming.explanation;
+		explanation = incoming.explanation ?? '';
 		options = incoming.options.map(
 			(option, index) => ({
 				...option,
@@ -86,7 +86,7 @@
 		nextKey = incoming.options.length;
 		baseline = fingerprint(
 			persisted.prompt,
-			persisted.explanation,
+			persisted.explanation ?? '',
 			persisted.options
 		);
 	});
@@ -217,14 +217,14 @@
 			</div>
 
 			<p class="mb-2 text-sm opacity-60">
-				作答完成後顯示的靜態解析。建議簡短說明題目考點、正確答案原因，以及各選項為什麼正確或錯誤。
+				既有解析會自動載入。建議只保留題目重點、正確答案與錯誤選項的一句原因；正確選項不需在選項分析重複。
 			</p>
 
 			<textarea
 				class="textarea min-h-44"
 				name="explanation"
 				rows="9"
-				placeholder="例如：&#10;題目重點：...&#10;正確答案：B. ...&#10;為什麼正確：...&#10;選項分析：&#10;A. ... — 錯誤：..."
+				placeholder="例如：&#10;題目重點：...&#10;正確答案：D. ... — 為什麼正確。&#10;選項分析：&#10;A. — 錯誤：具體原因。&#10;B. — 錯誤：具體原因。"
 				bind:value={explanation}
 			></textarea>
 		</label>
