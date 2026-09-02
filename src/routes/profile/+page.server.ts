@@ -191,9 +191,21 @@ export const actions: Actions = {
 			);
 		}
 
-		await disconnectChatgptAccount(
-			locals.user.id
-		);
+		try {
+			await disconnectChatgptAccount(
+				locals.user.id
+			);
+		} catch (caughtError) {
+			console.error(
+				'Unable to disconnect ChatGPT account',
+				caughtError
+			);
+
+			redirect(
+				303,
+				'/profile?chatgptError=disconnectFailed'
+			);
+		}
 
 		redirect(
 			303,
