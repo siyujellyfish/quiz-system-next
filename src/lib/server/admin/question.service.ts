@@ -203,6 +203,7 @@ export function validateAdminQuestionForm(
 					...option,
 					position
 				})
+			)
 		}
 	};
 }
