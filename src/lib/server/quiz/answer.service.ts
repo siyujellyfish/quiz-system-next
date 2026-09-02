@@ -240,12 +240,21 @@ export async function answerUserPracticeQuestion(
 		);
 	}
 
-	const result =
-		await checkQuestionAnswer(
+	const [
+		result,
+		next
+	] = await Promise.all([
+		checkQuestionAnswer(
 			bankId,
 			questionId,
 			selectedOptionId
-		);
+		),
+		findNextPracticeQuestion(
+			bankId,
+			progress.questionsState,
+			progress.currentIndex + 1
+		)
+	]);
 
 	const answeredCount =
 		progress.answeredCount + 1;
@@ -253,13 +262,6 @@ export async function answerUserPracticeQuestion(
 	const correctCount =
 		progress.correctCount +
 		(result.correct ? 1 : 0);
-
-	const next =
-		await findNextPracticeQuestion(
-			bankId,
-			progress.questionsState,
-			progress.currentIndex + 1
-		);
 
 	const nextIndex =
 		next?.currentIndex ??
