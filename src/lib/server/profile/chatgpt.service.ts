@@ -196,10 +196,13 @@ export async function getChatgptProfileConnection(
 export async function disconnectChatgptAccount(
 	userId: string
 ) {
-	if (isCodexGatewayConfigured()) {
-		await logoutCodexAccount(userId);
+	if (!isCodexGatewayConfigured()) {
+		throw new Error(
+			'Codex Gateway is not configured; refusing to remove local metadata without logging out the persisted Codex profile'
+		);
 	}
 
+	await logoutCodexAccount(userId);
 	await deleteChatgptConnection(userId);
 }
 
