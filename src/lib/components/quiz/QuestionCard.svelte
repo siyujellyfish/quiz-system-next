@@ -4,6 +4,9 @@
 		QuizAnswerResult
 	} from '$lib/types/quiz';
 
+	import QuestionExplanation
+		from './QuestionExplanation.svelte';
+
 	type Props = {
 		question: PublicQuizQuestion;
 		answerResult?: QuizAnswerResult | null;
@@ -251,4 +254,10 @@
 			</button>
 		{/each}
 	</div>
+
+	{#if answerResult}
+		<QuestionExplanation
+			explanation={answerResult.explanation}
+		/>
+	{/if}
 </section>
