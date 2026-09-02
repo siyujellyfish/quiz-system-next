@@ -17,6 +17,7 @@ import {
 
 export type AdminBankTransferQuestion = {
 	prompt: string;
+	explanation: string | null;
 	options: Array<{
 		text: string;
 		isCorrect: boolean;
@@ -69,7 +70,7 @@ export async function importAdminQuestionBank(
 				id: randomUUID(),
 				bankId,
 				prompt: question.prompt,
-				explanation: null,
+				explanation: question.explanation,
 				question
 			})
 		);
@@ -138,6 +139,7 @@ export async function getAdminQuestionBankExport(
 		.select({
 			questionId: questions.id,
 			prompt: questions.prompt,
+			explanation: questions.explanation,
 			optionId: questionOptions.id,
 			optionText: questionOptions.content,
 			isCorrect: questionOptions.isCorrect,
@@ -162,6 +164,7 @@ export async function getAdminQuestionBankExport(
 	const exportedQuestions: Array<{
 		id: string;
 		prompt: string;
+		explanation: string | null;
 		options: Array<{
 			id: string;
 			text: string;
@@ -182,6 +185,7 @@ export async function getAdminQuestionBankExport(
 			question = {
 				id: row.questionId,
 				prompt: row.prompt,
+				explanation: row.explanation,
 				options: []
 			};
 			byQuestionId.set(
