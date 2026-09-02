@@ -46,6 +46,20 @@
 		return String.fromCharCode(65 + index);
 	}
 
+	function getMessageClass(
+		role: ChatMessage['role']
+	) {
+		return [
+			'rounded-container',
+			'p-3',
+			'text-sm',
+			'leading-relaxed',
+			role === 'user'
+				? 'bg-primary-500/15'
+				: 'bg-surface-100-900'
+		].join(' ');
+	}
+
 	function buildQuestionContext() {
 		const options = question.options
 			.map((option, index) => {
@@ -262,13 +276,9 @@
 					>
 						{#each messages as message}
 							<div
-								class="rounded-container p-3 text-sm leading-relaxed"
-								class:bg-primary-500/15={
-									message.role === 'user'
-								}
-								class:bg-surface-100-900={
-									message.role === 'assistant'
-								}
+								class={getMessageClass(
+									message.role
+								)}
 							>
 								<p class="mb-1 text-xs font-semibold opacity-60">
 									{message.role === 'user'
