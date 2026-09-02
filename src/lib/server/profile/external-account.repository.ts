@@ -18,10 +18,8 @@ export type UpsertChatgptConnectionInput = {
 	providerAccountId: string;
 	displayName: string | null;
 	email: string | null;
-	accessTokenEncrypted: string;
-	refreshTokenEncrypted: string | null;
-	scope: string | null;
-	tokenExpiresAt: Date | null;
+	planType: string | null;
+	codexProfileId: string;
 };
 
 export async function getChatgptConnection(
@@ -60,12 +58,8 @@ export async function upsertChatgptConnection(
 			providerAccountId: input.providerAccountId,
 			displayName: input.displayName,
 			email: input.email,
-			accessTokenEncrypted:
-				input.accessTokenEncrypted,
-			refreshTokenEncrypted:
-				input.refreshTokenEncrypted,
-			scope: input.scope,
-			tokenExpiresAt: input.tokenExpiresAt,
+			planType: input.planType,
+			codexProfileId: input.codexProfileId,
 			updatedAt: now
 		})
 		.onConflictDoUpdate({
@@ -78,12 +72,8 @@ export async function upsertChatgptConnection(
 					input.providerAccountId,
 				displayName: input.displayName,
 				email: input.email,
-				accessTokenEncrypted:
-					input.accessTokenEncrypted,
-				refreshTokenEncrypted:
-					input.refreshTokenEncrypted,
-				scope: input.scope,
-				tokenExpiresAt: input.tokenExpiresAt,
+				planType: input.planType,
+				codexProfileId: input.codexProfileId,
 				updatedAt: now
 			}
 		})
