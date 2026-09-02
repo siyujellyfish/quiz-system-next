@@ -21,6 +21,7 @@
 	let values = $derived(
 		form?.values ?? {
 			prompt: '',
+			explanation: '',
 			options: defaultOptions
 		}
 	);

@@ -24,6 +24,12 @@ import {
 	validatePasswordChangeForm
 } from '$lib/server/profile/account.validation';
 
+import {
+	disconnectChatgptAccount,
+	getChatgptProfileConnection,
+	isChatgptConnectionConfigured
+} from '$lib/server/profile/chatgpt.service';
+
 export const load: PageServerLoad =
 	async ({ locals, url }) => {
 		if (!locals.user) {
@@ -35,12 +41,32 @@ export const load: PageServerLoad =
 			);
 		}
 
+		const chatgptConnection =
+			await getChatgptProfileConnection(
+				locals.user.id
+			);
+
 		return {
 			user: locals.user,
 			passwordChanged:
 				url.searchParams.get(
 					'passwordChanged'
-				) === '1'
+				) === '1',
+			chatgptConnection,
+			chatgptConfigured:
+				isChatgptConnectionConfigured(),
+			chatgptLinked:
+				url.searchParams.get(
+					'chatgptLinked'
+				) === '1',
+			chatgptDisconnected:
+				url.searchParams.get(
+					'chatgptDisconnected'
+				) === '1',
+			chatgptError:
+				url.searchParams.get(
+					'chatgptError'
+			)
 		};
 	};
 
@@ -149,6 +175,41 @@ export const actions: Actions = {
 		redirect(
 			303,
 			'/profile?passwordChanged=1'
+		);
+	},
+
+	disconnectChatgpt: async ({
+		locals,
+		url
+	}) => {
+		if (!locals.user) {
+			redirect(
+				303,
+				`/login?redirectTo=${encodeURIComponent(
+					url.pathname
+				)}`
+			);
+		}
+
+		try {
+			await disconnectChatgptAccount(
+				locals.user.id
+			);
+		} catch (caughtError) {
+			console.error(
+				'Unable to disconnect ChatGPT account',
+				caughtError
+			);
+
+			redirect(
+				303,
+				'/profile?chatgptError=disconnectFailed'
+			);
+		}
+
+		redirect(
+			303,
+			'/profile?chatgptDisconnected=1'
 		);
 	}
 };

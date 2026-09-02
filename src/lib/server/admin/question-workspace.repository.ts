@@ -53,6 +53,7 @@ function getWorkspaceWhere(
 		),
 		sql<boolean>`(
 			${questions.prompt} ilike ${pattern}
+			or ${questions.explanation} ilike ${pattern}
 			or ${questions.id}::text ilike ${pattern}
 			or exists (
 				select 1

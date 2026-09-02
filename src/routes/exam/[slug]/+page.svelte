@@ -391,6 +391,7 @@
 			correct: result.correct,
 			correctOptionIds:
 				result.correctOptionIds,
+			explanation: result.explanation,
 			completed: false
 		};
 	}

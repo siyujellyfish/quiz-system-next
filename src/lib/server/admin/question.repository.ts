@@ -26,6 +26,7 @@ export type AdminQuestionOptionWriteInput = {
 
 export type AdminQuestionWriteInput = {
 	prompt: string;
+	explanation: string | null;
 	options: AdminQuestionOptionWriteInput[];
 };
 
@@ -64,6 +65,7 @@ function getAdminQuestionListWhere(
 		),
 		sql<boolean>`(
 			${questions.prompt} ilike ${pattern}
+			or ${questions.explanation} ilike ${pattern}
 			or ${questions.id}::text ilike ${pattern}
 		)`
 	);
@@ -147,6 +149,7 @@ export async function getAdminQuestionList(
 		.select({
 			id: questions.id,
 			prompt: questions.prompt,
+			explanation: questions.explanation,
 			optionCount: count(questionOptions.id),
 			correctOptionCount:
 				sql<number>`count(*) filter (where ${questionOptions.isCorrect} = true)`
@@ -162,7 +165,8 @@ export async function getAdminQuestionList(
 		.where(whereCondition)
 		.groupBy(
 			questions.id,
-			questions.prompt
+			questions.prompt,
+			questions.explanation
 		)
 		.having(healthHaving)
 		.orderBy(
@@ -198,6 +202,7 @@ export async function getAdminQuestions(
 		.select({
 			id: questions.id,
 			prompt: questions.prompt,
+			explanation: questions.explanation,
 			optionCount: count(questionOptions.id),
 			correctOptionCount: sql<number>`count(*) filter (where ${questionOptions.isCorrect} = true)`
 		})
@@ -217,7 +222,8 @@ export async function getAdminQuestions(
 		)
 		.groupBy(
 			questions.id,
-			questions.prompt
+			questions.prompt,
+			questions.explanation
 		)
 		.orderBy(
 			asc(questions.prompt)
@@ -232,7 +238,8 @@ export async function getAdminQuestionEditor(
 		.select({
 			id: questions.id,
 			bankId: questions.bankId,
-			prompt: questions.prompt
+			prompt: questions.prompt,
+			explanation: questions.explanation
 		})
 		.from(questions)
 		.where(
@@ -287,12 +294,13 @@ export async function createAdminQuestion(
 			.values({
 				bankId,
 				prompt: input.prompt,
-				explanation: null
+				explanation: input.explanation
 			})
 			.returning({
 				id: questions.id,
 				bankId: questions.bankId,
-				prompt: questions.prompt
+				prompt: questions.prompt,
+				explanation: questions.explanation
 			});
 
 		if (!question) {
@@ -360,7 +368,8 @@ export async function updateAdminQuestion(
 		const [updatedQuestion] = await tx
 			.update(questions)
 			.set({
-				prompt: input.prompt
+				prompt: input.prompt,
+				explanation: input.explanation
 			})
 			.where(
 				and(
@@ -377,7 +386,8 @@ export async function updateAdminQuestion(
 			.returning({
 				id: questions.id,
 				bankId: questions.bankId,
-				prompt: questions.prompt
+				prompt: questions.prompt,
+				explanation: questions.explanation
 			});
 
 		if (!updatedQuestion) {

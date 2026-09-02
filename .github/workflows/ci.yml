@@ -67,6 +67,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Codex Gateway syntax check
+        run: node --check services/codex-gateway/server.mjs
+
       - name: Svelte and TypeScript check
         run: pnpm check
 

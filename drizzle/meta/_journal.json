@@ -1,41 +1,55 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1786191742875,
-      "tag": "0000_spooky_midnight",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1786192613010,
-      "tag": "0001_thankful_greymalkin",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1786254327309,
-      "tag": "0002_lame_korath",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1786260000000,
-      "tag": "0003_practice_accuracy",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1786357500000,
-      "tag": "0004_exam_history",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1786191742875,
+			"tag": "0000_spooky_midnight",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1786192613010,
+			"tag": "0001_thankful_greymalkin",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1786254327309,
+			"tag": "0002_lame_korath",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1786260000000,
+			"tag": "0003_practice_accuracy",
+			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1786357500000,
+			"tag": "0004_exam_history",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1788333600000,
+			"tag": "0005_chatgpt_connection",
+			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1788337200000,
+			"tag": "0006_codex_gateway_accounts",
+			"breakpoints": true
+		}
+	]
 }

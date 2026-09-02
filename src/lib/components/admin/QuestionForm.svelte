@@ -7,6 +7,7 @@
 
 	type Values = {
 		prompt: string;
+		explanation: string;
 		options: OptionValue[];
 	};
 
@@ -48,15 +49,18 @@
 
 	let nextKey = $state(0);
 	let prompt = $state('');
+	let explanation = $state('');
 	let options = $state<LocalOption[]>([]);
 	let baseline = $state('');
 
 	function fingerprint(
 		promptValue: string,
+		explanationValue: string,
 		optionValues: Array<Pick<LocalOption, 'id' | 'content' | 'isCorrect'>>
 	): string {
 		return JSON.stringify({
 			prompt: promptValue,
+			explanation: explanationValue,
 			options: optionValues.map((option) => ({
 				id: option.id,
 				content: option.content,
@@ -70,6 +74,7 @@
 		const persisted = baselineValues ?? incoming;
 
 		prompt = incoming.prompt;
+		explanation = incoming.explanation ?? '';
 		options = incoming.options.map(
 			(option, index) => ({
 				...option,
@@ -81,6 +86,7 @@
 		nextKey = incoming.options.length;
 		baseline = fingerprint(
 			persisted.prompt,
+			persisted.explanation ?? '',
 			persisted.options
 		);
 	});
@@ -97,7 +103,7 @@
 
 	let dirty = $derived(
 		Boolean(message) ||
-		fingerprint(prompt, options) !== baseline
+		fingerprint(prompt, explanation, options) !== baseline
 	);
 
 	$effect(() => {
@@ -202,6 +208,27 @@
 			</span>
 		{/if}
 	</label>
+
+	<section class="card preset-tonal p-4 md:p-5">
+		<label class="label">
+			<div class="flex flex-wrap items-center gap-2">
+				<span class="label-text">題目解析</span>
+				<span class="badge preset-tonal-primary">選填</span>
+			</div>
+
+			<p class="mb-2 text-sm opacity-60">
+				既有解析會自動載入。建議只保留題目重點、正確答案與錯誤選項的一句原因；正確選項不需在選項分析重複。
+			</p>
+
+			<textarea
+				class="textarea min-h-44"
+				name="explanation"
+				rows="9"
+				placeholder="例如：&#10;題目重點：...&#10;正確答案：D. ... — 為什麼正確。&#10;選項分析：&#10;A. — 錯誤：具體原因。&#10;B. — 錯誤：具體原因。"
+				bind:value={explanation}
+			></textarea>
+		</label>
+	</section>
 
 	<section>
 		<div
@@ -316,7 +343,7 @@
 		</div>
 
 		<p class="mt-3 text-xs opacity-60">
-			新增或刪除選項會使此題庫正在進行中的 Practice 失效並要求重新開始；修改文字、正解或順序不會重置進度。
+			新增或刪除選項會使此題庫正在進行中的 Practice 失效並要求重新開始；修改題目、解析、文字、正解或順序不會重置進度。
 		</p>
 	</section>
 

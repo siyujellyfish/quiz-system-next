@@ -7,27 +7,40 @@ import {
 	type AdminBankTransferQuestion
 } from '$lib/server/admin/bank-transfer.repository';
 
-import type {
-	AdminBankValidationResult
+import {
+	validateAdminBankForm
 } from '$lib/server/admin/bank.service';
 
 export const ADMIN_BANK_IMPORT_MAX_FILE_SIZE =
 	5 * 1024 * 1024;
 export const ADMIN_BANK_IMPORT_MAX_QUESTIONS = 5000;
 
+export type AdminBankImportDocument = {
+	version: 1;
+	bank: {
+		name: string;
+		slug: string;
+		description: string | null;
+	};
+	questions: AdminBankTransferQuestion[];
+};
+
 export type AdminBankImportPreview = {
+	bank: AdminBankImportDocument['bank'];
 	questionCount: number;
 	optionCount: number;
+	explanationCount: number;
 	sampleQuestions: Array<{
 		prompt: string;
 		optionCount: number;
+		hasExplanation: boolean;
 	}>;
 };
 
 export type AdminBankImportParseResult =
 	| {
 		ok: true;
-		questions: AdminBankTransferQuestion[];
+		document: AdminBankImportDocument;
 		preview: AdminBankImportPreview;
 		payload: string;
 	}
@@ -35,13 +48,6 @@ export type AdminBankImportParseResult =
 		ok: false;
 		message: string;
 	};
-
-export class AdminBankImportConflictError extends Error {
-	constructor(message = '此 slug 已被其他題庫使用') {
-		super(message);
-		this.name = 'AdminBankImportConflictError';
-	}
-}
 
 function isRecord(
 	value: unknown
@@ -53,6 +59,15 @@ function isRecord(
 
 function getQuestionErrorPrefix(index: number) {
 	return `第 ${index + 1} 題`;
+}
+
+function getQuestionSignature(
+	question: AdminBankTransferQuestion
+) {
+	return JSON.stringify([
+		question.prompt,
+		question.options.map((option) => option.text)
+	]);
 }
 
 export function parseAdminBankImportJson(
@@ -69,14 +84,75 @@ export function parseAdminBankImportJson(
 		};
 	}
 
-	if (!Array.isArray(parsed)) {
+	if (!isRecord(parsed)) {
 		return {
 			ok: false,
-			message: '題庫 JSON 最外層必須是題目陣列'
+			message: '題庫 JSON 最外層必須是物件'
 		};
 	}
 
-	if (parsed.length === 0) {
+	if (parsed.version !== 1) {
+		return {
+			ok: false,
+			message: '目前僅支援 version: 1 的題庫 JSON'
+		};
+	}
+
+	if (!isRecord(parsed.bank)) {
+		return {
+			ok: false,
+			message: 'bank 必須是題庫設定物件'
+		};
+	}
+
+	const bankDescription = parsed.bank.description;
+
+	if (
+		bankDescription !== undefined &&
+		bankDescription !== null &&
+		typeof bankDescription !== 'string'
+	) {
+		return {
+			ok: false,
+			message: 'bank.description 必須是字串或 null'
+		};
+	}
+
+	const bankValidation = validateAdminBankForm({
+		name:
+			typeof parsed.bank.name === 'string'
+				? parsed.bank.name
+				: '',
+		slug:
+			typeof parsed.bank.slug === 'string'
+				? parsed.bank.slug
+				: '',
+		description:
+			typeof bankDescription === 'string'
+				? bankDescription
+				: ''
+	});
+
+	if (!bankValidation.ok) {
+		const firstMessage =
+			bankValidation.errors.name ??
+			bankValidation.errors.slug ??
+			'題庫設定格式錯誤';
+
+		return {
+			ok: false,
+			message: `bank：${firstMessage}`
+		};
+	}
+
+	if (!Array.isArray(parsed.questions)) {
+		return {
+			ok: false,
+			message: 'questions 必須是題目陣列'
+		};
+	}
+
+	if (parsed.questions.length === 0) {
 		return {
 			ok: false,
 			message: '題庫至少需要 1 道題目'
@@ -84,7 +160,7 @@ export function parseAdminBankImportJson(
 	}
 
 	if (
-		parsed.length >
+		parsed.questions.length >
 		ADMIN_BANK_IMPORT_MAX_QUESTIONS
 	) {
 		return {
@@ -94,17 +170,17 @@ export function parseAdminBankImportJson(
 	}
 
 	const questions: AdminBankTransferQuestion[] = [];
+	const signatures = new Set<string>();
 	let optionCount = 0;
+	let explanationCount = 0;
 
 	for (
 		let questionIndex = 0;
-		questionIndex < parsed.length;
+		questionIndex < parsed.questions.length;
 		questionIndex += 1
 	) {
-		const item = parsed[questionIndex];
-		const prefix = getQuestionErrorPrefix(
-			questionIndex
-		);
+		const item = parsed.questions[questionIndex];
+		const prefix = getQuestionErrorPrefix(questionIndex);
 
 		if (!isRecord(item)) {
 			return {
@@ -128,6 +204,22 @@ export function parseAdminBankImportJson(
 				message: `${prefix}：題目內容不可空白`
 			};
 		}
+
+		if (
+			item.explanation !== undefined &&
+			item.explanation !== null &&
+			typeof item.explanation !== 'string'
+		) {
+			return {
+				ok: false,
+				message: `${prefix}：explanation 必須是字串或 null`
+			};
+		}
+
+		const explanation =
+			typeof item.explanation === 'string'
+				? item.explanation.trim() || null
+				: null;
 
 		if (!Array.isArray(item.options)) {
 			return {
@@ -200,71 +292,64 @@ export function parseAdminBankImportJson(
 			};
 		}
 
-		optionCount += options.length;
-		questions.push({
+		const question: AdminBankTransferQuestion = {
 			prompt,
+			explanation,
 			options
-		});
+		};
+		const signature = getQuestionSignature(question);
+
+		if (signatures.has(signature)) {
+			return {
+				ok: false,
+				message: `${prefix}：題幹與選項內容和前面的題目重複`
+			};
+		}
+
+		signatures.add(signature);
+		optionCount += options.length;
+		if (explanation) {
+			explanationCount += 1;
+		}
+		questions.push(question);
 	}
+
+	const document: AdminBankImportDocument = {
+		version: 1,
+		bank: bankValidation.input,
+		questions
+	};
 
 	return {
 		ok: true,
-		questions,
+		document,
 		preview: {
+			bank: document.bank,
 			questionCount: questions.length,
 			optionCount,
+			explanationCount,
 			sampleQuestions: questions
 				.slice(0, 3)
 				.map((question) => ({
 					prompt: question.prompt,
-					optionCount:
-						question.options.length
+					optionCount: question.options.length,
+					hasExplanation: question.explanation !== null
 				}))
 		},
-		payload: JSON.stringify(questions)
+		payload: JSON.stringify(document)
 	};
 }
 
-export async function ensureAdminBankImportSlugAvailable(
-	slug: string
-) {
-	const existing =
-		await getAdminQuestionBankBySlug(slug);
-
-	if (existing) {
-		throw new AdminBankImportConflictError();
-	}
+export async function getAdminBankImportMode(slug: string) {
+	const existing = await getAdminQuestionBankBySlug(slug);
+	return existing ? ('sync' as const) : ('create' as const);
 }
 
-function isUniqueViolation(error: unknown) {
-	return typeof error === 'object' &&
-		error !== null &&
-		'code' in error &&
-		(error as { code?: unknown }).code ===
-			'23505';
-}
-
-export async function importValidatedAdminQuestionBank(
-	bankValidation: Extract<
-		AdminBankValidationResult,
-		{ ok: true }
-	>,
-	questions: AdminBankTransferQuestion[]
+export async function importAdminBankDocument(
+	document: AdminBankImportDocument
 ) {
-	await ensureAdminBankImportSlugAvailable(
-		bankValidation.input.slug
-	);
-
-	try {
-		return await importAdminQuestionBank({
-			...bankValidation.input,
-			questions
-		});
-	} catch (error) {
-		if (isUniqueViolation(error)) {
-			throw new AdminBankImportConflictError();
-		}
-
-		throw error;
-	}
+	return importAdminQuestionBank({
+		...document.bank,
+		questions: document.questions
+	});
 }
