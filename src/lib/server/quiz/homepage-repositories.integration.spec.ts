@@ -17,6 +17,10 @@ import {
 } from '$lib/server/quiz/bank.repository';
 
 import {
+	getPracticeContextBySlug
+} from '$lib/server/quiz/practice-context.repository';
+
+import {
 	getPracticeAnswerProgress,
 	getPracticeProgress,
 	getPracticeProgressSummariesByUser,
@@ -230,6 +234,34 @@ describe('optimized quiz repository queries', () => {
 			answeredCount: 1,
 			correctCount: 1,
 			totalQuestions: 3,
+			questionState: {
+				questionId: secondQuestionId,
+				optionIds: [secondOptionId]
+			},
+			nextQuestionState: {
+				questionId: thirdQuestionId,
+				optionIds: [thirdOptionId]
+			}
+		});
+
+		const context =
+			await getPracticeContextBySlug(
+				userId,
+				'summary-bank'
+			);
+
+		expect(context).toEqual({
+			bankId,
+			bankSlug: 'summary-bank',
+			bankName: 'Summary Bank',
+			bankDescription: null,
+			progressUserId: userId,
+			currentIndex: 1,
+			answeredCount: 1,
+			correctCount: 1,
+			totalQuestions: 3,
+			coverage: 50,
+			shuffleOptions: true,
 			questionState: {
 				questionId: secondQuestionId,
 				optionIds: [secondOptionId]
