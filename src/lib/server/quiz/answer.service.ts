@@ -295,6 +295,13 @@ export async function answerUserPracticeQuestion(
 	}
 
 	const bankId = context.bankId;
+	const currentIndex = context.currentIndex;
+	const previousAnsweredCount =
+		context.answeredCount;
+	const previousCorrectCount =
+		context.correctCount;
+	const totalQuestions =
+		context.totalQuestions;
 	const questionState =
 		context.questionState;
 
@@ -332,22 +339,22 @@ export async function answerUserPracticeQuestion(
 		findNextPracticeQuestion(
 			userId,
 			bankId,
-			context.totalQuestions,
-			context.currentIndex + 1,
+			totalQuestions,
+			currentIndex + 1,
 			context.nextQuestionState
 		)
 	]);
 
 	const answeredCount =
-		context.answeredCount + 1;
+		previousAnsweredCount + 1;
 
 	const correctCount =
-		context.correctCount +
+		previousCorrectCount +
 		(result.correct ? 1 : 0);
 
 	const nextIndex =
 		next?.currentIndex ??
-		context.totalQuestions;
+		totalQuestions;
 
 	const completed = next === null;
 
@@ -378,7 +385,7 @@ export async function answerUserPracticeQuestion(
 							),
 							eq(
 								practiceProgress.currentIndex,
-								context.currentIndex
+								currentIndex
 							)
 						)
 					)
@@ -416,7 +423,7 @@ export async function answerUserPracticeQuestion(
 						),
 						eq(
 							practiceProgress.currentIndex,
-							context.currentIndex
+							currentIndex
 						)
 					)
 				)
