@@ -29,8 +29,8 @@ config({
 config();
 
 const databaseUrl =
-	process.env.DATABASE_URL_UNPOOLED ??
-	process.env.DATABASE_URL;
+	process.env.DATABASE_URL_UNPOOLED?.trim() ||
+	process.env.DATABASE_URL?.trim();
 
 if (!databaseUrl) {
 	throw new Error(
@@ -58,12 +58,12 @@ function createDatabase(url: string): {
 	close: () => Promise<void>;
 } {
 	if (process.env.DATABASE_DRIVER === 'postgres-js') {
-		const client = postgres(url);
+		const client = postgres(url, {
+			max: 1,
+		});
 
 		return {
-			db: drizzlePostgres({
-				client,
-			}) as unknown as Database,
+			db: drizzlePostgres(client) as unknown as Database,
 			close: () => client.end(),
 		};
 	}
@@ -421,19 +421,6 @@ async function seedBank(
 		}),
 	);
 
-	const optionRows = questionRows.flatMap(
-		(questionRow) =>
-			questionRow.sourceQuestion.options.map(
-				(sourceOption, position) => ({
-					id: randomUUID(),
-					questionId: questionRow.id,
-					content: sourceOption.text,
-					isCorrect: sourceOption.isCorrect,
-					position,
-				}),
-			),
-	);
-
 	await db.transaction(async (tx) => {
 		await tx
 			.insert(questionBanks)
@@ -447,57 +434,81 @@ async function seedBank(
 		await tx
 			.insert(questions)
 			.values(
-				questionRows.map((question) => ({
-					id: question.id,
-					bankId: question.bankId,
-					prompt: question.prompt,
-					explanation: question.explanation,
-				})),
+				questionRows.map(
+					({ sourceQuestion: _sourceQuestion, ...question }) =>
+						question,
+				),
 			);
 
 		await tx
 			.insert(questionOptions)
-			.values(optionRows);
+			.values(
+				questionRows.flatMap(
+					(question) =>
+						question.sourceQuestion.options.map(
+							(option, position) => ({
+								id: randomUUID(),
+								questionId: question.id,
+								content: option.text,
+								isCorrect: option.isCorrect,
+								position,
+							}),
+						),
+				),
+			);
 	});
 
 	console.log(
-		[
-			`✓ ${definition.name}`,
-			`${questionRows.length} questions`,
-			`${optionRows.length} options`,
-		].join(" | "),
+		`+ Seeded ${definition.name}: ${definition.questions.length} questions`,
 	);
 }
 
 async function seedDefaultAdmin() {
 	const username =
-		process.env.DEFAULT_ADMIN_USERNAME ??
-		'admin';
+		process.env.DEFAULT_ADMIN_USERNAME?.trim();
 	const password =
-		process.env.DEFAULT_ADMIN_PASSWORD ??
-		'admin';
+		process.env.DEFAULT_ADMIN_PASSWORD;
 
-	const passwordHash =
-	await hashPassword(
-		password
-	);
+	if (!username || !password) {
+		console.log(
+			"- Skip default admin: DEFAULT_ADMIN_USERNAME or DEFAULT_ADMIN_PASSWORD is not defined",
+		);
+		return;
+	}
+
+	const [existing] = await db
+		.select({
+			id: users.id,
+		})
+		.from(users)
+		.where(eq(users.username, username))
+		.limit(1);
+
+	if (existing) {
+		console.log(
+			`- Skip default admin: ${username} already exists`,
+		);
+		return;
+	}
+
+	const passwordHash = await hashPassword(password);
 
 	await db
 		.insert(users)
 		.values({
+			id: randomUUID(),
 			username,
 			passwordHash,
 			isAdmin: true,
-		})
-		.onConflictDoNothing({
-			target: users.username,
 		});
 
-	console.log(`✓ Default admin: ${username}`);
+	console.log(
+		`+ Seeded default admin: ${username}`,
+	);
 }
 
 async function main() {
-	console.log("Starting database seed...\n");
+	console.log("Seeding default data...");
 
 	await seedDefaultAdmin();
 
@@ -542,21 +553,12 @@ async function main() {
 		await seedBank(definition);
 	}
 
-	console.log("\nDatabase seed completed.");
+	console.log("Database seed completed.");
 }
 
 main()
-	.catch((error: unknown) => {
-		console.error(
-			"\nQuestion bank seed failed.",
-		);
-
-		if (error instanceof Error) {
-			console.error(error.message);
-		} else {
-			console.error(error);
-		}
-
+	.catch((error) => {
+		console.error(error);
 		process.exitCode = 1;
 	})
 	.finally(async () => {
