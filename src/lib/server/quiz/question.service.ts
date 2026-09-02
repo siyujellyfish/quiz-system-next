@@ -5,8 +5,18 @@ import type {
 
 
 import {
-	getQuestionWithOptionsByIdAndBank
+	getQuestionWithOptionsByIdAndBank,
+	getQuestionWithOptionsByIdAndBankSlug
 } from './question.repository';
+
+
+type PracticeQuestionRow = {
+	questionId: string;
+	prompt: string;
+	optionId: string;
+	optionContent: string;
+	optionPosition: number;
+};
 
 
 export async function getPublicPracticeQuestion(
@@ -20,6 +30,35 @@ export async function getPublicPracticeQuestion(
 			bankId
 		);
 
+	return buildPublicPracticeQuestion(
+		rows,
+		optionIds
+	);
+}
+
+
+export async function getPublicPracticeQuestionByBankSlug(
+	bankSlug: string,
+	questionId: string,
+	optionIds: string[]
+): Promise<PublicQuizQuestion | null> {
+	const rows =
+		await getQuestionWithOptionsByIdAndBankSlug(
+			questionId,
+			bankSlug
+		);
+
+	return buildPublicPracticeQuestion(
+		rows,
+		optionIds
+	);
+}
+
+
+function buildPublicPracticeQuestion(
+	rows: PracticeQuestionRow[],
+	optionIds: string[]
+): PublicQuizQuestion | null {
 	const firstRow = rows[0];
 
 	if (!firstRow) {
