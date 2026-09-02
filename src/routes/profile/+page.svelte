@@ -64,6 +64,22 @@
 		);
 	}
 
+	function formatPlanType(
+		planType: string | null
+	) {
+		if (!planType) {
+			return null;
+		}
+
+		return planType
+			.split('_')
+			.map((part) =>
+				part.charAt(0).toUpperCase() +
+				part.slice(1)
+			)
+			.join(' ');
+	}
+
 	onMount(() => {
 		if (data.passwordChanged) {
 			toaster.success({
@@ -77,7 +93,7 @@
 			toaster.success({
 				title: 'ChatGPT 已連結',
 				description:
-					'第三方帳號已成功連結。'
+					'之後的 AI 對話會使用你自己的 ChatGPT / Codex 額度。'
 			});
 		}
 
@@ -85,20 +101,18 @@
 			toaster.success({
 				title: 'ChatGPT 已取消連結',
 				description:
-					'已移除 ChatGPT 帳號與授權憑證。'
+					'Codex Gateway 已登出這個 ChatGPT 帳號。'
 			});
 		}
 
 		if (data.chatgptError) {
 			const description =
-				data.chatgptError === 'cancelled'
-					? '你已取消 ChatGPT 授權。'
-					: data.chatgptError === 'invalidCallback'
-						? '授權回傳資料無效或已逾時，請重新連結。'
-						: '無法完成 ChatGPT 連結，請稍後再試。';
+				data.chatgptError === 'disconnectFailed'
+					? '無法從 Codex Gateway 登出 ChatGPT，連結資料尚未移除。'
+					: '無法完成 ChatGPT 連結，請稍後再試。';
 
 			toaster.error({
-				title: 'ChatGPT 連結失敗',
+				title: 'ChatGPT 操作失敗',
 				description
 			});
 		}
@@ -191,17 +205,29 @@
 			{#if data.chatgptConnection}
 				<div>
 					<dt class="text-sm font-medium opacity-60">
+						ChatGPT 方案
+					</dt>
+
+					<dd class="mt-1 font-medium">
+						{formatPlanType(
+							data.chatgptConnection.planType
+						) ?? '未提供'}
+					</dd>
+				</div>
+
+				<div>
+					<dt class="text-sm font-medium opacity-60">
 						Codex 用量
 					</dt>
 
 					<dd class="mt-2">
 						{#if data.chatgptConnection.usageError}
 							<p class="text-sm text-warning-700-300">
-								暫時無法取得 Codex 用量。
+								暫時無法從 Codex Gateway 取得用量。
 							</p>
 						{:else if !data.chatgptConnection.usageAvailable}
 							<p class="text-sm opacity-60">
-								此 ChatGPT 授權目前未提供 Codex 用量資料。
+								Codex Gateway 目前未提供用量資料。
 							</p>
 						{:else if data.chatgptConnection.usage}
 							<div class="space-y-3">
@@ -267,7 +293,7 @@
 			</h2>
 
 			<p class="mt-2 text-sm opacity-60">
-				管理 Quiz 可使用的第三方帳號授權。
+				連結 ChatGPT 後，Quiz 的 AI 對話會使用該帳號自己的 Codex 額度。
 			</p>
 		</header>
 
@@ -285,6 +311,14 @@
 					{#if data.chatgptConnection.email && data.chatgptConnection.email !== data.chatgptConnection.displayName}
 						<p class="mt-1 text-sm opacity-60">
 							{data.chatgptConnection.email}
+						</p>
+					{/if}
+
+					{#if data.chatgptConnection.planType}
+						<p class="mt-1 text-sm opacity-60">
+							ChatGPT {formatPlanType(
+								data.chatgptConnection.planType
+							)}
 						</p>
 					{/if}
 				{:else}
@@ -306,21 +340,27 @@
 						取消連接
 					</button>
 				</form>
-			{:else}
+			{:else if data.chatgptConfigured}
 				<a
 					href="/integrations/chatgpt/connect"
 					class="btn preset-filled-primary-500"
-					class:opacity-50={!data.chatgptConfigured}
-					aria-disabled={!data.chatgptConfigured}
 				>
 					連結至 ChatGPT
 				</a>
+			{:else}
+				<button
+					type="button"
+					class="btn preset-filled-primary-500 opacity-50"
+					disabled
+				>
+					連結至 ChatGPT
+				</button>
 			{/if}
 		</div>
 
 		{#if !data.chatgptConnection && !data.chatgptConfigured}
 			<p class="mt-4 text-sm text-warning-700-300">
-				ChatGPT OAuth 尚未完成伺服器設定，連結功能目前不可用。
+				Codex Gateway 尚未設定，連結與個人 Codex 額度功能目前不可用。
 			</p>
 		{/if}
 	</section>
