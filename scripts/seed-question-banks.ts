@@ -6,7 +6,7 @@ import { gunzipSync } from "node:zlib";
 
 import { Pool } from '@neondatabase/serverless';
 import { config } from "dotenv";
-import { inArray } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 import { drizzle as drizzleNeon } from 'drizzle-orm/neon-serverless';
 import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -97,6 +97,16 @@ type BankSeedDefinition = {
 type DefaultQuestionBankBundle = {
 	version: 1;
 	banks: BankSeedDefinition[];
+};
+
+type ExistingQuestion = {
+	id: string;
+	prompt: string;
+	options: Array<{
+		id: string;
+		content: string;
+		position: number;
+	}>;
 };
 
 const currentFile = fileURLToPath(import.meta.url);
@@ -193,6 +203,203 @@ function validateBankDefinition(
 				`${definition.slug}/${question.id} must contain exactly one correct option`,
 			);
 		}
+	}
+}
+
+function createQuestionSignature(
+	prompt: string,
+	optionContents: string[],
+): string {
+	return JSON.stringify([
+		prompt,
+		...optionContents,
+	]);
+}
+
+async function getExistingQuestions(
+	bankId: string,
+): Promise<ExistingQuestion[]> {
+	const rows = await db
+		.select({
+			questionId: questions.id,
+			prompt: questions.prompt,
+			optionId: questionOptions.id,
+			optionContent: questionOptions.content,
+			position: questionOptions.position,
+		})
+		.from(questions)
+		.innerJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id,
+			),
+		)
+		.where(eq(questions.bankId, bankId))
+		.orderBy(
+			asc(questions.id),
+			asc(questionOptions.position),
+		);
+
+	const questionMap = new Map<
+		string,
+		ExistingQuestion
+	>();
+
+	for (const row of rows) {
+		const existing = questionMap.get(
+			row.questionId,
+		);
+
+		if (existing) {
+			existing.options.push({
+				id: row.optionId,
+				content: row.optionContent,
+				position: row.position,
+			});
+			continue;
+		}
+
+		questionMap.set(row.questionId, {
+			id: row.questionId,
+			prompt: row.prompt,
+			options: [{
+				id: row.optionId,
+				content: row.optionContent,
+				position: row.position,
+			}],
+		});
+	}
+
+	return [...questionMap.values()];
+}
+
+async function syncExistingBank(
+	bankId: string,
+	definition: BankSeedDefinition,
+): Promise<void> {
+	validateBankDefinition(definition);
+
+	const existingQuestions =
+		await getExistingQuestions(bankId);
+	const existingBySignature = new Map<
+		string,
+		ExistingQuestion
+	>();
+
+	for (const question of existingQuestions) {
+		const signature = createQuestionSignature(
+			question.prompt,
+			question.options.map(
+				(option) => option.content,
+			),
+		);
+
+		if (existingBySignature.has(signature)) {
+			throw new Error(
+				`Cannot safely sync ${definition.slug}: duplicate existing question signature`,
+			);
+		}
+
+		existingBySignature.set(signature, question);
+	}
+
+	let matchedCount = 0;
+	let correctedAnswerCount = 0;
+
+	await db.transaction(async (tx) => {
+		await tx
+			.update(questionBanks)
+			.set({
+				name: definition.name,
+				description: definition.description,
+			})
+			.where(eq(questionBanks.id, bankId));
+
+		for (const sourceQuestion of definition.questions) {
+			const signature = createQuestionSignature(
+				sourceQuestion.prompt,
+				sourceQuestion.options.map(
+					(option) => option.text,
+				),
+			);
+			const existing =
+				existingBySignature.get(signature);
+
+			if (!existing) {
+				continue;
+			}
+
+			matchedCount++;
+
+			await tx
+				.update(questions)
+				.set({
+					explanation:
+						sourceQuestion.explanation ?? null,
+				})
+				.where(eq(questions.id, existing.id));
+
+			for (
+				let position = 0;
+				position < existing.options.length;
+				position++
+			) {
+				const existingOption =
+					existing.options[position];
+				const sourceOption =
+					sourceQuestion.options[position];
+
+				if (!existingOption || !sourceOption) {
+					continue;
+				}
+
+				const [current] = await tx
+					.select({
+						isCorrect:
+							questionOptions.isCorrect,
+					})
+					.from(questionOptions)
+					.where(eq(
+						questionOptions.id,
+						existingOption.id,
+					))
+					.limit(1);
+
+				if (
+					current &&
+					current.isCorrect !==
+						sourceOption.isCorrect
+				) {
+					correctedAnswerCount++;
+				}
+
+				await tx
+					.update(questionOptions)
+					.set({
+						isCorrect:
+							sourceOption.isCorrect,
+					})
+					.where(eq(
+						questionOptions.id,
+						existingOption.id,
+					));
+			}
+		}
+	});
+
+	console.log(
+		[
+			`↻ ${definition.name}`,
+			`${matchedCount}/${definition.questions.length} questions synced`,
+			`${correctedAnswerCount} option answer flags changed`,
+		].join(" | "),
+	);
+
+	if (matchedCount !== definition.questions.length) {
+		console.warn(
+			`  Warning: ${definition.questions.length - matchedCount} source questions did not exactly match the existing ${definition.slug} bank and were left untouched.`,
+		);
 	}
 }
 
@@ -303,6 +510,7 @@ async function main() {
 
 	const existingBanks = await db
 		.select({
+			id: questionBanks.id,
 			slug: questionBanks.slug,
 		})
 		.from(questionBanks)
@@ -312,17 +520,22 @@ async function main() {
 				slugs,
 			),
 		);
-
-	const existingSlugs = new Set(
-		existingBanks.map((bank) => bank.slug),
+	const existingBySlug = new Map(
+		existingBanks.map((bank) => [
+			bank.slug,
+			bank,
+		]),
 	);
 
 	for (const definition of bankDefinitions) {
-		if (existingSlugs.has(definition.slug)) {
-			console.log(
-				`- Skip ${definition.name}: bank already exists`,
-			);
+		const existing =
+			existingBySlug.get(definition.slug);
 
+		if (existing) {
+			await syncExistingBank(
+				existing.id,
+				definition,
+			);
 			continue;
 		}
 
