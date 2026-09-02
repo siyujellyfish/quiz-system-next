@@ -1,7 +1,8 @@
 import {
 	and,
 	asc,
-	eq
+	eq,
+	sql
 } from 'drizzle-orm';
 
 
@@ -102,7 +103,16 @@ export async function getPracticeProgress(
 ) {
 	const [progress] =
 		await db
-			.select()
+			.select({
+				questionsState:
+					practiceProgress.questionsState,
+				currentIndex:
+					practiceProgress.currentIndex,
+				answeredCount:
+					practiceProgress.answeredCount,
+				correctCount:
+					practiceProgress.correctCount
+			})
 			.from(
 				practiceProgress
 			)
@@ -170,7 +180,7 @@ export async function deletePracticeProgress(
 }
 
 
-export async function getPracticeProgressesByUser(
+export async function getPracticeProgressSummariesByUser(
 	userId: string
 ) {
 	return db
@@ -181,14 +191,26 @@ export async function getPracticeProgressesByUser(
 			currentIndex:
 				practiceProgress.currentIndex,
 
-			answeredCount:
-				practiceProgress.answeredCount,
+			totalQuestions:
+				sql<number>`
+					jsonb_array_length(
+						${practiceProgress.questionsState}->'questions'
+					)
+				`,
 
-			correctCount:
-				practiceProgress.correctCount,
+			coverage:
+				sql<PracticeQuestionsState['coverage']>`
+					(
+						${practiceProgress.questionsState}->>'coverage'
+					)::int
+				`,
 
-			questionsState:
-				practiceProgress.questionsState
+			shuffleOptions:
+				sql<boolean>`
+					(
+						${practiceProgress.questionsState}->>'shuffleOptions'
+					)::boolean
+				`
 		})
 		.from(practiceProgress)
 		.where(
