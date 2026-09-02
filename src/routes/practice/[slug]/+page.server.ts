@@ -14,6 +14,7 @@ import {
 import {
 	deletePracticeProgress,
 	getPracticeProgress,
+	getPracticeQuestionStateAtIndex,
 	setPracticeCurrentIndex
 } from '$lib/server/quiz/practice.repository';
 
@@ -63,14 +64,8 @@ export const load: PageServerLoad =
 			);
 		}
 
-		const {
-			questionsState
-		} = progress;
-
 		const totalQuestions =
-			questionsState
-				.questions
-				.length;
+			progress.totalQuestions;
 
 		if (totalQuestions === 0) {
 			await deletePracticeProgress(
@@ -92,10 +87,14 @@ export const load: PageServerLoad =
 			totalQuestions
 		) {
 			const questionState =
-				questionsState
-					.questions[
+				currentIndex ===
+					progress.currentIndex
+					? progress.questionState
+					: await getPracticeQuestionStateAtIndex(
+						locals.user.id,
+						bank.id,
 						currentIndex
-					];
+					);
 
 			if (!questionState) {
 				currentIndex++;
@@ -136,9 +135,9 @@ export const load: PageServerLoad =
 					correctCount:
 						progress.correctCount,
 					coverage:
-						questionsState.coverage,
+						progress.coverage,
 					shuffleOptions:
-						questionsState.shuffleOptions,
+						progress.shuffleOptions,
 					question
 				}
 			};
