@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
 import { Pool } from '@neondatabase/serverless';
 import { config } from "dotenv";
@@ -82,6 +83,7 @@ type SourceOption = {
 type SourceQuestion = {
 	id: string;
 	prompt: string;
+	explanation?: string | null;
 	options: SourceOption[];
 };
 
@@ -89,7 +91,12 @@ type BankSeedDefinition = {
 	slug: string;
 	name: string;
 	description: string;
-	file: string;
+	questions: SourceQuestion[];
+};
+
+type DefaultQuestionBankBundle = {
+	version: 1;
+	banks: BankSeedDefinition[];
 };
 
 const currentFile = fileURLToPath(import.meta.url);
@@ -99,68 +106,110 @@ const projectRoot = path.resolve(
 	"..",
 );
 
-const bankDefinitions: BankSeedDefinition[] = [
-	{
-		slug: "csa-v2",
-		name: "CSA v2",
-		description: "CSA v2 全題庫",
-		file: "src/data/csa-v2-questions.json",
-	},
-	{
-		slug: "ctia",
-		name: "CTIA",
-		description: "CTIA 全題庫",
-		file: "src/data/ctia-v2-questions.json",
-	},
-	{
-		slug: "edrp",
-		name: "EDRP",
-		description: "EDRP 全題庫",
-		file: "src/data/edrp-v3-questions.json",
-	},
-];
-
-async function readQuestionFile(
-	file: string,
-): Promise<SourceQuestion[]> {
-	const filePath = path.resolve(
+async function readDefaultQuestionBankBundle():
+	Promise<DefaultQuestionBankBundle> {
+	const directory = path.resolve(
 		projectRoot,
-		file,
+		"src/data/default",
 	);
+	const filenames = (
+		await readdir(directory)
+	)
+		.filter((filename) =>
+			/^question-banks\.part\d+\.b64$/.test(filename)
+		)
+		.sort();
 
-	const content = await readFile(
-		filePath,
-		{
-			encoding: "utf-8",
-		},
-	);
-
-	const data: unknown = JSON.parse(content);
-
-	if (!Array.isArray(data)) {
+	if (filenames.length === 0) {
 		throw new Error(
-			`${file} must contain an array`,
+			"Default question bank bundle is missing",
 		);
 	}
 
-	return data as SourceQuestion[];
+	const chunks = await Promise.all(
+		filenames.map((filename) =>
+			readFile(
+				path.join(directory, filename),
+				"utf-8",
+			)
+		),
+	);
+	const encoded = chunks
+		.join("")
+		.replace(/\s+/g, "");
+	const decoded = gunzipSync(
+		Buffer.from(encoded, "base64"),
+	).toString("utf-8");
+	const data: unknown = JSON.parse(decoded);
+
+	if (
+		typeof data !== "object" ||
+		data === null ||
+		(data as { version?: unknown }).version !== 1 ||
+		!Array.isArray(
+			(data as { banks?: unknown }).banks,
+		)
+	) {
+		throw new Error(
+			"Default question bank bundle has an invalid format",
+		);
+	}
+
+	return data as DefaultQuestionBankBundle;
+}
+
+function validateBankDefinition(
+	definition: BankSeedDefinition,
+): void {
+	if (
+		!definition.slug ||
+		!definition.name ||
+		!Array.isArray(definition.questions) ||
+		definition.questions.length === 0
+	) {
+		throw new Error(
+			`Invalid default question bank: ${definition.slug || definition.name}`,
+		);
+	}
+
+	for (const question of definition.questions) {
+		if (
+			!question.id ||
+			!question.prompt ||
+			!Array.isArray(question.options) ||
+			question.options.length === 0
+		) {
+			throw new Error(
+				`Invalid question in ${definition.slug}`,
+			);
+		}
+
+		const correctCount = question.options.filter(
+			(option) => option.isCorrect,
+		).length;
+
+		if (correctCount !== 1) {
+			throw new Error(
+				`${definition.slug}/${question.id} must contain exactly one correct option`,
+			);
+		}
+	}
 }
 
 async function seedBank(
 	definition: BankSeedDefinition,
 ) {
-	const sourceQuestions = await readQuestionFile(
-		definition.file,
-	);
+	validateBankDefinition(definition);
 
 	const bankId = randomUUID();
 
-	const questionRows = sourceQuestions.map(
+	const questionRows = definition.questions.map(
 		(sourceQuestion) => ({
 			id: randomUUID(),
 			bankId,
 			prompt: sourceQuestion.prompt,
-			explanation: null,
+			explanation:
+				sourceQuestion.explanation ?? null,
 			sourceQuestion,
 		}),
 	);
@@ -245,6 +294,9 @@ async function main() {
 
 	await seedDefaultAdmin();
 
+	const bundle =
+		await readDefaultQuestionBankBundle();
+	const bankDefinitions = bundle.banks;
 	const slugs = bankDefinitions.map(
 		(definition) => definition.slug,
 	);
