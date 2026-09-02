@@ -17,8 +17,15 @@ import {
 } from '$lib/server/quiz/bank.repository';
 
 import {
-	getPracticeProgressSummariesByUser
+	getPracticeAnswerProgress,
+	getPracticeProgress,
+	getPracticeProgressSummariesByUser,
+	getPracticeQuestionStateAtIndex
 } from '$lib/server/quiz/practice.repository';
+
+import {
+	generatePracticeState
+} from '$lib/server/quiz/practice.service';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -56,7 +63,7 @@ afterAll(async () => {
 	await sql.end();
 });
 
-describe('homepage repository queries', () => {
+describe('optimized quiz repository queries', () => {
 	it('counts questions with options without multiplying option rows', async () => {
 		const bankId = randomUUID();
 		const emptyBankId = randomUUID();
@@ -121,9 +128,15 @@ describe('homepage repository queries', () => {
 		expect(bank?.questionCount).toBe(2);
 	});
 
-	it('extracts practice summary fields without returning questions state', async () => {
+	it('extracts compact practice fields without returning full questions state', async () => {
 		const userId = randomUUID();
 		const bankId = randomUUID();
+		const firstQuestionId = randomUUID();
+		const secondQuestionId = randomUUID();
+		const thirdQuestionId = randomUUID();
+		const firstOptionId = randomUUID();
+		const secondOptionId = randomUUID();
+		const thirdOptionId = randomUUID();
 
 		await sql`
 			INSERT INTO users (id, username, password_hash)
@@ -153,21 +166,21 @@ describe('homepage repository queries', () => {
 					shuffleOptions: true,
 					questions: [
 						{
-							questionId: randomUUID(),
-							optionIds: [randomUUID()]
+							questionId: firstQuestionId,
+							optionIds: [firstOptionId]
 						},
 						{
-							questionId: randomUUID(),
-							optionIds: [randomUUID()]
+							questionId: secondQuestionId,
+							optionIds: [secondOptionId]
 						},
 						{
-							questionId: randomUUID(),
-							optionIds: [randomUUID()]
+							questionId: thirdQuestionId,
+							optionIds: [thirdOptionId]
 						}
 					]
 				})},
-				2,
-				2,
+				1,
+				1,
 				1
 			)
 		`;
@@ -180,11 +193,135 @@ describe('homepage repository queries', () => {
 		expect(summaries).toEqual([
 			{
 				bankId,
-				currentIndex: 2,
+				currentIndex: 1,
 				totalQuestions: 3,
 				coverage: 50,
 				shuffleOptions: true
 			}
 		]);
+
+		const progress =
+			await getPracticeProgress(
+				userId,
+				bankId
+			);
+
+		expect(progress).toEqual({
+			currentIndex: 1,
+			answeredCount: 1,
+			correctCount: 1,
+			totalQuestions: 3,
+			coverage: 50,
+			shuffleOptions: true,
+			questionState: {
+				questionId: secondQuestionId,
+				optionIds: [secondOptionId]
+			}
+		});
+
+		const answerProgress =
+			await getPracticeAnswerProgress(
+				userId,
+				bankId
+			);
+
+		expect(answerProgress).toEqual({
+			currentIndex: 1,
+			answeredCount: 1,
+			correctCount: 1,
+			totalQuestions: 3,
+			questionState: {
+				questionId: secondQuestionId,
+				optionIds: [secondOptionId]
+			},
+			nextQuestionState: {
+				questionId: thirdQuestionId,
+				optionIds: [thirdOptionId]
+			}
+		});
+
+		const firstState =
+			await getPracticeQuestionStateAtIndex(
+				userId,
+				bankId,
+				0
+			);
+
+		expect(firstState).toEqual({
+			questionId: firstQuestionId,
+			optionIds: [firstOptionId]
+		});
+	});
+
+	it('samples question ids before loading options for partial coverage', async () => {
+		const bankId = randomUUID();
+		const questionIds = Array.from(
+			{ length: 10 },
+			() => randomUUID()
+		);
+
+		await sql`
+			INSERT INTO question_banks (id, slug, name)
+			VALUES (${bankId}, 'sample-bank', 'Sample Bank')
+		`;
+
+		for (
+			let index = 0;
+			index < questionIds.length;
+			index++
+		) {
+			const questionId =
+				questionIds[index];
+
+			if (!questionId) {
+				continue;
+			}
+
+			await sql`
+				INSERT INTO questions (id, bank_id, prompt)
+				VALUES (
+					${questionId},
+					${bankId},
+					${`Question ${index + 1}`}
+				)
+			`;
+
+			await sql`
+				INSERT INTO question_options (
+					id,
+					question_id,
+					content,
+					is_correct,
+					position
+				)
+				VALUES
+					(${randomUUID()}, ${questionId}, 'A', true, 0),
+					(${randomUUID()}, ${questionId}, 'B', false, 1)
+			`;
+		}
+
+		const state =
+			await generatePracticeState(
+				bankId,
+				{
+					coverage: 30,
+					shuffleOptions: false
+				}
+			);
+
+		expect(state.questions).toHaveLength(3);
+		expect(
+			new Set(
+				state.questions.map(
+					(question) => question.questionId
+				)
+			).size
+		).toBe(3);
+		expect(
+			state.questions.every(
+				(question) =>
+					question.optionIds.length === 2
+			)
+		).toBe(true);
 	});
 });
