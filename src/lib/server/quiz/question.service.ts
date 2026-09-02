@@ -5,8 +5,7 @@ import type {
 
 
 import {
-	getQuestionByIdAndBank,
-	getQuestionOptions
+	getQuestionWithOptionsByIdAndBank
 } from './question.repository';
 
 
@@ -15,24 +14,25 @@ export async function getPublicPracticeQuestion(
 	questionId: string,
 	optionIds: string[]
 ): Promise<PublicQuizQuestion | null> {
-	const question =
-		await getQuestionByIdAndBank(
+	const rows =
+		await getQuestionWithOptionsByIdAndBank(
 			questionId,
 			bankId
 		);
 
-	if (!question) {
+	const firstRow = rows[0];
+
+	if (!firstRow) {
 		return null;
 	}
 
-	const options =
-		await getQuestionOptions(
-			questionId
-		);
-
-	if (options.length === 0) {
-		return null;
-	}
+	const options = rows.map(
+		(row) => ({
+			id: row.optionId,
+			content: row.optionContent,
+			position: row.optionPosition
+		})
+	);
 
 	const optionMap =
 		new Map(
@@ -95,8 +95,8 @@ export async function getPublicPracticeQuestion(
 	}
 
 	return {
-		id: question.id,
-		prompt: question.prompt,
+		id: firstRow.questionId,
+		prompt: firstRow.prompt,
 		options: orderedOptions
 	};
 }
