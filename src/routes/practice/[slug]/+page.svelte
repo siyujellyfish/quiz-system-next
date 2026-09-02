@@ -23,7 +23,8 @@
 		PracticeCoverage,
 		PracticeQuestionsState,
 		PublicQuizQuestion,
-		QuizAnswerResult
+		QuizAnswerResult,
+		UserPracticeAnswerResult
 	} from '$lib/types/quiz';
 
 	import QuestionCard
@@ -62,7 +63,11 @@
 	let selectedOptionId =
 		$state<string | null>(null);
 	let answerResult =
-		$state<QuizAnswerResult | null>(null);
+		$state<
+			QuizAnswerResult |
+			UserPracticeAnswerResult |
+			null
+		>(null);
 	let submitting =
 		$state(false);
 	let loadingNext =
@@ -335,6 +340,14 @@
 		return false;
 	}
 
+	function isUserPracticeAnswerResult(
+		result:
+			QuizAnswerResult |
+			UserPracticeAnswerResult
+	): result is UserPracticeAnswerResult {
+		return 'nextQuestion' in result;
+	}
+
 	async function submitAnswer(
 		optionId: string
 	) {
@@ -380,20 +393,21 @@
 
 			const result =
 				await response.json() as
-					QuizAnswerResult;
-
-			const nextAnsweredCount =
-				answeredCount + 1;
-			const nextCorrectCount =
-				correctCount +
-				(result.correct ? 1 : 0);
-
-			localAnsweredCount =
-				nextAnsweredCount;
-			localCorrectCount =
-				nextCorrectCount;
+					QuizAnswerResult |
+					UserPracticeAnswerResult;
 
 			if (isGuest) {
+				const nextAnsweredCount =
+					answeredCount + 1;
+				const nextCorrectCount =
+					correctCount +
+					(result.correct ? 1 : 0);
+
+				localAnsweredCount =
+					nextAnsweredCount;
+				localCorrectCount =
+					nextCorrectCount;
+
 				const session =
 					readGuestSession();
 
@@ -425,6 +439,20 @@
 					completed
 				};
 			} else {
+				if (
+					!isUserPracticeAnswerResult(
+						result
+					)
+				) {
+					throw new Error(
+						'Authenticated practice response missing next question state'
+					);
+				}
+
+				localAnsweredCount =
+					result.answeredCount;
+				localCorrectCount =
+					result.correctCount;
 				answerResult = result;
 			}
 		} catch {
@@ -469,10 +497,25 @@
 					practiceCompleted = true;
 				}
 			} else {
-				localPractice = null;
-				await invalidateAll();
-				localAnsweredCount = null;
-				localCorrectCount = null;
+				if (
+					!isUserPracticeAnswerResult(
+						answerResult
+					) ||
+					!answerResult.nextQuestion ||
+					!practice
+				) {
+					throw new Error(
+						'Prefetched next question is missing'
+					);
+				}
+
+				localPractice = {
+					...practice,
+					currentIndex:
+						answerResult.currentIndex,
+					question:
+						answerResult.nextQuestion
+				};
 			}
 
 			selectedOptionId = null;
