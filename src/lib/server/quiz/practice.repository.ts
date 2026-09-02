@@ -287,7 +287,7 @@ export async function getPracticeQuestionStateAtIndex(
 				sql<PracticeQuestionState | null>`
 					${practiceProgress.questionsState}
 						->'questions'
-						->${currentIndex}
+						->(${currentIndex}::int)
 				`
 		})
 		.from(practiceProgress)
