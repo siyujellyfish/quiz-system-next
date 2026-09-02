@@ -67,3 +67,43 @@ export async function getQuestionOptions(
 			)
 		);
 }
+
+
+export async function getQuestionWithOptionsByIdAndBank(
+	questionId: string,
+	bankId: string
+) {
+	return db
+		.select({
+			questionId: questions.id,
+			prompt: questions.prompt,
+			optionId: questionOptions.id,
+			optionContent: questionOptions.content,
+			optionPosition: questionOptions.position
+		})
+		.from(questions)
+		.innerJoin(
+			questionOptions,
+			eq(
+				questionOptions.questionId,
+				questions.id
+			)
+		)
+		.where(
+			and(
+				eq(
+					questions.id,
+					questionId
+				),
+				eq(
+					questions.bankId,
+					bankId
+				)
+			)
+		)
+		.orderBy(
+			asc(
+				questionOptions.position
+			)
+		);
+}
