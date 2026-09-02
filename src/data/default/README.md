@@ -1,16 +1,9 @@
-# Default question banks
+# Question-bank transfer notes
 
-This directory contains the version-controlled seed bundle for the project's four default question banks:
+The repository no longer uses a bundled default question-bank artifact.
 
-- CEH v13 — 332 questions
-- CTIA v2 — 88 questions
-- EDRP v3 — 153 questions
-- CSA v2 — 100 questions
+Question banks are transferred through the Admin JSON import/export flow. A complete import document contains `version`, `bank`, and `questions`; each question may include a static `explanation`.
 
-Total: 673 questions.
+If an imported slug already exists, the Admin importer safely synchronizes matching questions by prompt plus ordered option text so existing question UUIDs and user history are preserved. Unmatched imported questions are added, while existing database-only questions are not deleted.
 
-The `question-banks.part*.b64` files are ordered chunks of one gzip-compressed, base64-encoded JSON bundle. `scripts/seed-question-banks.ts` concatenates, decodes and validates the bundle before seeding or synchronizing the database.
-
-Each bundled question contains a static `explanation`. These explanations are ordinary question-bank content and never invoke AI at runtime. AI functionality remains a separate, explicitly user-triggered feature.
-
-See `CORRECTIONS.md` for high-confidence source-answer corrections and questions that still warrant manual review.
+`CORRECTIONS.md` remains as a data-quality note for source material reviewed during this feature work.
