@@ -101,14 +101,14 @@
 			toaster.success({
 				title: 'ChatGPT 已取消連結',
 				description:
-					'Codex Gateway 已登出這個 ChatGPT 帳號。'
+					'Vercel Sandbox 中的 Codex 登入資料已移除。'
 			});
 		}
 
 		if (data.chatgptError) {
 			const description =
 				data.chatgptError === 'disconnectFailed'
-					? '無法從 Codex Gateway 登出 ChatGPT，連結資料尚未移除。'
+					? '無法刪除 Vercel Sandbox 中的 ChatGPT 連結資料，Neon metadata 尚未移除。'
 					: '無法完成 ChatGPT 連結，請稍後再試。';
 
 			toaster.error({
@@ -223,11 +223,11 @@
 					<dd class="mt-2">
 						{#if data.chatgptConnection.usageError}
 							<p class="text-sm text-warning-700-300">
-								暫時無法從 Codex Gateway 取得用量。
+								暫時無法從 Vercel Sandbox 取得 Codex 用量。
 							</p>
 						{:else if !data.chatgptConnection.usageAvailable}
 							<p class="text-sm opacity-60">
-								Codex Gateway 目前未提供用量資料。
+								目前未提供 Codex 用量資料。
 							</p>
 						{:else if data.chatgptConnection.usage}
 							<div class="space-y-3">
@@ -360,7 +360,7 @@
 
 		{#if !data.chatgptConnection && !data.chatgptConfigured}
 			<p class="mt-4 text-sm text-warning-700-300">
-				Codex Gateway 尚未設定，連結與個人 Codex 額度功能目前不可用。
+				Vercel Sandbox 尚未可用，連結與個人 Codex 額度功能目前不可用。
 			</p>
 		{/if}
 	</section>
