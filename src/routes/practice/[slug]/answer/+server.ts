@@ -10,6 +10,12 @@ import type {
 
 
 import {
+	issueAiContextToken
+} from '$lib/server/ai/context-token';
+import {
+	getCurrentSessionTokenHash
+} from '$lib/server/auth/session';
+import {
 	answerGuestPracticeQuestion,
 	answerUserPracticeQuestion,
 	PracticeAnswerError
@@ -26,7 +32,8 @@ export const POST: RequestHandler =
 	async ({
 		locals,
 		params,
-		request
+		request,
+		cookies
 	}) => {
 		let body: AnswerRequest;
 
@@ -64,20 +71,46 @@ export const POST: RequestHandler =
 		}
 
 		try {
-			const result = locals.user
-				? await answerUserPracticeQuestion(
+			if (!locals.user) {
+				return json(
+					await answerGuestPracticeQuestion(
+						params.slug,
+						body.questionId,
+						body.selectedOptionId
+					)
+				);
+			}
+
+			const result =
+				await answerUserPracticeQuestion(
 					locals.user.id,
 					params.slug,
 					body.questionId,
 					body.selectedOptionId
-				)
-				: await answerGuestPracticeQuestion(
-					params.slug,
-					body.questionId,
-					body.selectedOptionId
 				);
+			const sessionTokenHash =
+				getCurrentSessionTokenHash(cookies);
 
-			return json(result);
+			if (!sessionTokenHash) {
+				error(
+					401,
+					'登入工作階段已失效，請重新登入'
+				);
+			}
+
+			return json({
+				...result,
+				aiContextToken:
+					issueAiContextToken({
+						sessionTokenHash,
+						userId: locals.user.id,
+						questionId:
+							body.questionId,
+						selectedOptionId:
+							result.selectedOptionId,
+						mode: 'practice'
+					})
+			});
 		} catch (caughtError) {
 			if (
 				caughtError instanceof
