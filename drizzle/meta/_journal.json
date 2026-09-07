@@ -50,6 +50,13 @@
 			"when": 1788337200000,
 			"tag": "0006_codex_gateway_accounts",
 			"breakpoints": true
+		},
+		{
+			"idx": 7,
+			"version": "7",
+			"when": 1788747600000,
+			"tag": "0007_codex_usage_snapshot",
+			"breakpoints": true
 		}
 	]
 }
