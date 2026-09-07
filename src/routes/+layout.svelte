@@ -16,10 +16,10 @@
 	}: LayoutProps = $props();
 </script>
 
-<div class="app-shell flex min-h-dvh flex-col">
+<div class="flex min-h-dvh flex-col">
 	<AppHeader user={data.user ?? null} />
 
-	<main class="flex flex-1 flex-col">
+	<main class="app-page-shell flex min-w-0 flex-1 flex-col">
 		{@render children()}
 	</main>
 </div>
