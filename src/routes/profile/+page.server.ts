@@ -41,10 +41,25 @@ export const load: PageServerLoad =
 			);
 		}
 
-		const chatgptConnection =
-			await getChatgptProfileConnection(
-				locals.user.id
+		let chatgptConnection = null;
+		let chatgptConfigured =
+			isChatgptConnectionConfigured();
+		let chatgptLoadError = false;
+
+		try {
+			chatgptConnection =
+				await getChatgptProfileConnection(
+					locals.user.id
+				);
+		} catch (caughtError) {
+			chatgptConfigured = false;
+			chatgptLoadError = true;
+
+			console.error(
+				'Unable to load ChatGPT profile integration',
+				caughtError
 			);
+		}
 
 		return {
 			user: locals.user,
@@ -53,8 +68,7 @@ export const load: PageServerLoad =
 					'passwordChanged'
 				) === '1',
 			chatgptConnection,
-			chatgptConfigured:
-				isChatgptConnectionConfigured(),
+			chatgptConfigured,
 			chatgptLinked:
 				url.searchParams.get(
 					'chatgptLinked'
@@ -66,7 +80,10 @@ export const load: PageServerLoad =
 			chatgptError:
 				url.searchParams.get(
 					'chatgptError'
-			)
+			) ??
+				(chatgptLoadError
+					? 'integrationUnavailable'
+					: null)
 		};
 	};
 
