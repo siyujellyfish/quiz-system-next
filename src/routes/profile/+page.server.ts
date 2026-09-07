@@ -42,7 +42,7 @@ export const load: PageServerLoad =
 		}
 
 		let chatgptConnection = null;
-		let chatgptConfigured =
+		const chatgptConfigured =
 			isChatgptConnectionConfigured();
 		let chatgptLoadError = false;
 
@@ -52,7 +52,6 @@ export const load: PageServerLoad =
 					locals.user.id
 				);
 		} catch (caughtError) {
-			chatgptConfigured = false;
 			chatgptLoadError = true;
 
 			console.error(
@@ -69,6 +68,7 @@ export const load: PageServerLoad =
 				) === '1',
 			chatgptConnection,
 			chatgptConfigured,
+			chatgptLoadError,
 			chatgptLinked:
 				url.searchParams.get(
 					'chatgptLinked'
@@ -80,10 +80,7 @@ export const load: PageServerLoad =
 			chatgptError:
 				url.searchParams.get(
 					'chatgptError'
-			) ??
-				(chatgptLoadError
-					? 'integrationUnavailable'
-					: null)
+			)
 		};
 	};
 
