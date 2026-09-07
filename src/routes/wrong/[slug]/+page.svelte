@@ -368,7 +368,7 @@
 			</div>
 		{/snippet}
 
-		{#snippet question()}
+		{#snippet questionPane()}
 			<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
 				<div class="mb-3 flex items-center justify-between gap-3">
 					<p class="quiz-eyebrow">WRONG QUESTION</p>
@@ -394,7 +394,7 @@
 			</div>
 		{/snippet}
 
-		{#snippet explanation()}
+		{#snippet explanationPane()}
 			{#if answerResult}
 				<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
 					<div class="flex items-center justify-between gap-3">
