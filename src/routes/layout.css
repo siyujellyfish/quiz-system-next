@@ -17,23 +17,25 @@ body {
 	@apply bg-surface-100-900 text-surface-950-50 antialiased;
 }
 
-.app-shell {
+.app-page-shell {
 	transition: margin-right 180ms ease;
 }
 
 @media (min-width: 64rem) {
 	body:has(aside[aria-label='AI 題目助教側邊欄'])
-		.app-shell {
+		.app-page-shell {
 		margin-right: min(28rem, 42vw);
 	}
 
 	aside[aria-label='AI 題目助教側邊欄'] {
+		top: 2.5rem !important;
+		bottom: 0 !important;
 		box-shadow: none !important;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.app-shell {
+	.app-page-shell {
 		transition: none;
 	}
 }
