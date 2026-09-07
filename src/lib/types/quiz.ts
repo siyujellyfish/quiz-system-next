@@ -59,6 +59,7 @@ export type QuizAnswerResult = {
 	correctOptionIds: string[];
 	explanation: string | null;
 	completed: boolean;
+	aiContextToken?: string | null;
 };
 
 
