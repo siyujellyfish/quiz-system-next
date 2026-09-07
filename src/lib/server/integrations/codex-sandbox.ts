@@ -48,6 +48,12 @@ export type CodexChatResponse = {
 	message: string;
 };
 
+export type CodexChatWithUsageResponse =
+	CodexChatResponse & {
+		usage: CodexUsage | null;
+		usageError: boolean;
+	};
+
 export class CodexSandboxError extends Error {
 	status: number;
 
@@ -363,10 +369,6 @@ async function ensureBridge(
 			startResult
 		);
 
-		// Another request may have won the bridge-start race between our
-		// health check and this detached spawn. In that case the existing
-		// listener is exactly what we want, so fall through to the health
-		// retry loop instead of surfacing EADDRINUSE as a 503.
 		if (!stderr.includes('EADDRINUSE')) {
 			throw new CodexSandboxError(
 				stderr || '無法啟動 Codex Sandbox bridge。',
@@ -644,10 +646,6 @@ export async function logoutCodexAccount(
 	}
 
 	try {
-		// Deleting the persistent Sandbox and its snapshots removes the
-		// entire CODEX_HOME, including ChatGPT credentials. Starting the
-		// bridge merely to call account/logout adds unnecessary failure
-		// modes and can block a profile action for minutes.
 		await sandbox.delete({
 			deleteOrphanSnapshots: true
 		});
@@ -660,10 +658,10 @@ export async function logoutCodexAccount(
 	}
 }
 
-export async function sendCodexChat(
+export async function sendCodexChatWithUsage(
 	userId: string,
 	request: CodexChatRequest
-): Promise<CodexChatResponse> {
+): Promise<CodexChatWithUsageResponse> {
 	if (!isCodexSandboxConfigured()) {
 		throw new CodexSandboxError(
 			'Vercel Sandbox 尚未設定。',
@@ -676,13 +674,51 @@ export async function sendCodexChat(
 	);
 
 	try {
-		return await requestBridge<CodexChatResponse>(
-			sandbox,
-			'POST',
-			`/v1/users/${userId}/chat`,
-			request
-		);
+		const chat =
+			await requestBridge<CodexChatResponse>(
+				sandbox,
+				'POST',
+				`/v1/users/${userId}/chat`,
+				request
+			);
+		let usage: CodexUsage | null = null;
+		let usageError = false;
+
+		try {
+			usage = await requestBridge<CodexUsage>(
+				sandbox,
+				'GET',
+				`/v1/users/${userId}/rate-limits`
+			);
+		} catch (caughtError) {
+			usageError = true;
+			console.error(
+				'Unable to refresh Codex usage after AI turn',
+				caughtError
+			);
+		}
+
+		return {
+			...chat,
+			usage,
+			usageError
+		};
 	} finally {
 		await stopSandbox(sandbox);
 	}
+}
+
+export async function sendCodexChat(
+	userId: string,
+	request: CodexChatRequest
+): Promise<CodexChatResponse> {
+	const response = await sendCodexChatWithUsage(
+		userId,
+		request
+	);
+
+	return {
+		threadId: response.threadId,
+		message: response.message
+	};
 }
