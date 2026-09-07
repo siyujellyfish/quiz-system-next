@@ -28,8 +28,12 @@ body {
 	}
 
 	aside[aria-label='AI 題目助教側邊欄'] {
-		top: 2.5rem !important;
+		top: 4rem !important;
 		bottom: 0 !important;
+		height: calc(100dvh - 4rem) !important;
+		max-height: calc(100dvh - 4rem) !important;
+		overflow: hidden !important;
+		box-sizing: border-box;
 		box-shadow: none !important;
 	}
 }
