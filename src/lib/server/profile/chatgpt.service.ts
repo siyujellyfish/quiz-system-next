@@ -7,15 +7,20 @@ import type {
 
 import {
 	CodexSandboxNotFoundError,
-	getCodexAccount,
 	getCodexDeviceLoginStatus,
 	getCodexSandboxName,
+	getCodexUsage,
 	isCodexSandboxConfigured,
 	logoutCodexAccount,
 	sendCodexChat,
 	startCodexDeviceLogin
 } from '$lib/server/integrations/codex-sandbox';
 
+import {
+	deleteCodexUsageSnapshot,
+	getCodexUsageSnapshot,
+	upsertCodexUsageSnapshot
+} from './codex-usage.repository';
 import {
 	deleteChatgptConnection,
 	getChatgptConnection,
@@ -41,8 +46,16 @@ export class ChatgptNotConnectedError extends Error {
 function profileFromStoredConnection(
 	connection: NonNullable<
 		Awaited<ReturnType<typeof getChatgptConnection>>
+	>,
+	usageSnapshot: Awaited<
+		ReturnType<typeof getCodexUsageSnapshot>
 	>
 ): ChatgptProfileConnection {
+	const usage = usageSnapshot?.usage ?? null;
+	const usageAvailable = Boolean(
+		usage?.primary || usage?.secondary
+	);
+
 	return {
 		displayName:
 			connection.displayName ??
@@ -50,9 +63,10 @@ function profileFromStoredConnection(
 			'ChatGPT 使用者',
 		email: connection.email,
 		planType: connection.planType,
-		usage: null,
-		usageAvailable: false,
-		usageError: false
+		usage,
+		usageAvailable,
+		usageError:
+			usageSnapshot?.fetchError ?? false
 	};
 }
 
@@ -98,8 +112,10 @@ export async function getChatgptDeviceLoginStatus(
 		return status;
 	}
 
-	const account =
-		status.account ?? await getCodexAccount(userId);
+	// A successful device-code notification is not enough by itself.
+	// Only persist a connection when Codex has also returned a concrete
+	// ChatGPT account from account/read.
+	const account = status.account;
 
 	if (!account) {
 		return {
@@ -109,9 +125,29 @@ export async function getChatgptDeviceLoginStatus(
 		};
 	}
 
+	let usage: CodexUsage | null = null;
+	let usageError = false;
+
+	try {
+		usage = await getCodexUsage(userId);
+	} catch (caughtError) {
+		usageError = true;
+		console.error(
+			'Unable to read Codex usage after confirmed ChatGPT login',
+			caughtError
+		);
+	}
+
+	// The database is the durable record of a completed connection, never
+	// of an in-progress or failed authorization attempt.
 	await persistCodexAccount(
 		userId,
 		account
+	);
+	await upsertCodexUsageSnapshot(
+		userId,
+		usage,
+		usageError
 	);
 
 	return {
@@ -123,17 +159,25 @@ export async function getChatgptDeviceLoginStatus(
 
 /**
  * Profile navigation must stay fast and deterministic. Do not resume a
- * persistent Vercel Sandbox from a page load; only read the connection
- * metadata that was persisted after a successful device-code login.
+ * persistent Vercel Sandbox from a page load; only read the connection and
+ * latest Codex usage snapshot persisted after a confirmed device-code login.
  */
 export async function getChatgptProfileConnection(
 	userId: string
 ): Promise<ChatgptProfileConnection | null> {
-	const storedConnection =
-		await getChatgptConnection(userId);
+	const [
+		storedConnection,
+		usageSnapshot
+	] = await Promise.all([
+		getChatgptConnection(userId),
+		getCodexUsageSnapshot(userId)
+	]);
 
 	return storedConnection
-		? profileFromStoredConnection(storedConnection)
+		? profileFromStoredConnection(
+			storedConnection,
+			usageSnapshot
+		)
 		: null;
 }
 
@@ -157,7 +201,10 @@ export async function disconnectChatgptAccount(
 		}
 	}
 
-	await deleteChatgptConnection(userId);
+	await Promise.all([
+		deleteChatgptConnection(userId),
+		deleteCodexUsageSnapshot(userId)
+	]);
 }
 
 export async function sendChatgptMessage(
@@ -182,7 +229,10 @@ export async function sendChatgptMessage(
 			caughtError instanceof
 			CodexSandboxNotFoundError
 		) {
-			await deleteChatgptConnection(userId);
+			await Promise.all([
+				deleteChatgptConnection(userId),
+				deleteCodexUsageSnapshot(userId)
+			]);
 			throw new ChatgptNotConnectedError();
 		}
 
