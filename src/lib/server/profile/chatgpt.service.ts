@@ -6,6 +6,7 @@ import type {
 } from '$lib/server/integrations/codex-sandbox';
 
 import {
+	CodexSandboxError,
 	CodexSandboxNotFoundError,
 	getCodexDeviceLoginStatus,
 	getCodexSandboxName,
@@ -34,6 +35,7 @@ export type ChatgptProfileConnection = {
 	usage: CodexUsage | null;
 	usageAvailable: boolean;
 	usageError: boolean;
+	usageUpdatedAt: Date | null;
 };
 
 export class ChatgptNotConnectedError extends Error {
@@ -66,7 +68,9 @@ function profileFromStoredConnection(
 		usage,
 		usageAvailable,
 		usageError:
-			usageSnapshot?.fetchError ?? false
+			usageSnapshot?.fetchError ?? false,
+		usageUpdatedAt:
+			usageSnapshot?.updatedAt ?? null
 	};
 }
 
@@ -87,6 +91,15 @@ async function persistCodexAccount(
 		codexProfileId:
 			getCodexSandboxName(userId)
 	});
+}
+
+async function clearStoredChatgptState(
+	userId: string
+) {
+	await Promise.all([
+		deleteChatgptConnection(userId),
+		deleteCodexUsageSnapshot(userId)
+	]);
 }
 
 export function isChatgptConnectionConfigured() {
@@ -139,7 +152,8 @@ export async function getChatgptDeviceLoginStatus(
 	}
 
 	// The database is the durable record of a completed connection, never
-	// of an in-progress or failed authorization attempt.
+	// of an in-progress or failed authorization attempt. Usage is captured
+	// immediately after confirmation so Profile can stay DB-only and fast.
 	await persistCodexAccount(
 		userId,
 		account
@@ -181,6 +195,54 @@ export async function getChatgptProfileConnection(
 		: null;
 }
 
+export async function refreshChatgptCodexUsage(
+	userId: string
+): Promise<CodexUsage> {
+	const connection = await getChatgptConnection(
+		userId
+	);
+
+	if (!connection) {
+		throw new ChatgptNotConnectedError();
+	}
+
+	try {
+		const usage = await getCodexUsage(userId);
+
+		await upsertCodexUsageSnapshot(
+			userId,
+			usage,
+			false
+		);
+
+		return usage;
+	} catch (caughtError) {
+		if (
+			caughtError instanceof
+				CodexSandboxNotFoundError ||
+			(
+				caughtError instanceof
+					CodexSandboxError &&
+				caughtError.status === 409
+			)
+		) {
+			await clearStoredChatgptState(userId);
+			throw new ChatgptNotConnectedError();
+		}
+
+		const existingSnapshot =
+			await getCodexUsageSnapshot(userId);
+
+		await upsertCodexUsageSnapshot(
+			userId,
+			existingSnapshot?.usage ?? null,
+			true
+		);
+
+		throw caughtError;
+	}
+}
+
 export async function disconnectChatgptAccount(
 	userId: string
 ) {
@@ -201,10 +263,7 @@ export async function disconnectChatgptAccount(
 		}
 	}
 
-	await Promise.all([
-		deleteChatgptConnection(userId),
-		deleteCodexUsageSnapshot(userId)
-	]);
+	await clearStoredChatgptState(userId);
 }
 
 export async function sendChatgptMessage(
@@ -229,10 +288,7 @@ export async function sendChatgptMessage(
 			caughtError instanceof
 			CodexSandboxNotFoundError
 		) {
-			await Promise.all([
-				deleteChatgptConnection(userId),
-				deleteCodexUsageSnapshot(userId)
-			]);
+			await clearStoredChatgptState(userId);
 			throw new ChatgptNotConnectedError();
 		}
 
