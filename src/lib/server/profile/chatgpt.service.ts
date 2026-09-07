@@ -1,19 +1,21 @@
 import type {
 	CodexChatRequest,
 	CodexDeviceLoginStatus,
-	CodexGatewayAccount,
+	CodexSandboxAccount,
 	CodexUsage
-} from '$lib/server/integrations/codex-gateway';
+} from '$lib/server/integrations/codex-sandbox';
 
 import {
+	CodexSandboxNotFoundError,
 	getCodexAccount,
 	getCodexDeviceLoginStatus,
+	getCodexSandboxName,
 	getCodexUsage,
-	isCodexGatewayConfigured,
+	isCodexSandboxConfigured,
 	logoutCodexAccount,
 	sendCodexChat,
 	startCodexDeviceLogin
-} from '$lib/server/integrations/codex-gateway';
+} from '$lib/server/integrations/codex-sandbox';
 
 import {
 	deleteChatgptConnection,
@@ -51,14 +53,14 @@ function profileFromStoredConnection(
 		email: connection.email,
 		planType: connection.planType,
 		usage: null,
-		usageAvailable: usageError,
+		usageAvailable: false,
 		usageError
 	};
 }
 
-async function persistGatewayAccount(
+async function persistCodexAccount(
 	userId: string,
-	account: CodexGatewayAccount
+	account: CodexSandboxAccount
 ) {
 	const providerAccountId =
 		account.email ?? `codex:${userId}`;
@@ -70,12 +72,13 @@ async function persistGatewayAccount(
 			account.email ?? 'ChatGPT 使用者',
 		email: account.email,
 		planType: account.planType,
-		codexProfileId: userId
+		codexProfileId:
+			getCodexSandboxName(userId)
 	});
 }
 
 export function isChatgptConnectionConfigured() {
-	return isCodexGatewayConfigured();
+	return isCodexSandboxConfigured();
 }
 
 export async function startChatgptDeviceLogin(
@@ -108,7 +111,7 @@ export async function getChatgptDeviceLoginStatus(
 		};
 	}
 
-	await persistGatewayAccount(
+	await persistCodexAccount(
 		userId,
 		account
 	);
@@ -126,7 +129,7 @@ export async function getChatgptProfileConnection(
 	const storedConnection =
 		await getChatgptConnection(userId);
 
-	if (!isCodexGatewayConfigured()) {
+	if (!isCodexSandboxConfigured()) {
 		return storedConnection
 			? profileFromStoredConnection(
 				storedConnection,
@@ -135,13 +138,24 @@ export async function getChatgptProfileConnection(
 			: null;
 	}
 
-	let account: CodexGatewayAccount | null;
+	let account: CodexSandboxAccount | null;
 
 	try {
 		account = await getCodexAccount(userId);
 	} catch (caughtError) {
+		if (
+			caughtError instanceof
+			CodexSandboxNotFoundError
+		) {
+			if (storedConnection) {
+				await deleteChatgptConnection(userId);
+			}
+
+			return null;
+		}
+
 		console.error(
-			'Unable to load ChatGPT account from Codex Gateway',
+			'Unable to load ChatGPT account from Vercel Sandbox',
 			caughtError
 		);
 
@@ -161,13 +175,16 @@ export async function getChatgptProfileConnection(
 		return null;
 	}
 
-	const connection = await persistGatewayAccount(
+	const connection = await persistCodexAccount(
 		userId,
 		account
 	);
 
 	try {
 		const usage = await getCodexUsage(userId);
+		const usageAvailable =
+			usage.primary !== null ||
+			usage.secondary !== null;
 
 		return {
 			displayName:
@@ -177,12 +194,20 @@ export async function getChatgptProfileConnection(
 			email: connection.email,
 			planType: connection.planType,
 			usage,
-			usageAvailable: true,
+			usageAvailable,
 			usageError: false
 		};
 	} catch (caughtError) {
+		if (
+			caughtError instanceof
+			CodexSandboxNotFoundError
+		) {
+			await deleteChatgptConnection(userId);
+			return null;
+		}
+
 		console.error(
-			'Unable to load Codex usage from Codex Gateway',
+			'Unable to load Codex usage from Vercel Sandbox',
 			caughtError
 		);
 
@@ -196,13 +221,23 @@ export async function getChatgptProfileConnection(
 export async function disconnectChatgptAccount(
 	userId: string
 ) {
-	if (!isCodexGatewayConfigured()) {
+	if (!isCodexSandboxConfigured()) {
 		throw new Error(
-			'Codex Gateway is not configured; refusing to remove local metadata without logging out the persisted Codex profile'
+			'Vercel Sandbox is not configured; refusing to remove local metadata without deleting the persisted Codex sandbox'
 		);
 	}
 
-	await logoutCodexAccount(userId);
+	try {
+		await logoutCodexAccount(userId);
+	} catch (caughtError) {
+		if (
+			!(caughtError instanceof
+				CodexSandboxNotFoundError)
+		) {
+			throw caughtError;
+		}
+	}
+
 	await deleteChatgptConnection(userId);
 }
 
@@ -218,8 +253,20 @@ export async function sendChatgptMessage(
 		throw new ChatgptNotConnectedError();
 	}
 
-	return sendCodexChat(
-		userId,
-		request
-	);
+	try {
+		return await sendCodexChat(
+			userId,
+			request
+		);
+	} catch (caughtError) {
+		if (
+			caughtError instanceof
+			CodexSandboxNotFoundError
+		) {
+			await deleteChatgptConnection(userId);
+			throw new ChatgptNotConnectedError();
+		}
+
+		throw caughtError;
+	}
 }
