@@ -1,13 +1,15 @@
 import {
+	neon
+} from '@neondatabase/serverless';
+import {
 	config
 } from 'dotenv';
 import {
 	drizzle
-} from 'drizzle-orm/postgres-js';
+} from 'drizzle-orm/neon-http';
 import {
 	migrate
-} from 'drizzle-orm/postgres-js/migrator';
-import postgres from 'postgres';
+} from 'drizzle-orm/neon-http/migrator';
 
 config({
 	path: '.env.local'
@@ -46,17 +48,11 @@ function logMigrationError(error: unknown) {
 	}
 }
 
-const client = postgres(
-	databaseUrl,
-	{
-		max: 1,
-		prepare: false
-	}
-);
+const client = neon(databaseUrl);
 const db = drizzle(client);
 
 console.log(
-	`Applying migrations to ${describeDatabase(databaseUrl)}...`
+	`Applying migrations over Neon HTTP to ${describeDatabase(databaseUrl)}...`
 );
 
 try {
@@ -70,6 +66,4 @@ try {
 } catch (error) {
 	logMigrationError(error);
 	process.exitCode = 1;
-} finally {
-	await client.end();
 }
