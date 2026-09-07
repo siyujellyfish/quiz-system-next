@@ -365,7 +365,7 @@
 			>
 				{@render inline(block.parts)}
 			</p>
-		{:else}
+		{:else if block.type === 'paragraph'}
 			<p>{@render inline(block.parts)}</p>
 		{/if}
 	{/each}
