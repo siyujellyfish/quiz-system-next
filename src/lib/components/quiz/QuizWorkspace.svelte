@@ -10,6 +10,7 @@
 		toolbar: Snippet;
 		question: Snippet;
 		explanation?: Snippet;
+		showExplanation?: boolean;
 		storageKey?: string;
 	};
 
@@ -21,6 +22,7 @@
 		toolbar,
 		question,
 		explanation,
+		showExplanation = true,
 		storageKey = 'quiz-system-workspace-question-ratio'
 	}: Props = $props();
 
@@ -28,6 +30,11 @@
 		$state(DEFAULT_QUESTION_RATIO);
 	let contentElement =
 		$state<HTMLDivElement | null>(null);
+	let hasVisibleExplanation =
+		$derived(
+			showExplanation &&
+			Boolean(explanation)
+		);
 
 	onMount(() => {
 		const stored = Number.parseFloat(
@@ -149,7 +156,7 @@
 	<div
 		bind:this={contentElement}
 		class="quiz-workspace-content"
-		class:with-explanation={Boolean(explanation)}
+		class:with-explanation={hasVisibleExplanation}
 		style={`--quiz-workspace-question-ratio: ${questionRatio}%`}
 	>
 		<section
@@ -159,7 +166,7 @@
 			{@render question()}
 		</section>
 
-		{#if explanation}
+		{#if hasVisibleExplanation && explanation}
 			<button
 				type="button"
 				class="quiz-workspace-splitter"
