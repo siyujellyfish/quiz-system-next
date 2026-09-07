@@ -229,6 +229,14 @@ function isMissingSandboxError(
 	return status === 404 || status === 410;
 }
 
+async function getCommandStderr(
+	result: Awaited<ReturnType<Sandbox['runCommand']>>
+) {
+	return 'stderr' in result
+		? (await result.stderr()).trim()
+		: '';
+}
+
 async function assertCommandSucceeded(
 	result: Awaited<ReturnType<Sandbox['runCommand']>>,
 	message: string
@@ -237,9 +245,7 @@ async function assertCommandSucceeded(
 		return;
 	}
 
-	const stderr = 'stderr' in result
-		? (await result.stderr()).trim()
-		: '';
+	const stderr = await getCommandStderr(result);
 
 	throw new CodexSandboxError(
 		stderr || message,
@@ -355,10 +361,20 @@ async function ensureBridge(
 		'exitCode' in startResult &&
 		startResult.exitCode !== 0
 	) {
-		await assertCommandSucceeded(
-			startResult,
-			'無法啟動 Codex Sandbox bridge。'
+		const stderr = await getCommandStderr(
+			startResult
 		);
+
+		// Another request may have won the bridge-start race between our
+		// health check and this detached spawn. In that case the existing
+		// listener is exactly what we want, so fall through to the health
+		// retry loop instead of surfacing EADDRINUSE as a 503.
+		if (!stderr.includes('EADDRINUSE')) {
+			throw new CodexSandboxError(
+				stderr || '無法啟動 Codex Sandbox bridge。',
+				503
+			);
+		}
 	}
 
 	const startedAt = Date.now();
@@ -488,6 +504,10 @@ async function stopSandbox(
 	try {
 		await sandbox.stop();
 	} catch (caughtError) {
+		if (isMissingSandboxError(caughtError)) {
+			return;
+		}
+
 		console.error(
 			'Unable to stop Vercel Codex Sandbox',
 			caughtError
@@ -609,34 +629,36 @@ export async function logoutCodexAccount(
 		);
 	}
 
-	const sandbox = await getExistingCodexSandbox(
-		userId
-	);
+	let sandbox: Sandbox;
 
 	try {
-		await requestBridge(
-			sandbox,
-			'DELETE',
-			`/v1/users/${userId}/account`
-		);
+		sandbox = await Sandbox.get({
+			...getSandboxCredentials(),
+			name: getCodexSandboxName(userId),
+			resume: false,
+			timeout: SANDBOX_TIMEOUT_MS
+		});
 	} catch (caughtError) {
-		console.error(
-			'Unable to log out Codex account before deleting Sandbox',
-			caughtError
-		);
-	} finally {
-		await stopSandbox(sandbox);
+		if (isMissingSandboxError(caughtError)) {
+			return;
+		}
+
+		throw caughtError;
 	}
 
 	try {
+		// Deleting the persistent Sandbox and its snapshots removes the
+		// entire CODEX_HOME, including ChatGPT credentials. Starting the
+		// bridge merely to call account/logout adds unnecessary failure
+		// modes and can block a profile action for minutes.
 		await sandbox.delete({
 			deleteSnapshots: true
 		});
 	} catch (caughtError) {
-		console.error(
-			'Unable to delete Vercel Codex Sandbox',
-			caughtError
-		);
+		if (isMissingSandboxError(caughtError)) {
+			return;
+		}
+
 		throw caughtError;
 	}
 }
