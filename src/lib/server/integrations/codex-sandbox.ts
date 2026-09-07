@@ -39,6 +39,7 @@ export type CodexDeviceLoginStatus = {
 
 export type CodexChatRequest = {
 	threadId?: string | null;
+	generationId: string;
 	message: string;
 	context?: string | null;
 };
@@ -426,7 +427,6 @@ async function requestBridge<T>(
 	const encodedBody = body === undefined
 		? ''
 		: JSON.stringify(body);
-
 	const result = await sandbox.runCommand(
 		'node',
 		[
@@ -550,7 +550,6 @@ export async function getCodexDeviceLoginStatus(
 	const sandbox = await getExistingCodexSandbox(
 		userId
 	);
-
 	const status =
 		await requestBridge<CodexDeviceLoginStatus>(
 			sandbox,
@@ -656,6 +655,35 @@ export async function logoutCodexAccount(
 
 		throw caughtError;
 	}
+}
+
+export async function cancelCodexChat(
+	userId: string,
+	generationId: string
+) {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
+	const sandbox = await getExistingCodexSandbox(
+		userId
+	);
+
+	// Do not stop the Sandbox here. The original chat request owns the
+	// lifecycle and will stop/snapshot it after turn/interrupt completes.
+	return requestBridge<{
+		cancelled: boolean;
+	}>(
+		sandbox,
+		'POST',
+		`/v1/users/${userId}/chat/cancel`,
+		{
+			generationId
+		}
+	);
 }
 
 export async function sendCodexChatWithUsage(
