@@ -7,6 +7,10 @@
 @import '@skeletonlabs/skeleton/themes/cerberus';
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 
+:root {
+	--ask-ai-sidebar-width: min(28rem, 42vw);
+}
+
 html,
 body {
 	min-height: 100%;
@@ -24,12 +28,14 @@ body {
 @media (min-width: 64rem) {
 	body:has(aside[aria-label='AI 題目助教側邊欄'])
 		.app-page-shell {
-		margin-right: min(28rem, 42vw);
+		margin-right: var(--ask-ai-sidebar-width);
 	}
 
 	aside[aria-label='AI 題目助教側邊欄'] {
 		top: 4rem !important;
+		right: 0 !important;
 		bottom: 0 !important;
+		width: var(--ask-ai-sidebar-width) !important;
 		height: calc(100dvh - 4rem) !important;
 		max-height: calc(100dvh - 4rem) !important;
 		overflow: hidden !important;
