@@ -6,6 +6,7 @@ import type {
 } from '$lib/server/integrations/codex-sandbox';
 
 import {
+	cancelCodexChat,
 	CodexSandboxError,
 	CodexSandboxNotFoundError,
 	getCodexDeviceLoginStatus,
@@ -296,6 +297,36 @@ export async function disconnectChatgptAccount(
 	}
 
 	await clearStoredChatgptState(userId);
+}
+
+export async function cancelChatgptMessage(
+	userId: string,
+	generationId: string
+) {
+	const connection = await getChatgptConnection(
+		userId
+	);
+
+	if (!connection) {
+		throw new ChatgptNotConnectedError();
+	}
+
+	try {
+		return await cancelCodexChat(
+			userId,
+			generationId
+		);
+	} catch (caughtError) {
+		if (
+			caughtError instanceof
+				CodexSandboxNotFoundError
+		) {
+			await clearStoredChatgptState(userId);
+			throw new ChatgptRelinkRequiredError();
+		}
+
+		throw caughtError;
+	}
 }
 
 export async function sendChatgptMessage(
