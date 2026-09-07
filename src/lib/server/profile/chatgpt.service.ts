@@ -14,6 +14,7 @@ import {
 	getCodexUsage,
 	isCodexSandboxConfigured,
 	logoutCodexAccount,
+	releaseCodexChatSession,
 	sendCodexChatWithUsage,
 	startCodexDeviceLogin
 } from '$lib/server/integrations/codex-sandbox';
@@ -56,6 +57,9 @@ export class ChatgptRelinkRequiredError
 	}
 }
 
+const ASK_AI_USAGE_REFRESH_INTERVAL_MS =
+	60 * 1000;
+
 function profileFromStoredConnection(
 	connection: NonNullable<
 		Awaited<ReturnType<typeof getChatgptConnection>>
@@ -83,6 +87,19 @@ function profileFromStoredConnection(
 		usageUpdatedAt:
 			usageSnapshot?.updatedAt ?? null
 	};
+}
+
+function shouldRefreshUsage(
+	snapshot: Awaited<
+		ReturnType<typeof getCodexUsageSnapshot>
+	>
+) {
+	if (!snapshot || snapshot.fetchError) {
+		return true;
+	}
+
+	return Date.now() - snapshot.updatedAt.getTime() >=
+		ASK_AI_USAGE_REFRESH_INTERVAL_MS;
 }
 
 async function persistCodexAccount(
@@ -117,7 +134,12 @@ async function persistUsageAfterChat(input: {
 	userId: string;
 	usage: CodexUsage | null;
 	usageError: boolean;
+	usageAttempted: boolean;
 }) {
+	if (!input.usageAttempted) {
+		return;
+	}
+
 	try {
 		if (!input.usageError) {
 			await upsertCodexUsageSnapshot(
@@ -299,6 +321,23 @@ export async function disconnectChatgptAccount(
 	await clearStoredChatgptState(userId);
 }
 
+export async function releaseChatgptMessageSession(
+	userId: string
+) {
+	try {
+		await releaseCodexChatSession(userId);
+	} catch (caughtError) {
+		if (
+			caughtError instanceof
+				CodexSandboxNotFoundError
+		) {
+			return;
+		}
+
+		throw caughtError;
+	}
+}
+
 export async function cancelChatgptMessage(
 	userId: string,
 	generationId: string
@@ -333,9 +372,13 @@ export async function sendChatgptMessage(
 	userId: string,
 	request: CodexChatRequest
 ) {
-	const connection = await getChatgptConnection(
-		userId
-	);
+	const [
+		connection,
+		usageSnapshot
+	] = await Promise.all([
+		getChatgptConnection(userId),
+		getCodexUsageSnapshot(userId)
+	]);
 
 	if (!connection) {
 		throw new ChatgptNotConnectedError();
@@ -345,18 +388,29 @@ export async function sendChatgptMessage(
 		const response =
 			await sendCodexChatWithUsage(
 				userId,
-				request
+				{
+					...request,
+					refreshUsage:
+						shouldRefreshUsage(
+							usageSnapshot
+						),
+					keepWarm: true
+				}
 			);
 
 		await persistUsageAfterChat({
 			userId,
 			usage: response.usage,
-			usageError: response.usageError
+			usageError: response.usageError,
+			usageAttempted:
+				response.usageAttempted
 		});
 
 		return {
 			threadId: response.threadId,
-			message: response.message
+			message: response.message,
+			usageUpdated:
+				response.usageAttempted
 		};
 	} catch (caughtError) {
 		if (
