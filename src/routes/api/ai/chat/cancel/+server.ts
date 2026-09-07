@@ -48,17 +48,25 @@ export const POST: RequestHandler = async ({
 		);
 	}
 
+	if (
+		typeof payload !== 'object' ||
+		payload === null ||
+		Array.isArray(payload)
+	) {
+		return json(
+			{
+				error: 'Invalid request body'
+			},
+			{
+				status: 400
+			}
+		);
+	}
+
+	const body = payload as Record<string, unknown>;
 	const generationId =
-		typeof payload === 'object' &&
-		payload !== null &&
-		!Array.isArray(payload) &&
-		' generationId'.trim() in payload &&
-		typeof (
-			payload as Record<string, unknown>
-		).generationId === 'string'
-			? (
-				payload as Record<string, string>
-			).generationId.trim()
+		typeof body.generationId === 'string'
+			? body.generationId.trim()
 			: '';
 
 	if (!UUID_PATTERN.test(generationId)) {
