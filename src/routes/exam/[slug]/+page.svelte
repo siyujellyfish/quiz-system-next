@@ -607,6 +607,7 @@
 		</section>
 	</div>
 {:else if reviewMode && session.result}
+	{@const reviewSession = session}
 	{@const reviewAnswerResult = getReviewAnswerResult()}
 	<QuizWorkspace
 		showExplanation={Boolean(reviewAnswerResult)}
@@ -617,7 +618,7 @@
 				<div class="mr-1 min-w-0">
 					<p class="quiz-eyebrow">ANSWER REVIEW</p>
 					<p class="text-sm font-semibold">
-						第 {session.currentIndex + 1} / {session.questions.length} 題
+						第 {reviewSession.currentIndex + 1} / {reviewSession.questions.length} 題
 					</p>
 				</div>
 
@@ -639,7 +640,7 @@
 					<button
 						type="button"
 						class="btn preset-tonal px-3 py-2"
-						disabled={session.currentIndex === 0}
+						disabled={reviewSession.currentIndex === 0}
 						onclick={previousQuestion}
 					>
 						上一題
@@ -657,8 +658,8 @@
 						type="button"
 						class="btn preset-filled-primary-500"
 						disabled={
-							session.currentIndex >=
-								session.questions.length - 1
+							reviewSession.currentIndex >=
+								reviewSession.questions.length - 1
 						}
 						onclick={nextQuestion}
 					>
@@ -675,12 +676,12 @@
 			</div>
 		{/snippet}
 
-		{#snippet question()}
+		{#snippet questionPane()}
 			<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
 				<div class="mb-3 flex items-center justify-between gap-3">
-					<p class="quiz-eyebrow">QUESTION {session.currentIndex + 1}</p>
+					<p class="quiz-eyebrow">QUESTION {reviewSession.currentIndex + 1}</p>
 					<strong class="text-sm">
-						{session.currentIndex + 1} / {session.questions.length}
+						{reviewSession.currentIndex + 1} / {reviewSession.questions.length}
 					</strong>
 				</div>
 
@@ -704,7 +705,7 @@
 			</div>
 		{/snippet}
 
-		{#snippet explanation()}
+		{#snippet explanationPane()}
 			{#if reviewAnswerResult && question}
 				<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
 					<div class="flex items-center justify-between gap-3">
