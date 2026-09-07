@@ -230,11 +230,11 @@ function isMissingSandboxError(
 }
 
 async function getCommandStderr(
-	result: Awaited<ReturnType<Sandbox['runCommand']>>
+	result: {
+		stderr: () => Promise<string>;
+	}
 ) {
-	return 'stderr' in result
-		? (await result.stderr()).trim()
-		: '';
+	return (await result.stderr()).trim();
 }
 
 async function assertCommandSucceeded(
@@ -356,6 +356,7 @@ async function ensureBridge(
 
 	if (
 		'exitCode' in startResult &&
+		startResult.exitCode !== null &&
 		startResult.exitCode !== 0
 	) {
 		const stderr = await getCommandStderr(
