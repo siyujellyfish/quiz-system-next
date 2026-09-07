@@ -113,22 +113,30 @@ function normalizeOptionalString(
 	return normalized ? normalized : null;
 }
 
-function getCodexVersion() {
+function getRuntimeEnv(
+	name: string
+) {
+	const svelteValue = normalizeOptionalString(
+		env[name]
+	);
+
+	if (svelteValue) {
+		return svelteValue;
+	}
+
 	return normalizeOptionalString(
-		env.CODEX_VERSION
-	) ?? 'latest';
+		process.env[name]
+	);
+}
+
+function getCodexVersion() {
+	return getRuntimeEnv('CODEX_VERSION') ?? 'latest';
 }
 
 function getSandboxCredentials() {
-	const token = normalizeOptionalString(
-		env.VERCEL_TOKEN
-	);
-	const teamId = normalizeOptionalString(
-		env.VERCEL_TEAM_ID
-	);
-	const projectId = normalizeOptionalString(
-		env.VERCEL_PROJECT_ID
-	);
+	const token = getRuntimeEnv('VERCEL_TOKEN');
+	const teamId = getRuntimeEnv('VERCEL_TEAM_ID');
+	const projectId = getRuntimeEnv('VERCEL_PROJECT_ID');
 
 	if (token && teamId && projectId) {
 		return {
@@ -143,13 +151,13 @@ function getSandboxCredentials() {
 
 export function isCodexSandboxConfigured() {
 	return Boolean(
-		normalizeOptionalString(env.VERCEL_OIDC_TOKEN) ||
+		getRuntimeEnv('VERCEL_OIDC_TOKEN') ||
 		(
-			normalizeOptionalString(env.VERCEL_TOKEN) &&
-			normalizeOptionalString(env.VERCEL_TEAM_ID) &&
-			normalizeOptionalString(env.VERCEL_PROJECT_ID)
+			getRuntimeEnv('VERCEL_TOKEN') &&
+			getRuntimeEnv('VERCEL_TEAM_ID') &&
+			getRuntimeEnv('VERCEL_PROJECT_ID')
 		) ||
-		normalizeOptionalString(env.VERCEL)
+		getRuntimeEnv('VERCEL')
 	);
 }
 
@@ -259,7 +267,9 @@ async function getExistingCodexSandbox(
 	try {
 		return await Sandbox.get({
 			...getSandboxCredentials(),
-			name: getCodexSandboxName(userId)
+			name: getCodexSandboxName(userId),
+			resume: true,
+			timeout: SANDBOX_TIMEOUT_MS
 		});
 	} catch (caughtError) {
 		if (isMissingSandboxError(caughtError)) {
@@ -270,28 +280,131 @@ async function getExistingCodexSandbox(
 	}
 }
 
-async function runLocalFetch(
+async function ensureBridge(
+	sandbox: Sandbox
+) {
+	await sandbox.writeFiles([
+		{
+			path: BRIDGE_PATH,
+			content: Buffer.from(bridgeSource)
+		}
+	]);
+
+	const healthResult = await sandbox.runCommand(
+		'node',
+		[
+			'-e',
+			NODE_FETCH_SCRIPT,
+			'GET',
+			`http://127.0.0.1:${BRIDGE_PORT}/healthz`,
+			LOCAL_BRIDGE_API_KEY,
+			''
+		],
+		{
+			timeoutMs: 10 * 1000
+		}
+	);
+
+	if (
+		'exitCode' in healthResult &&
+		healthResult.exitCode === 0
+	) {
+		return;
+	}
+
+	const startResult = await sandbox.runCommand(
+		'node',
+		[BRIDGE_PATH],
+		{
+			env: {
+				PORT: String(BRIDGE_PORT),
+				CODEX_GATEWAY_API_KEY:
+					LOCAL_BRIDGE_API_KEY,
+				CODEX_DATA_DIR,
+				CODEX_IDLE_TIMEOUT_MS:
+					String(SANDBOX_TIMEOUT_MS),
+				CODEX_REQUEST_TIMEOUT_MS:
+					String(60 * 1000),
+				CODEX_TURN_TIMEOUT_MS:
+					String(180 * 1000),
+				CODEX_CHAT_DEVELOPER_INSTRUCTIONS:
+					getRuntimeEnv(
+						'CODEX_CHAT_DEVELOPER_INSTRUCTIONS'
+					) ?? ''
+			},
+			detached: true
+		}
+	);
+
+	if (
+		'exitCode' in startResult &&
+		startResult.exitCode !== 0
+	) {
+		await assertCommandSucceeded(
+			startResult,
+			'無法啟動 Codex Sandbox bridge。'
+		);
+	}
+
+	const startedAt = Date.now();
+
+	while (
+		Date.now() - startedAt < 15 * 1000
+	) {
+		await new Promise((resolve) =>
+			setTimeout(resolve, 300)
+		);
+
+		const retryHealth = await sandbox.runCommand(
+			'node',
+			[
+				'-e',
+				NODE_FETCH_SCRIPT,
+				'GET',
+				`http://127.0.0.1:${BRIDGE_PORT}/healthz`,
+				LOCAL_BRIDGE_API_KEY,
+				''
+			],
+			{
+				timeoutMs: 10 * 1000
+			}
+		);
+
+		if (
+			'exitCode' in retryHealth &&
+			retryHealth.exitCode === 0
+		) {
+			return;
+		}
+	}
+
+	throw new CodexSandboxError(
+		'Codex Sandbox bridge 啟動逾時。',
+		503
+	);
+}
+
+async function requestBridge<T>(
 	sandbox: Sandbox,
 	method: string,
 	path: string,
-	body?: unknown,
-	includeAuthorization = true
-) {
-	const serializedBody = body === undefined
+	body?: unknown
+): Promise<T> {
+	await ensureBridge(sandbox);
+
+	const encodedBody = body === undefined
 		? ''
 		: JSON.stringify(body);
+
 	const result = await sandbox.runCommand(
 		'node',
 		[
-			'--input-type=module',
 			'-e',
 			NODE_FETCH_SCRIPT,
 			method,
 			`http://127.0.0.1:${BRIDGE_PORT}${path}`,
-			includeAuthorization
-				? LOCAL_BRIDGE_API_KEY
-				: '',
-			serializedBody
+			LOCAL_BRIDGE_API_KEY,
+			encodedBody
 		],
 		{
 			timeoutMs: SANDBOX_OPERATION_TIMEOUT_MS
@@ -300,37 +413,31 @@ async function runLocalFetch(
 
 	await assertCommandSucceeded(
 		result,
-		'無法連線至 Codex Sandbox bridge。'
+		'Vercel Sandbox 無法連線至 Codex bridge。'
 	);
 
-	const raw = (await result.stdout()).trim();
+	const raw = await result.stdout();
 	let envelope: {
 		status: number;
 		body: string;
 	};
 
 	try {
-		envelope = JSON.parse(raw) as {
-			status: number;
-			body: string;
-		};
+		envelope = JSON.parse(raw);
 	} catch {
 		throw new CodexSandboxError(
-			'Codex Sandbox bridge 回應格式不正確。',
-			503
+			'Vercel Sandbox 回傳了無效的 bridge response。',
+			502
 		);
 	}
 
-	let payload: unknown = {};
+	let payload: unknown = null;
 
 	if (envelope.body) {
 		try {
 			payload = JSON.parse(envelope.body);
 		} catch {
-			throw new CodexSandboxError(
-				'Codex Sandbox bridge 未回傳有效 JSON。',
-				503
-			);
+			payload = envelope.body;
 		}
 	}
 
@@ -338,127 +445,31 @@ async function runLocalFetch(
 		envelope.status < 200 ||
 		envelope.status >= 300
 	) {
-		const errorMessage =
+		const message =
 			typeof payload === 'object' &&
 			payload !== null &&
-			'error' in payload &&
-			typeof payload.error === 'string'
-				? payload.error
+			'message' in payload &&
+			typeof payload.message === 'string'
+				? payload.message
 				: `Codex Sandbox bridge request failed (${envelope.status})`;
 
 		throw new CodexSandboxError(
-			errorMessage,
+			message,
 			envelope.status
 		);
 	}
 
-	return payload;
+	return payload as T;
 }
 
-async function bridgeIsReady(
-	sandbox: Sandbox
-) {
-	try {
-		await runLocalFetch(
-			sandbox,
-			'GET',
-			'/healthz',
-			undefined,
-			false
-		);
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-async function ensureBridge(
-	sandbox: Sandbox
-) {
-	await sandbox.writeFiles([
-		{
-			path: BRIDGE_PATH,
-			content: bridgeSource,
-			mode: 0o600
-		}
-	]);
-
-	if (await bridgeIsReady(sandbox)) {
-		return;
-	}
-
-	await sandbox.runCommand({
-		cmd: 'node',
-		args: [BRIDGE_PATH],
-		detached: true,
-		timeoutMs: SANDBOX_TIMEOUT_MS,
-		env: {
-			PORT: String(BRIDGE_PORT),
-			CODEX_GATEWAY_API_KEY:
-				LOCAL_BRIDGE_API_KEY,
-			CODEX_DATA_DIR,
-			CODEX_BIN: 'codex',
-			CODEX_IDLE_TIMEOUT_MS:
-				String(SANDBOX_TIMEOUT_MS),
-			CODEX_REQUEST_TIMEOUT_MS: '60000',
-			CODEX_TURN_TIMEOUT_MS: '180000',
-			...(normalizeOptionalString(
-				env.CODEX_CHAT_DEVELOPER_INSTRUCTIONS
-			)
-				? {
-					CODEX_CHAT_DEVELOPER_INSTRUCTIONS:
-						env.CODEX_CHAT_DEVELOPER_INSTRUCTIONS!.trim()
-				}
-				: {})
-		}
-	});
-
-	for (let attempt = 0; attempt < 20; attempt++) {
-		await new Promise((resolve) => {
-			setTimeout(resolve, 250);
-		});
-
-		if (await bridgeIsReady(sandbox)) {
-			return;
-		}
-	}
-
-	throw new CodexSandboxError(
-		'Codex Sandbox bridge 啟動失敗。',
-		503
-	);
-}
-
-function userPath(
-	userId: string
-) {
-	return `/v1/users/${encodeURIComponent(userId)}`;
-}
-
-async function requestFromSandbox<T>(
-	sandbox: Sandbox,
-	userId: string,
-	resource: string,
-	method = 'GET',
-	body?: unknown
-): Promise<T> {
-	await ensureBridge(sandbox);
-	return await runLocalFetch(
-		sandbox,
-		method,
-		`${userPath(userId)}${resource}`,
-		body
-	) as T;
-}
-
-async function stopSandboxQuietly(
+async function stopSandbox(
 	sandbox: Sandbox
 ) {
 	try {
 		await sandbox.stop();
 	} catch (caughtError) {
 		console.error(
-			'Unable to stop persistent Codex Sandbox',
+			'Unable to stop Vercel Codex Sandbox',
 			caughtError
 		);
 	}
@@ -466,41 +477,49 @@ async function stopSandboxQuietly(
 
 export async function startCodexDeviceLogin(
 	userId: string
-) {
+): Promise<CodexDeviceLogin> {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
 	const sandbox = await createOrGetCodexSandbox(
 		userId
 	);
 
-	try {
-		return await requestFromSandbox<CodexDeviceLogin>(
-			sandbox,
-			userId,
-			'/login/device/start',
-			'POST',
-			{}
-		);
-	} catch (caughtError) {
-		await stopSandboxQuietly(sandbox);
-		throw caughtError;
-	}
+	return requestBridge<CodexDeviceLogin>(
+		sandbox,
+		'POST',
+		`/v1/users/${userId}/login/device/start`
+	);
 }
 
 export async function getCodexDeviceLoginStatus(
 	userId: string,
 	loginId: string
-) {
+): Promise<CodexDeviceLoginStatus> {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
 	const sandbox = await getExistingCodexSandbox(
 		userId
 	);
+
 	const status =
-		await requestFromSandbox<CodexDeviceLoginStatus>(
+		await requestBridge<CodexDeviceLoginStatus>(
 			sandbox,
-			userId,
-			`/login/device/${encodeURIComponent(loginId)}`
+			'GET',
+			`/v1/users/${userId}/login/device/${loginId}`
 		);
 
 	if (status.status !== 'pending') {
-		await stopSandboxQuietly(sandbox);
+		await stopSandbox(sandbox);
 	}
 
 	return status;
@@ -508,93 +527,114 @@ export async function getCodexDeviceLoginStatus(
 
 export async function getCodexAccount(
 	userId: string
-) {
+): Promise<CodexSandboxAccount | null> {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
 	const sandbox = await getExistingCodexSandbox(
 		userId
 	);
 
 	try {
-		const payload =
-			await requestFromSandbox<{
-				account: CodexSandboxAccount | null;
-			}>(
-				sandbox,
-				userId,
-				'/account'
-			);
-
-		return payload.account;
+		return await requestBridge<CodexSandboxAccount | null>(
+			sandbox,
+			'GET',
+			`/v1/users/${userId}/account`
+		);
 	} finally {
-		await stopSandboxQuietly(sandbox);
+		await stopSandbox(sandbox);
 	}
 }
 
 export async function getCodexUsage(
 	userId: string
-) {
+): Promise<CodexUsage> {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
 	const sandbox = await getExistingCodexSandbox(
 		userId
 	);
 
 	try {
-		return await requestFromSandbox<CodexUsage>(
+		return await requestBridge<CodexUsage>(
 			sandbox,
-			userId,
-			'/rate-limits'
+			'GET',
+			`/v1/users/${userId}/rate-limits`
 		);
 	} finally {
-		await stopSandboxQuietly(sandbox);
+		await stopSandbox(sandbox);
 	}
 }
 
 export async function logoutCodexAccount(
 	userId: string
 ) {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
 	const sandbox = await getExistingCodexSandbox(
 		userId
 	);
-	let logoutError: unknown = null;
 
 	try {
-		await requestFromSandbox<{ ok: true }>(
+		await requestBridge(
 			sandbox,
-			userId,
-			'/account',
-			'DELETE'
+			'DELETE',
+			`/v1/users/${userId}/account`
 		);
-	} catch (caughtError) {
-		logoutError = caughtError;
+	} finally {
+		await stopSandbox(sandbox);
 	}
 
 	try {
 		await sandbox.delete({
-			deleteOrphanSnapshots: true
+			deleteSnapshots: true
 		});
-	} catch (deleteError) {
-		if (logoutError) {
-			throw logoutError;
-		}
-		throw deleteError;
+	} catch (caughtError) {
+		console.error(
+			'Unable to delete Vercel Codex Sandbox',
+			caughtError
+		);
+		throw caughtError;
 	}
 }
 
 export async function sendCodexChat(
 	userId: string,
 	request: CodexChatRequest
-) {
+): Promise<CodexChatResponse> {
+	if (!isCodexSandboxConfigured()) {
+		throw new CodexSandboxError(
+			'Vercel Sandbox 尚未設定。',
+			503
+		);
+	}
+
 	const sandbox = await getExistingCodexSandbox(
 		userId
 	);
 
 	try {
-		return await requestFromSandbox<CodexChatResponse>(
+		return await requestBridge<CodexChatResponse>(
 			sandbox,
-			userId,
-			'/chat',
 			'POST',
+			`/v1/users/${userId}/chat`,
 			request
 		);
 	} finally {
-		await stopSandboxQuietly(sandbox);
+		await stopSandbox(sandbox);
 	}
 }
