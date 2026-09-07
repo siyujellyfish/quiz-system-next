@@ -16,15 +16,25 @@ config({
 });
 config();
 
-const databaseUrl =
-	process.env.DATABASE_URL_UNPOOLED?.trim() ||
-	process.env.DATABASE_URL?.trim();
+const configuredUrls = [
+	['MIGRATION_DATABASE_URL', process.env.MIGRATION_DATABASE_URL],
+	['DATABASE_URL', process.env.DATABASE_URL],
+	['DATABASE_URL_UNPOOLED', process.env.DATABASE_URL_UNPOOLED]
+] as const;
 
-if (!databaseUrl) {
+const selectedDatabase = configuredUrls.find(
+	([, value]) => value?.trim()
+);
+
+if (!selectedDatabase) {
 	throw new Error(
-		'DATABASE_URL_UNPOOLED or DATABASE_URL is not defined'
+		'MIGRATION_DATABASE_URL, DATABASE_URL, or DATABASE_URL_UNPOOLED is not defined'
 	);
 }
+
+const [databaseUrlSource, rawDatabaseUrl] =
+	selectedDatabase;
+const databaseUrl = rawDatabaseUrl!.trim();
 
 function describeDatabase(url: string) {
 	try {
@@ -52,7 +62,7 @@ const client = neon(databaseUrl);
 const db = drizzle(client);
 
 console.log(
-	`Applying migrations over Neon HTTP to ${describeDatabase(databaseUrl)}...`
+	`Applying migrations over Neon HTTP using ${databaseUrlSource} to ${describeDatabase(databaseUrl)}...`
 );
 
 try {
