@@ -8,8 +8,8 @@
 
 	type Props = {
 		toolbar: Snippet;
-		question: Snippet;
-		explanation?: Snippet;
+		questionPane: Snippet;
+		explanationPane?: Snippet;
 		showExplanation?: boolean;
 		storageKey?: string;
 	};
@@ -20,8 +20,8 @@
 
 	let {
 		toolbar,
-		question,
-		explanation,
+		questionPane,
+		explanationPane,
 		showExplanation = true,
 		storageKey = 'quiz-system-workspace-question-ratio'
 	}: Props = $props();
@@ -33,7 +33,7 @@
 	let hasVisibleExplanation =
 		$derived(
 			showExplanation &&
-			Boolean(explanation)
+			Boolean(explanationPane)
 		);
 
 	onMount(() => {
@@ -149,7 +149,7 @@
 </script>
 
 <section class="quiz-workspace">
-	<div class="quiz-workspace-toolbar">
+	<div class="quiz-workspace-toolbar border-b border-surface-300-700 bg-surface-50-950">
 		{@render toolbar()}
 	</div>
 
@@ -163,13 +163,14 @@
 			class="quiz-workspace-question-pane"
 			aria-label="做題區"
 		>
-			{@render question()}
+			{@render questionPane()}
 		</section>
 
-		{#if hasVisibleExplanation && explanation}
-			<button
-				type="button"
+		{#if hasVisibleExplanation && explanationPane}
+			<div
 				class="quiz-workspace-splitter"
+				role="separator"
+				tabindex="0"
 				aria-label="調整做題區與解析區高度"
 				aria-orientation="horizontal"
 				aria-valuemin={MIN_QUESTION_RATIO}
@@ -177,13 +178,13 @@
 				aria-valuenow={Math.round(questionRatio)}
 				onpointerdown={startResize}
 				onkeydown={handleSeparatorKeydown}
-			></button>
+			></div>
 
 			<section
 				class="quiz-workspace-explanation-pane"
 				aria-label="解析區"
 			>
-				{@render explanation()}
+				{@render explanationPane()}
 			</section>
 		{/if}
 	</div>
@@ -192,12 +193,6 @@
 <style>
 	.quiz-workspace {
 		min-width: 0;
-	}
-
-	.quiz-workspace-toolbar {
-		border-bottom: 1px solid
-			var(--color-surface-300-700);
-		background: var(--color-surface-50-950);
 	}
 
 	.quiz-workspace-content,
@@ -246,9 +241,9 @@
 			display: block;
 			width: 100%;
 			min-height: 8px;
-			border: 0;
 			background: transparent;
 			cursor: row-resize;
+			outline: none;
 		}
 
 		.quiz-workspace-splitter::after {
