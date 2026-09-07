@@ -27,8 +27,14 @@
 		UserPracticeAnswerResult
 	} from '$lib/types/quiz';
 
+	import QuestionAiTutor
+		from '$lib/components/quiz/QuestionAiTutor.svelte';
 	import QuestionCard
 		from '$lib/components/quiz/QuestionCard.svelte';
+	import QuestionExplanation
+		from '$lib/components/quiz/QuestionExplanation.svelte';
+	import QuizWorkspace
+		from '$lib/components/quiz/QuizWorkspace.svelte';
 
 	import {
 		getGuestPracticeStorageKey
@@ -633,222 +639,208 @@
 	<title>{data.bank.name} | 練習</title>
 </svelte:head>
 
-<div class="app-page">
-	<section class="app-panel overflow-hidden">
-		<header
-			class="flex flex-col gap-3 border-b border-surface-300-700 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6"
-		>
-			<div>
-				<p class="quiz-eyebrow">PRACTICE MODE</p>
-				<h1 class="mt-1 text-2xl font-bold">練習模式</h1>
-				{#if question}
-					<p class="mt-1 text-sm opacity-60">
-						第 {currentIndex + 1} / {totalQuestions} 題 · 作答後立即判分。
-					</p>
-				{:else}
-					<p class="mt-1 text-sm opacity-60">{data.bank.name}</p>
-				{/if}
+{#if loading}
+	<div class="app-page">
+		<section class="app-panel p-5 md:p-6" aria-label="正在載入題目">
+			<div class="placeholder h-7 w-2/3 animate-pulse" aria-hidden="true"></div>
+			<div class="mt-4 space-y-3" aria-hidden="true">
+				<div class="placeholder h-14 animate-pulse"></div>
+				<div class="placeholder h-14 animate-pulse"></div>
+				<div class="placeholder h-14 animate-pulse"></div>
+				<div class="placeholder h-14 animate-pulse"></div>
 			</div>
-
-			<div class="flex flex-wrap items-center gap-2">
-				{#if practice}
-					<Dialog role="alertdialog">
-						<Dialog.Trigger
-							class="btn preset-tonal shrink-0"
-							disabled={restarting}
-						>
-							<RotateCcw size={16} aria-hidden="true" />
-							重新開始
-						</Dialog.Trigger>
-
-						<Portal>
-							<Dialog.Backdrop class="fixed inset-0 z-50 bg-black/60" />
-							<Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center p-4">
-								<Dialog.Content class="card w-full max-w-lg bg-surface-50-950 p-6 shadow-xl">
-									<Dialog.Title class="text-xl font-bold">重新開始本輪練習？</Dialog.Title>
-									<Dialog.Description class="mt-3 text-sm leading-relaxed opacity-70">
-										目前作答進度會清除，並以相同設定建立全新一輪：{restartSettingText}。題目會重新隨機抽取，既有錯題不受影響。
-									</Dialog.Description>
-									<div class="mt-6 flex justify-end gap-3">
-										<Dialog.CloseTrigger type="button" class="btn preset-tonal">取消</Dialog.CloseTrigger>
-										<Dialog.CloseTrigger
-											type="button"
-											class="btn preset-filled-primary-500"
-											disabled={restarting}
-											onclick={restartPractice}
-										>
-											<RotateCcw size={16} aria-hidden="true" />
-											{restarting ? '重新建立中...' : '重新開始'}
-										</Dialog.CloseTrigger>
-									</div>
-								</Dialog.Content>
-							</Dialog.Positioner>
-						</Portal>
-					</Dialog>
-				{/if}
-
-				<a
-					href="/"
-					class="btn preset-tonal shrink-0"
-				>
-					結束練習
-				</a>
-			</div>
-		</header>
-
-		{#if loading}
-			<div class="p-5 md:p-6">
-				<section
-					class="space-y-4"
-					aria-label="正在載入題目"
-				>
-					<div class="placeholder h-7 w-2/3 animate-pulse" aria-hidden="true"></div>
-					<div class="space-y-3" aria-hidden="true">
-						<div class="placeholder h-14 animate-pulse"></div>
-						<div class="placeholder h-14 animate-pulse"></div>
-						<div class="placeholder h-14 animate-pulse"></div>
-						<div class="placeholder h-14 animate-pulse"></div>
-					</div>
-					<span class="sr-only">正在載入題目...</span>
-				</section>
-			</div>
-
-		{:else if practiceCompleted}
-			<div class="p-8 text-center">
-				<p class="quiz-eyebrow">ROUND COMPLETE</p>
-				<h2 class="mt-2 text-3xl font-bold">練習完成</h2>
-				<p class="mt-4 text-4xl font-bold text-success-700-300">
-					{accuracyText}
-				</p>
-				<p class="mt-2 text-sm opacity-60">
-					正確 {correctCount} / 已答 {answeredCount}
-				</p>
-				<button
-					type="button"
-					class="btn preset-filled-primary-500 mt-6"
-					onclick={finishPractice}
-				>
-					返回首頁
-				</button>
-			</div>
-
-		{:else if !question}
-			<div class="p-8 text-center">
-				<h2 class="text-lg font-semibold">無法繼續練習</h2>
-				<p class="mt-2 opacity-60">
-					{errorMessage ?? '找不到目前題目。'}
-				</p>
-				<a
-					href="/"
-					class="btn preset-filled-primary-500 mt-6"
-				>
-					返回首頁
-				</a>
-			</div>
-
-		{:else}
-			<div
-				class="grid gap-5 p-4 md:p-5 lg:grid-cols-[minmax(0,1fr)_18rem]"
+			<span class="sr-only">正在載入題目...</span>
+		</section>
+	</div>
+{:else if practiceCompleted}
+	<div class="app-page max-w-3xl">
+		<section class="app-panel p-8 text-center">
+			<p class="quiz-eyebrow">ROUND COMPLETE</p>
+			<h1 class="mt-2 text-3xl font-bold">練習完成</h1>
+			<p class="mt-4 text-4xl font-bold text-success-700-300">
+				{accuracyText}
+			</p>
+			<p class="mt-2 text-sm opacity-60">
+				正確 {correctCount} / 已答 {answeredCount}
+			</p>
+			<button
+				type="button"
+				class="btn preset-filled-primary-500 mt-6"
+				onclick={finishPractice}
 			>
-				<main class="min-w-0">
-					<div class="mb-3 flex items-center justify-between gap-3">
-						<p class="quiz-eyebrow">QUESTION {currentIndex + 1}</p>
-						<span class="badge preset-tonal-success">單選題</span>
+				返回首頁
+			</button>
+		</section>
+	</div>
+{:else if !question}
+	<div class="app-page max-w-3xl">
+		<section class="app-panel p-8 text-center">
+			<h1 class="text-lg font-semibold">無法繼續練習</h1>
+			<p class="mt-2 opacity-60">
+				{errorMessage ?? '找不到目前題目。'}
+			</p>
+			<a
+				href="/"
+				class="btn preset-filled-primary-500 mt-6"
+			>
+				返回首頁
+			</a>
+		</section>
+	</div>
+{:else}
+	<QuizWorkspace
+		showExplanation={Boolean(answerResult)}
+		storageKey={`quiz-system-workspace-practice-${data.bank.slug}`}
+	>
+		{#snippet toolbar()}
+			<div class="flex min-h-14 flex-wrap items-center gap-2 px-3 py-2 sm:px-4">
+				<div class="mr-1 min-w-0">
+					<p class="quiz-eyebrow">PRACTICE MODE</p>
+					<p class="text-sm font-semibold">
+						第 {currentIndex + 1} / {totalQuestions} 題
+					</p>
+				</div>
+
+				<div class="hidden items-center gap-2 md:flex">
+					<span class="badge preset-tonal-success">✓ {correctCount}</span>
+					<span class="badge preset-tonal-error">✕ {incorrectCount}</span>
+					<span class="badge preset-tonal">未答 {unansweredCount}</span>
+					<span class="badge preset-tonal-primary">正確率 {accuracyText}</span>
+				</div>
+
+				<div class="hidden w-28 lg:block">
+					<Progress
+						value={progressValue}
+						aria-label="練習進度"
+					>
+						<Progress.Track class="h-2 bg-surface-400-600">
+							<Progress.Range class="bg-primary-500" />
+						</Progress.Track>
+					</Progress>
+				</div>
+
+				<div class="ml-auto flex flex-wrap items-center justify-end gap-2">
+					{#if practice}
+						<Dialog role="alertdialog">
+							<Dialog.Trigger
+								class="btn preset-tonal px-3 py-2"
+								disabled={restarting}
+							>
+								<RotateCcw size={16} aria-hidden="true" />
+								<span class="hidden sm:inline">重新開始</span>
+							</Dialog.Trigger>
+
+							<Portal>
+								<Dialog.Backdrop class="fixed inset-0 z-50 bg-black/60" />
+								<Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center p-4">
+									<Dialog.Content class="card w-full max-w-lg bg-surface-50-950 p-6 shadow-xl">
+										<Dialog.Title class="text-xl font-bold">重新開始本輪練習？</Dialog.Title>
+										<Dialog.Description class="mt-3 text-sm leading-relaxed opacity-70">
+											目前作答進度會清除，並以相同設定建立全新一輪：{restartSettingText}。題目會重新隨機抽取，既有錯題不受影響。
+										</Dialog.Description>
+										<div class="mt-6 flex justify-end gap-3">
+											<Dialog.CloseTrigger type="button" class="btn preset-tonal">取消</Dialog.CloseTrigger>
+											<Dialog.CloseTrigger
+												type="button"
+												class="btn preset-filled-primary-500"
+												disabled={restarting}
+												onclick={restartPractice}
+											>
+												<RotateCcw size={16} aria-hidden="true" />
+												{restarting ? '重新建立中...' : '重新開始'}
+											</Dialog.CloseTrigger>
+										</div>
+									</Dialog.Content>
+								</Dialog.Positioner>
+							</Portal>
+						</Dialog>
+					{/if}
+
+					{#if answerResult}
+						{#if answerResult.completed}
+							<button
+								type="button"
+								class="btn preset-filled-primary-500"
+								onclick={finishPractice}
+							>
+								完成練習
+							</button>
+						{:else}
+							<button
+								type="button"
+								class="btn preset-filled-primary-500"
+								disabled={loadingNext}
+								onclick={nextQuestion}
+							>
+								{loadingNext ? '載入中...' : '下一題'}
+							</button>
+						{/if}
+					{:else}
+						<span class="hidden text-sm font-semibold opacity-50 sm:inline">請先作答</span>
+					{/if}
+
+					<a href="/" class="btn preset-tonal px-3 py-2">
+						結束
+					</a>
+				</div>
+			</div>
+		{/snippet}
+
+		{#snippet question()}
+			<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
+				<div class="mb-3 flex items-center justify-between gap-3">
+					<p class="quiz-eyebrow">QUESTION {currentIndex + 1}</p>
+					<span class="badge preset-tonal-success">單選題</span>
+				</div>
+
+				<QuestionCard
+					{question}
+					{answerResult}
+					{selectedOptionId}
+					{submitting}
+					onSelect={submitAnswer}
+				/>
+
+				{#if errorMessage}
+					<p
+						class="mt-4 text-sm text-error-700-300"
+						role="alert"
+					>
+						{errorMessage}
+					</p>
+				{/if}
+			</div>
+		{/snippet}
+
+		{#snippet explanation()}
+			{#if answerResult}
+				<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
+					<div class="flex items-center justify-between gap-3">
+						<div>
+							<p class="quiz-eyebrow">ANSWER REVIEW</p>
+							<h2 class="mt-1 text-lg font-bold">
+								{answerResult.correct ? '作答正確' : '查看解析'}
+							</h2>
+						</div>
+						<span
+							class="badge"
+							class:preset-tonal-success={answerResult.correct}
+							class:preset-tonal-error={!answerResult.correct}
+						>
+							{answerResult.correct ? '✓ 正確' : '✕ 錯誤'}
+						</span>
 					</div>
 
-					<QuestionCard
-						{question}
-						{answerResult}
-						{selectedOptionId}
-						{submitting}
-						onSelect={submitAnswer}
+					<QuestionExplanation
+						explanation={answerResult.explanation}
 					/>
 
-					{#if errorMessage}
-						<p
-							class="mt-4 text-sm text-error-700-300"
-							role="alert"
-						>
-							{errorMessage}
-						</p>
-					{/if}
-				</main>
-
-				<aside>
-					<section class="quiz-side-panel lg:sticky lg:top-14">
-						<div class="flex items-center justify-between gap-3">
-							<h2 class="font-bold">本輪進度</h2>
-							<strong>{Math.round(progressValue)}%</strong>
-						</div>
-
-						<Progress
-							value={progressValue}
-							class="mt-3"
-							aria-label="練習進度"
-						>
-							<Progress.Track class="h-2 bg-surface-400-600">
-								<Progress.Range class="bg-primary-500" />
-							</Progress.Track>
-						</Progress>
-
-						<div class="mt-4 grid grid-cols-3 gap-2">
-							<div class="quiz-stat-tile border-success-500/50">
-								<p class="text-xs font-semibold text-success-700-300">正確</p>
-								<p class="mt-1 text-xl font-bold text-success-700-300">{correctCount}</p>
-							</div>
-							<div class="quiz-stat-tile border-error-500/50">
-								<p class="text-xs font-semibold text-error-700-300">錯誤</p>
-								<p class="mt-1 text-xl font-bold text-error-700-300">{incorrectCount}</p>
-							</div>
-							<div class="quiz-stat-tile">
-								<p class="text-xs font-semibold">未作答</p>
-								<p class="mt-1 text-xl font-bold">{unansweredCount}</p>
-							</div>
-						</div>
-
-						<div class="mt-4 flex items-center justify-between border-t border-surface-400-600 pt-4">
-							<span class="font-semibold">正確率</span>
-							<strong
-								class:text-success-700-300={answeredCount > 0}
-							>
-								{accuracyText}
-								<span class="ml-1 text-xs font-normal opacity-60">
-									({correctCount}/{answeredCount})
-								</span>
-							</strong>
-						</div>
-
-						<p class="mt-5 text-sm leading-relaxed opacity-65">
-							選項順序會依本輪設定固定；作答後顯示正解與下一題按鈕。
-						</p>
-
-						<div class="mt-6 text-center">
-							{#if answerResult}
-								{#if answerResult.completed}
-									<button
-										type="button"
-										class="btn preset-filled-primary-500 w-full"
-										onclick={finishPractice}
-									>
-										完成練習
-									</button>
-								{:else}
-									<button
-										type="button"
-										class="btn preset-filled-primary-500 w-full"
-										disabled={loadingNext}
-										onclick={nextQuestion}
-									>
-										{loadingNext ? '載入中...' : '下一題'}
-									</button>
-								{/if}
-							{:else}
-								<span class="text-sm font-semibold opacity-50">請先選擇答案</span>
-							{/if}
-						</div>
-					</section>
-				</aside>
-			</div>
-		{/if}
-	</section>
-</div>
+					<QuestionAiTutor
+						{question}
+						{answerResult}
+					/>
+				</div>
+			{/if}
+		{/snippet}
+	</QuizWorkspace>
+{/if}
