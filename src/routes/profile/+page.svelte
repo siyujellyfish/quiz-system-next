@@ -9,10 +9,35 @@
 
 	import { toaster } from '$lib/ui/toaster';
 
+	type UsageWindow = {
+		usedPercent: number;
+		windowMinutes: number | null;
+		resetsAt: string | null;
+	};
+
+	type Usage = {
+		primary: UsageWindow | null;
+		secondary: UsageWindow | null;
+	};
+
 	let {
 		data,
 		form
 	}: PageProps = $props();
+
+	let usage = $state<Usage | null>(
+		data.chatgptConnection?.usage ?? null
+	);
+	let usageError = $state(
+		data.chatgptConnection?.usageError ?? false
+	);
+	let usageUpdatedAt = $state<Date | string | null>(
+		data.chatgptConnection?.usageUpdatedAt ?? null
+	);
+	let refreshingUsage = $state(false);
+	let usageAvailable = $derived(
+		Boolean(usage?.primary || usage?.secondary)
+	);
 
 	function formatUsagePercent(
 		usedPercent: number
@@ -64,6 +89,23 @@
 		);
 	}
 
+	function formatUpdatedAt(
+		updatedAt: Date | string | null
+	) {
+		if (!updatedAt) {
+			return null;
+		}
+
+		return new Intl.DateTimeFormat(
+			'zh-TW',
+			{
+				dateStyle: 'medium',
+				timeStyle: 'short',
+				timeZone: 'Asia/Taipei'
+			}
+		).format(new Date(updatedAt));
+	}
+
 	function formatPlanType(
 		planType: string | null
 	) {
@@ -80,6 +122,77 @@
 			.join(' ');
 	}
 
+	async function refreshCodexUsage() {
+		if (
+			refreshingUsage ||
+			!data.chatgptConnection
+		) {
+			return;
+		}
+
+		refreshingUsage = true;
+
+		try {
+			const response = await fetch(
+				'/integrations/chatgpt/usage/refresh',
+				{
+					method: 'POST',
+					headers: {
+						accept: 'application/json'
+					}
+				}
+			);
+			const payload = await response.json() as {
+				usage?: Usage;
+				updatedAt?: string;
+				error?: string;
+			};
+
+			if (!response.ok) {
+				if (response.status === 409) {
+					toaster.error({
+						title: 'ChatGPT 連結已失效',
+						description:
+							payload.error ?? '請重新連結 ChatGPT。'
+					});
+
+					window.setTimeout(() => {
+						window.location.reload();
+					}, 900);
+					return;
+				}
+
+				throw new Error(
+					payload.error ??
+						`無法取得 Codex 用量 (${response.status})`
+				);
+			}
+
+			usage = payload.usage ?? null;
+			usageError = false;
+			usageUpdatedAt =
+				payload.updatedAt ?? new Date().toISOString();
+
+			toaster.success({
+				title: 'Codex 用量已更新',
+				description:
+					'已從你的 ChatGPT / Codex 帳號取得最新用量。'
+			});
+		} catch (caughtError) {
+			usageError = true;
+
+			toaster.error({
+				title: 'Codex 用量更新失敗',
+				description:
+					caughtError instanceof Error
+						? caughtError.message
+						: '暫時無法取得 Codex 用量，請稍後再試。'
+			});
+		} finally {
+			refreshingUsage = false;
+		}
+	}
+
 	onMount(() => {
 		if (data.passwordChanged) {
 			toaster.success({
@@ -93,7 +206,7 @@
 			toaster.success({
 				title: 'ChatGPT 已連結',
 				description:
-					'之後的 AI 對話會使用你自己的 ChatGPT / Codex 額度。'
+					'已確認 ChatGPT 帳號；系統也會自動取得 Codex 用量。'
 			});
 		}
 
@@ -221,62 +334,87 @@
 					</dt>
 
 					<dd class="mt-2">
-						{#if data.chatgptConnection.usageError}
-							<p class="text-sm text-warning-700-300">
-								暫時無法從 Vercel Sandbox 取得 Codex 用量。
-							</p>
-						{:else if !data.chatgptConnection.usageAvailable}
+						<div class="mb-3 flex flex-wrap items-center justify-between gap-3">
 							<p class="text-sm opacity-60">
-								目前未提供 Codex 用量資料。
+								連結成功時會自動取得；也可手動更新最新用量。
 							</p>
-						{:else if data.chatgptConnection.usage}
+
+							<button
+								type="button"
+								class="btn preset-tonal"
+								disabled={refreshingUsage}
+								onclick={refreshCodexUsage}
+							>
+								{refreshingUsage
+									? '正在重新整理…'
+									: '重新整理 Codex 用量'}
+							</button>
+						</div>
+
+						{#if usageError}
+							<p class="mb-3 text-sm text-warning-700-300">
+								最新用量更新失敗；若下方仍有資料，顯示的是上一次成功取得的快照。
+							</p>
+						{/if}
+
+						{#if usageAvailable && usage}
 							<div class="space-y-3">
-								{#if data.chatgptConnection.usage.primary}
+								{#if usage.primary}
 									<div class="rounded-container bg-surface-100-900 p-3">
 										<div class="flex flex-wrap items-center justify-between gap-2">
 											<span class="font-medium">
 												{formatUsageWindow(
-													data.chatgptConnection.usage.primary.windowMinutes
+													usage.primary.windowMinutes
 												)}
 											</span>
 											<span class="font-semibold">
 												{formatUsagePercent(
-													data.chatgptConnection.usage.primary.usedPercent
+													usage.primary.usedPercent
 												)}
 											</span>
 										</div>
 
 										<p class="mt-1 text-sm opacity-60">
 											重置時間：{formatResetAt(
-												data.chatgptConnection.usage.primary.resetsAt
+												usage.primary.resetsAt
 											)}（台北時間）
 										</p>
 									</div>
 								{/if}
 
-								{#if data.chatgptConnection.usage.secondary}
+								{#if usage.secondary}
 									<div class="rounded-container bg-surface-100-900 p-3">
 										<div class="flex flex-wrap items-center justify-between gap-2">
 											<span class="font-medium">
 												{formatUsageWindow(
-													data.chatgptConnection.usage.secondary.windowMinutes
+													usage.secondary.windowMinutes
 												)}
 											</span>
 											<span class="font-semibold">
 												{formatUsagePercent(
-													data.chatgptConnection.usage.secondary.usedPercent
+													usage.secondary.usedPercent
 												)}
 											</span>
 										</div>
 
 										<p class="mt-1 text-sm opacity-60">
 											重置時間：{formatResetAt(
-												data.chatgptConnection.usage.secondary.resetsAt
+												usage.secondary.resetsAt
 											)}（台北時間）
 										</p>
 									</div>
 								{/if}
 							</div>
+						{:else}
+							<p class="text-sm opacity-60">
+								尚無 Codex 用量快照。按「重新整理 Codex 用量」即可取得最新資料。
+							</p>
+						{/if}
+
+						{#if formatUpdatedAt(usageUpdatedAt)}
+							<p class="mt-3 text-xs opacity-50">
+								最後更新：{formatUpdatedAt(usageUpdatedAt)}（台北時間）
+							</p>
 						{/if}
 					</dd>
 				</div>
