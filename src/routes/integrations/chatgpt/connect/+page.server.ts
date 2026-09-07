@@ -9,8 +9,7 @@ import type {
 
 import {
 	getChatgptProfileConnection,
-	isChatgptConnectionConfigured,
-	startChatgptDeviceLogin
+	isChatgptConnectionConfigured
 } from '$lib/server/profile/chatgpt.service';
 
 export const load: PageServerLoad = async ({
@@ -44,21 +43,5 @@ export const load: PageServerLoad = async ({
 		);
 	}
 
-	try {
-		return {
-			login: await startChatgptDeviceLogin(
-				locals.user.id
-			)
-		};
-	} catch (caughtError) {
-		console.error(
-			'Unable to start ChatGPT device login in Vercel Sandbox',
-			caughtError
-		);
-
-		error(
-			503,
-			'無法啟動 ChatGPT 授權流程，請稍後再試。'
-		);
-	}
+	return {};
 };
