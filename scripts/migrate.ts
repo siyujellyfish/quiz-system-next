@@ -5,11 +5,18 @@ import {
 	config
 } from 'dotenv';
 import {
-	drizzle
+	drizzle as drizzleNeon
 } from 'drizzle-orm/neon-http';
 import {
-	migrate
+	migrate as migrateNeon
 } from 'drizzle-orm/neon-http/migrator';
+import {
+	drizzle as drizzlePostgres
+} from 'drizzle-orm/postgres-js';
+import {
+	migrate as migratePostgres
+} from 'drizzle-orm/postgres-js/migrator';
+import postgres from 'postgres';
 
 config({
 	path: '.env.local'
@@ -36,13 +43,16 @@ const [databaseUrlSource, rawDatabaseUrl] =
 	selectedDatabase;
 const databaseUrl = rawDatabaseUrl!.trim();
 
-function describeDatabase(url: string) {
+function parseDatabaseUrl(url: string) {
 	try {
-		const parsed = new URL(url);
-		return `${parsed.hostname}${parsed.pathname}`;
+		return new URL(url);
 	} catch {
-		return '<invalid database URL>';
+		throw new Error('Database URL is invalid');
 	}
+}
+
+function describeDatabase(url: URL) {
+	return `${url.hostname}${url.pathname}`;
 }
 
 function logMigrationError(error: unknown) {
@@ -58,20 +68,52 @@ function logMigrationError(error: unknown) {
 	}
 }
 
-const client = neon(databaseUrl);
-const db = drizzle(client);
+const parsedDatabaseUrl = parseDatabaseUrl(
+	databaseUrl
+);
+const isNeon =
+	parsedDatabaseUrl.hostname.endsWith(
+		'.neon.tech'
+	);
 
 console.log(
-	`Applying migrations over Neon HTTP using ${databaseUrlSource} to ${describeDatabase(databaseUrl)}...`
+	`Applying migrations using ${databaseUrlSource} to ${describeDatabase(parsedDatabaseUrl)} via ${isNeon ? 'Neon HTTP' : 'PostgreSQL'}...`
 );
 
 try {
-	await migrate(
-		db,
-		{
-			migrationsFolder: './drizzle'
+	if (isNeon) {
+		const client = neon(databaseUrl);
+		const db = drizzleNeon(client);
+
+		await migrateNeon(
+			db,
+			{
+				migrationsFolder: './drizzle'
+			}
+		);
+	} else {
+		const client = postgres(
+			databaseUrl,
+			{
+				max: 1,
+				prepare: false
+			}
+		);
+
+		try {
+			const db = drizzlePostgres(client);
+
+			await migratePostgres(
+				db,
+				{
+					migrationsFolder: './drizzle'
+				}
+			);
+		} finally {
+			await client.end();
 		}
-	);
+	}
+
 	console.log('Database migrations applied successfully.');
 } catch (error) {
 	logMigrationError(error);
