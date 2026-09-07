@@ -555,11 +555,15 @@ export async function getCodexAccount(
 	);
 
 	try {
-		return await requestBridge<CodexSandboxAccount | null>(
+		const response = await requestBridge<{
+			account: CodexSandboxAccount | null;
+		}>(
 			sandbox,
 			'GET',
 			`/v1/users/${userId}/account`
 		);
+
+		return response.account;
 	} finally {
 		await stopSandbox(sandbox);
 	}
