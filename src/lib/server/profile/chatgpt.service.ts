@@ -13,7 +13,7 @@ import {
 	getCodexUsage,
 	isCodexSandboxConfigured,
 	logoutCodexAccount,
-	sendCodexChat,
+	sendCodexChatWithUsage,
 	startCodexDeviceLogin
 } from '$lib/server/integrations/codex-sandbox';
 
@@ -42,6 +42,16 @@ export class ChatgptNotConnectedError extends Error {
 	constructor() {
 		super('ChatGPT account is not connected');
 		this.name = 'ChatgptNotConnectedError';
+	}
+}
+
+export class ChatgptRelinkRequiredError
+	extends ChatgptNotConnectedError {
+	constructor() {
+		super();
+		this.name = 'ChatgptRelinkRequiredError';
+		this.message =
+			'ChatGPT account must be linked again';
 	}
 }
 
@@ -102,6 +112,39 @@ async function clearStoredChatgptState(
 	]);
 }
 
+async function persistUsageAfterChat(input: {
+	userId: string;
+	usage: CodexUsage | null;
+	usageError: boolean;
+}) {
+	try {
+		if (!input.usageError) {
+			await upsertCodexUsageSnapshot(
+				input.userId,
+				input.usage,
+				false
+			);
+			return;
+		}
+
+		const existingSnapshot =
+			await getCodexUsageSnapshot(
+				input.userId
+			);
+
+		await upsertCodexUsageSnapshot(
+			input.userId,
+			existingSnapshot?.usage ?? null,
+			true
+		);
+	} catch (caughtError) {
+		console.error(
+			'Unable to persist Codex usage after AI turn',
+			caughtError
+		);
+	}
+}
+
 export function isChatgptConnectionConfigured() {
 	return isCodexSandboxConfigured();
 }
@@ -125,9 +168,6 @@ export async function getChatgptDeviceLoginStatus(
 		return status;
 	}
 
-	// A successful device-code notification is not enough by itself.
-	// Only persist a connection when Codex has also returned a concrete
-	// ChatGPT account from account/read.
 	const account = status.account;
 
 	if (!account) {
@@ -151,9 +191,6 @@ export async function getChatgptDeviceLoginStatus(
 		);
 	}
 
-	// The database is the durable record of a completed connection, never
-	// of an in-progress or failed authorization attempt. Usage is captured
-	// immediately after confirmation so Profile can stay DB-only and fast.
 	await persistCodexAccount(
 		userId,
 		account
@@ -171,11 +208,6 @@ export async function getChatgptDeviceLoginStatus(
 	};
 }
 
-/**
- * Profile navigation must stay fast and deterministic. Do not resume a
- * persistent Vercel Sandbox from a page load; only read the connection and
- * latest Codex usage snapshot persisted after a confirmed device-code login.
- */
 export async function getChatgptProfileConnection(
 	userId: string
 ): Promise<ChatgptProfileConnection | null> {
@@ -227,7 +259,7 @@ export async function refreshChatgptCodexUsage(
 			)
 		) {
 			await clearStoredChatgptState(userId);
-			throw new ChatgptNotConnectedError();
+			throw new ChatgptRelinkRequiredError();
 		}
 
 		const existingSnapshot =
@@ -279,17 +311,34 @@ export async function sendChatgptMessage(
 	}
 
 	try {
-		return await sendCodexChat(
+		const response =
+			await sendCodexChatWithUsage(
+				userId,
+				request
+			);
+
+		await persistUsageAfterChat({
 			userId,
-			request
-		);
+			usage: response.usage,
+			usageError: response.usageError
+		});
+
+		return {
+			threadId: response.threadId,
+			message: response.message
+		};
 	} catch (caughtError) {
 		if (
 			caughtError instanceof
-			CodexSandboxNotFoundError
+				CodexSandboxNotFoundError ||
+			(
+				caughtError instanceof
+					CodexSandboxError &&
+				caughtError.status === 409
+			)
 		) {
 			await clearStoredChatgptState(userId);
-			throw new ChatgptNotConnectedError();
+			throw new ChatgptRelinkRequiredError();
 		}
 
 		throw caughtError;
