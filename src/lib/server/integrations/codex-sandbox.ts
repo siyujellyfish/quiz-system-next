@@ -167,6 +167,37 @@ export function getCodexSandboxName(
 	return `quiz-codex-${userId}`;
 }
 
+function getBridgeSource() {
+	const bridgeEnv = {
+		PORT: String(BRIDGE_PORT),
+		CODEX_GATEWAY_API_KEY:
+			LOCAL_BRIDGE_API_KEY,
+		CODEX_DATA_DIR,
+		CODEX_IDLE_TIMEOUT_MS:
+			String(SANDBOX_TIMEOUT_MS),
+		CODEX_REQUEST_TIMEOUT_MS:
+			String(60 * 1000),
+		CODEX_TURN_TIMEOUT_MS:
+			String(180 * 1000),
+		CODEX_CHAT_DEVELOPER_INSTRUCTIONS:
+			getRuntimeEnv(
+				'CODEX_CHAT_DEVELOPER_INSTRUCTIONS'
+			) ?? ''
+	};
+	const prelude = Object.entries(bridgeEnv)
+		.map(
+			([name, value]) =>
+				`process.env[${JSON.stringify(name)}] = ${JSON.stringify(value)};`
+		)
+		.join('\n');
+	const loopbackBridgeSource = bridgeSource.replace(
+		"'0.0.0.0'",
+		"'127.0.0.1'"
+	);
+
+	return `${prelude}\n${loopbackBridgeSource}`;
+}
+
 function getApiStatus(
 	error: unknown
 ) {
@@ -286,7 +317,7 @@ async function ensureBridge(
 	await sandbox.writeFiles([
 		{
 			path: BRIDGE_PATH,
-			content: Buffer.from(bridgeSource)
+			content: Buffer.from(getBridgeSource())
 		}
 	]);
 
@@ -316,22 +347,6 @@ async function ensureBridge(
 		'node',
 		[BRIDGE_PATH],
 		{
-			env: {
-				PORT: String(BRIDGE_PORT),
-				CODEX_GATEWAY_API_KEY:
-					LOCAL_BRIDGE_API_KEY,
-				CODEX_DATA_DIR,
-				CODEX_IDLE_TIMEOUT_MS:
-					String(SANDBOX_TIMEOUT_MS),
-				CODEX_REQUEST_TIMEOUT_MS:
-					String(60 * 1000),
-				CODEX_TURN_TIMEOUT_MS:
-					String(180 * 1000),
-				CODEX_CHAT_DEVELOPER_INSTRUCTIONS:
-					getRuntimeEnv(
-						'CODEX_CHAT_DEVELOPER_INSTRUCTIONS'
-					) ?? ''
-			},
 			detached: true
 		}
 	);
