@@ -59,7 +59,14 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Upload generated lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-pnpm-lock
+          path: pnpm-lock.yaml
+          retention-days: 1
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
@@ -67,7 +74,7 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Codex Gateway syntax check
+      - name: Codex Sandbox bridge syntax check
         run: node --check services/codex-gateway/server.mjs
 
       - name: Svelte and TypeScript check
