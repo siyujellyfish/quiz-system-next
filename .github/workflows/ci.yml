@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -44,8 +44,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -61,18 +59,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Commit generated lockfile
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          if ! git diff --quiet -- pnpm-lock.yaml; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add pnpm-lock.yaml
-            git commit -m "Update pnpm lockfile for Vercel Sandbox"
-            git push origin HEAD:${{ github.head_ref }}
-          fi
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
