@@ -19,7 +19,7 @@
 		"test": "pnpm test:unit --run",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate",
+		"db:migrate": "tsx scripts/migrate.ts",
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "tsx scripts/seed-question-banks.ts",
 		"fmt": "oxfmt",
