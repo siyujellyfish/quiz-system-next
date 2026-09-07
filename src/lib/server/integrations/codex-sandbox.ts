@@ -463,10 +463,15 @@ async function requestBridge<T>(
 		const message =
 			typeof payload === 'object' &&
 			payload !== null &&
-			'message' in payload &&
-			typeof payload.message === 'string'
-				? payload.message
-				: `Codex Sandbox bridge request failed (${envelope.status})`;
+			'error' in payload &&
+			typeof payload.error === 'string'
+				? payload.error
+				: typeof payload === 'object' &&
+					payload !== null &&
+					'message' in payload &&
+					typeof payload.message === 'string'
+						? payload.message
+						: `Codex Sandbox bridge request failed (${envelope.status})`;
 
 		throw new CodexSandboxError(
 			message,
@@ -613,6 +618,11 @@ export async function logoutCodexAccount(
 			sandbox,
 			'DELETE',
 			`/v1/users/${userId}/account`
+		);
+	} catch (caughtError) {
+		console.error(
+			'Unable to log out Codex account before deleting Sandbox',
+			caughtError
 		);
 	} finally {
 		await stopSandbox(sandbox);
