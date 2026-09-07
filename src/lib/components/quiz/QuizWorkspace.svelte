@@ -195,10 +195,42 @@
 		min-width: 0;
 	}
 
+	.quiz-workspace-toolbar {
+		position: relative;
+		z-index: 1;
+	}
+
+	.quiz-workspace-toolbar
+		:global(div:has(> [aria-label='練習進度'])) {
+		order: 100;
+		display: block !important;
+		flex: 1 0 100%;
+		width: 100% !important;
+		margin-top: 0.125rem;
+		padding-bottom: 0.125rem;
+	}
+
+	.quiz-workspace-toolbar
+		:global([aria-label='練習進度']) {
+		width: 100%;
+	}
+
+	.quiz-workspace-toolbar
+		:global([aria-label='練習進度'] [data-part='track']) {
+		height: 0.625rem !important;
+		min-height: 0.625rem;
+		border-radius: 999px;
+	}
+
 	.quiz-workspace-content,
 	.quiz-workspace-question-pane,
 	.quiz-workspace-explanation-pane {
 		min-width: 0;
+	}
+
+	.quiz-workspace-explanation-pane {
+		border-top: 1px solid
+			var(--color-surface-300-700);
 	}
 
 	.quiz-workspace-splitter {
@@ -225,7 +257,7 @@
 					0,
 					var(--quiz-workspace-question-ratio)
 				)
-				8px
+				10px
 				minmax(0, 1fr);
 		}
 
@@ -236,32 +268,45 @@
 			overscroll-behavior: contain;
 		}
 
+		.quiz-workspace-explanation-pane {
+			border-top: 0;
+		}
+
 		.quiz-workspace-splitter {
 			position: relative;
 			display: block;
 			width: 100%;
-			min-height: 8px;
-			background: transparent;
+			min-height: 10px;
+			border-top: 1px solid
+				var(--color-surface-300-700);
+			border-bottom: 1px solid
+				var(--color-surface-300-700);
+			background: var(--color-surface-100-900);
 			cursor: row-resize;
 			outline: none;
 		}
 
 		.quiz-workspace-splitter::after {
 			position: absolute;
-			top: 3px;
+			top: 50%;
 			left: 50%;
-			width: 3.5rem;
-			height: 2px;
+			width: 4rem;
+			height: 3px;
 			border-radius: 999px;
 			background: currentColor;
 			content: '';
-			opacity: 0.28;
-			transform: translateX(-50%);
+			opacity: 0.42;
+			transform: translate(-50%, -50%);
+		}
+
+		.quiz-workspace-splitter:hover,
+		.quiz-workspace-splitter:focus-visible {
+			background: var(--color-surface-200-800);
 		}
 
 		.quiz-workspace-splitter:hover::after,
 		.quiz-workspace-splitter:focus-visible::after {
-			opacity: 0.65;
+			opacity: 0.8;
 		}
 	}
 </style>
