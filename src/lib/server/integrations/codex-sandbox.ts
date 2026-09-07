@@ -305,8 +305,7 @@ async function getExistingCodexSandbox(
 		return await Sandbox.get({
 			...getSandboxCredentials(),
 			name: getCodexSandboxName(userId),
-			resume: true,
-			timeout: SANDBOX_TIMEOUT_MS
+			resume: true
 		});
 	} catch (caughtError) {
 		if (isMissingSandboxError(caughtError)) {
@@ -349,13 +348,11 @@ async function ensureBridge(
 		return;
 	}
 
-	const startResult = await sandbox.runCommand(
-		'node',
-		[BRIDGE_PATH],
-		{
-			detached: true
-		}
-	);
+	const startResult = await sandbox.runCommand({
+		cmd: 'node',
+		args: [BRIDGE_PATH],
+		detached: true
+	});
 
 	if (
 		'exitCode' in startResult &&
@@ -635,8 +632,7 @@ export async function logoutCodexAccount(
 		sandbox = await Sandbox.get({
 			...getSandboxCredentials(),
 			name: getCodexSandboxName(userId),
-			resume: false,
-			timeout: SANDBOX_TIMEOUT_MS
+			resume: false
 		});
 	} catch (caughtError) {
 		if (isMissingSandboxError(caughtError)) {
@@ -652,7 +648,7 @@ export async function logoutCodexAccount(
 		// bridge merely to call account/logout adds unnecessary failure
 		// modes and can block a profile action for minutes.
 		await sandbox.delete({
-			deleteSnapshots: true
+			deleteOrphanSnapshots: true
 		});
 	} catch (caughtError) {
 		if (isMissingSandboxError(caughtError)) {
