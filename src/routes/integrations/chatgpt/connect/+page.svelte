@@ -11,14 +11,21 @@
 
 	let login = $state<DeviceLogin | null>(null);
 	let statusText = $state(
-		'正在準備個人 Codex 執行環境…'
+		'請先完成下方 ChatGPT 安全性設定，再開始連結。'
 	);
 	let failed = $state(false);
 	let starting = $state(false);
 	let polling = $state(false);
+	let permissionConfirmed = $state(false);
 
 	async function startLogin() {
 		if (starting) {
+			return;
+		}
+
+		if (!permissionConfirmed) {
+			statusText =
+				'請先確認已在 ChatGPT 安全性設定中開啟 Codex 裝置代碼授權。';
 			return;
 		}
 
@@ -123,7 +130,7 @@
 
 			if (payload.status === 'succeeded') {
 				statusText =
-					'ChatGPT 已連結，正在返回個人資料…';
+					'ChatGPT 已連結，已同步 Codex 用量，正在返回個人資料…';
 				window.location.assign(
 					'/profile?chatgptLinked=1'
 				);
@@ -149,8 +156,6 @@
 	}
 
 	onMount(() => {
-		void startLogin();
-
 		const interval = window.setInterval(
 			() => {
 				void pollLoginStatus();
@@ -183,6 +188,48 @@
 				使用 OpenAI Codex 的裝置授權流程。授權完成後，Quiz 的 AI 對話會使用你自己的 ChatGPT / Codex 額度。
 			</p>
 		</header>
+
+		<div
+			class="mt-6 rounded-container border border-warning-500/40 bg-warning-500/10 p-4"
+		>
+			<h2 class="font-semibold text-warning-700-300">
+				開始前必須先開啟 Codex 裝置代碼授權
+			</h2>
+
+			<ol class="mt-3 list-decimal space-y-2 pl-5 text-sm">
+				<li>
+					前往 ChatGPT 的「設定」。
+				</li>
+				<li>
+					進入「安全性（Security）」。
+				</li>
+				<li>
+					開啟「Codex 裝置代碼授權（Device code authorization for Codex）」。
+				</li>
+				<li>
+					回到本頁，勾選下方確認後再開始連結。
+				</li>
+			</ol>
+
+			<p class="mt-3 text-sm opacity-70">
+				Quiz System 會在 Vercel Sandbox 中啟動 Codex 登入；你不需要在自己的電腦執行 <code>codex login --device-auth</code>。
+			</p>
+
+			<p class="mt-2 text-sm font-medium text-warning-700-300">
+				如果你是在看到 OpenAI 阻擋畫面後才開啟權限，請回到這裡重新產生新的驗證碼，不要沿用舊碼。
+			</p>
+
+			<label class="mt-4 flex cursor-pointer items-start gap-3 rounded-container bg-surface-50-950/50 p-3 text-sm">
+				<input
+					type="checkbox"
+					class="checkbox mt-0.5"
+					bind:checked={permissionConfirmed}
+				/>
+				<span>
+					我已確認 ChatGPT 安全性設定中的 Codex 裝置代碼授權已開啟。
+				</span>
+			</label>
+		</div>
 
 		{#if login}
 			<div class="mt-6 space-y-5">
@@ -222,10 +269,10 @@
 					</div>
 				</div>
 			</div>
-		{:else}
+		{:else if starting}
 			<div class="mt-6">
 				<p class="text-sm opacity-60">
-					第一次建立 Sandbox 時需要安裝 Codex CLI；頁面會保持可操作並在完成後顯示 OpenAI 驗證碼。
+					正在準備個人 Codex 執行環境。第一次建立 Sandbox 時需要安裝 Codex CLI，可能需要一些時間。
 				</p>
 			</div>
 		{/if}
@@ -241,14 +288,18 @@
 		</div>
 
 		<div class="mt-6 flex flex-wrap gap-3">
-			{#if failed}
+			{#if !login}
 				<button
 					type="button"
 					class="btn preset-filled-primary-500"
-					disabled={starting}
+					disabled={starting || !permissionConfirmed}
 					onclick={startLogin}
 				>
-					{starting ? '正在準備…' : '重新嘗試'}
+					{starting
+						? '正在準備…'
+						: failed
+							? '重新產生授權碼'
+							: '我已開啟，開始連結'}
 				</button>
 			{/if}
 
