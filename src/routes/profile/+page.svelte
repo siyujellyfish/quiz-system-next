@@ -340,7 +340,7 @@
 						取消連接
 					</button>
 				</form>
-			{:else if data.chatgptConfigured}
+			{:else if !data.chatgptLoadError && data.chatgptConfigured}
 				<a
 					href="/integrations/chatgpt/connect"
 					class="btn preset-filled-primary-500"
@@ -358,7 +358,11 @@
 			{/if}
 		</div>
 
-		{#if !data.chatgptConnection && !data.chatgptConfigured}
+		{#if data.chatgptLoadError}
+			<p class="mt-4 text-sm text-warning-700-300">
+				ChatGPT 連結資料庫尚未初始化或目前無法存取。請先對這個部署使用的 Neon 資料庫套用最新 migration。
+			</p>
+		{:else if !data.chatgptConnection && !data.chatgptConfigured}
 			<p class="mt-4 text-sm text-warning-700-300">
 				Vercel Sandbox 尚未可用，連結與個人 Codex 額度功能目前不可用。
 			</p>
