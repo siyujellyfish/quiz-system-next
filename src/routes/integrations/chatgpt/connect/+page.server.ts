@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({
 	if (!isChatgptConnectionConfigured()) {
 		error(
 			503,
-			'Codex Gateway 尚未設定，暫時無法連結 ChatGPT。'
+			'Vercel Sandbox 尚未設定，暫時無法連結 ChatGPT。'
 		);
 	}
 
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({
 		};
 	} catch (caughtError) {
 		console.error(
-			'Unable to start ChatGPT device login',
+			'Unable to start ChatGPT device login in Vercel Sandbox',
 			caughtError
 		);
 
