@@ -7,8 +7,8 @@ import type {
 } from './$types';
 
 import {
-	CodexGatewayError
-} from '$lib/server/integrations/codex-gateway';
+	CodexSandboxError
+} from '$lib/server/integrations/codex-sandbox';
 import {
 	ChatgptNotConnectedError,
 	sendChatgptMessage
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({
 
 		if (
 			caughtError instanceof
-			CodexGatewayError
+			CodexSandboxError
 		) {
 			return json(
 				{
