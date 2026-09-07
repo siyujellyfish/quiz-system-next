@@ -82,6 +82,10 @@ export const POST: RequestHandler = async ({
 		typeof body.aiContextToken === 'string'
 			? body.aiContextToken.trim()
 			: null;
+	const generationId =
+		typeof body.generationId === 'string'
+			? body.generationId.trim()
+			: '';
 
 	if (
 		!message ||
@@ -102,6 +106,17 @@ export const POST: RequestHandler = async ({
 		return json(
 			{
 				error: 'questionId is invalid'
+			},
+			{
+				status: 400
+			}
+		);
+	}
+
+	if (!UUID_PATTERN.test(generationId)) {
+		return json(
+			{
+				error: 'generationId is invalid'
 			},
 			{
 				status: 400
@@ -163,6 +178,7 @@ export const POST: RequestHandler = async ({
 					conversationId
 						? null
 						: aiContextToken,
+				generationId,
 				message
 			})
 		);
