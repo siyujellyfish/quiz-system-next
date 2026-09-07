@@ -59,20 +59,23 @@
 	let opened = $state(false);
 	let input = $state('');
 	let conversationId = $state<string | null>(null);
-	let aiContextToken = $state<string | null>(
-		answerResult.aiContextToken ?? null
-	);
+	let aiContextToken = $state<string | null>(null);
 	let messages = $state<ChatMessage[]>([]);
 	let sending = $state(false);
+	let stopping = $state(false);
 	let errorMessage = $state<string | null>(null);
+	let noticeMessage = $state<string | null>(null);
 	let retryable = $state(false);
 	let lastFailedMessage = $state<string | null>(null);
 	let connectionState = $state<
 		'idle' | 'loading' | 'connected' | 'disconnected' | 'error'
 	>('idle');
 	let status = $state<AiStatus | null>(null);
-	let activeQuestionId = $state(question.id);
+	let activeQuestionId = $state<string | null>(null);
 	let messageScroller = $state<HTMLDivElement | null>(null);
+	let activeGenerationId = $state<string | null>(null);
+	let activeAbortController:
+		AbortController | null = null;
 
 	$effect(() => {
 		if (activeQuestionId === question.id) {
@@ -87,10 +90,18 @@
 	});
 
 	$effect(() => {
-		messages.length;
-		sending;
-		errorMessage;
-		void scrollToBottom();
+		const shouldScroll =
+			opened &&
+			(
+				messages.length > 0 ||
+				sending ||
+				errorMessage !== null ||
+				noticeMessage !== null
+			);
+
+		if (shouldScroll) {
+			void scrollToBottom();
+		}
 	});
 
 	async function scrollToBottom() {
@@ -317,8 +328,15 @@
 			return;
 		}
 
+		const generationId = crypto.randomUUID();
+		const abortController =
+			new AbortController();
+		activeGenerationId = generationId;
+		activeAbortController = abortController;
 		sending = true;
+		stopping = false;
 		errorMessage = null;
+		noticeMessage = null;
 		retryable = false;
 		lastFailedMessage = null;
 
@@ -346,6 +364,7 @@
 							'application/json',
 						accept: 'application/json'
 					},
+					signal: abortController.signal,
 					body: JSON.stringify({
 						conversationId,
 						questionId: question.id,
@@ -353,6 +372,7 @@
 							conversationId
 								? null
 								: contextToken,
+						generationId,
 						message
 					})
 				}
@@ -368,6 +388,12 @@
 					typeof payload.code === 'string'
 						? payload.code
 						: null;
+
+				if (code === 'GENERATION_CANCELLED') {
+					noticeMessage =
+						'已停止產生回答。';
+					return;
+				}
 
 				if (
 					code === 'CHATGPT_NOT_CONNECTED' ||
@@ -430,6 +456,15 @@
 			retryable = false;
 			void loadConnectionStatus(false);
 		} catch (caughtError) {
+			if (
+				caughtError instanceof DOMException &&
+				caughtError.name === 'AbortError'
+			) {
+				noticeMessage =
+					'已停止產生回答。';
+				return;
+			}
+
 			errorMessage =
 				caughtError instanceof Error
 					? caughtError.message
@@ -439,7 +474,61 @@
 				lastFailedMessage = message;
 			}
 		} finally {
+			if (activeGenerationId === generationId) {
+				activeGenerationId = null;
+				activeAbortController = null;
+			}
 			sending = false;
+			stopping = false;
+		}
+	}
+
+	async function stopGeneration() {
+		const generationId = activeGenerationId;
+
+		if (!generationId || !sending || stopping) {
+			return;
+		}
+
+		stopping = true;
+		errorMessage = null;
+
+		try {
+			const response = await fetch(
+				'/api/ai/chat/cancel',
+				{
+					method: 'POST',
+					headers: {
+						'content-type':
+							'application/json',
+						accept: 'application/json'
+					},
+					body: JSON.stringify({
+						generationId
+					})
+				}
+			);
+
+			if (!response.ok) {
+				const payload = await response.json() as {
+					error?: unknown;
+				};
+
+				throw new Error(
+					typeof payload.error === 'string'
+						? payload.error
+						: '無法確認 AI 是否已停止。'
+				);
+			}
+
+			noticeMessage = '已停止產生回答。';
+		} catch (caughtError) {
+			errorMessage =
+				caughtError instanceof Error
+					? `${caughtError.message} 已停止等待目前回應。`
+					: '無法確認 AI 是否已停止；已停止等待目前回應。';
+		} finally {
+			activeAbortController?.abort();
 		}
 	}
 
@@ -485,260 +574,303 @@
 		messages = [];
 		input = '';
 		errorMessage = null;
+		noticeMessage = null;
 		retryable = false;
 		lastFailedMessage = null;
 	}
 </script>
 
+{#snippet tutorPanel(desktop: boolean)}
+	<section
+		class={desktop
+			? 'flex h-full min-h-0 flex-col bg-surface-50-950'
+			: 'rounded-container border border-surface-300-700 bg-surface-50-950 p-4'}
+		aria-label="AI 題目解析對話"
+	>
+		<header
+			class={desktop
+				? 'border-b border-surface-300-700 p-4'
+				: ''}
+		>
+			<div class="flex items-start justify-between gap-3">
+				<div class="min-w-0">
+					<h3 class="font-semibold">
+						AI 題目助教
+					</h3>
+					<p class="mt-1 text-xs opacity-60">
+						只回答目前題目與理解此題直接相關的內容；AI 回答可能有誤。
+					</p>
+
+					{#if connectionState === 'connected' && status}
+						<p class="mt-2 text-xs opacity-60">
+							{#if status.planType}
+								ChatGPT {formatPlanType(status.planType)} ·
+							{/if}
+							{#if status.usage?.primary}
+								{formatUsageWindow(status.usage.primary.windowMinutes)} {formatRemaining(status.usage.primary.usedPercent)}
+							{:else if status.usageError}
+								用量資料可能不是最新
+							{:else}
+								Codex 用量尚未提供
+							{/if}
+						</p>
+					{/if}
+				</div>
+
+				<div class="flex shrink-0 gap-2">
+					{#if messages.length > 0}
+						<button
+							type="button"
+							class="btn preset-tonal px-3 py-2 text-sm"
+							disabled={sending}
+							onclick={resetConversation}
+						>
+							新對話
+						</button>
+					{/if}
+
+					<button
+						type="button"
+						class="btn preset-tonal px-3 py-2 text-sm"
+						disabled={sending}
+						onclick={() => {
+							opened = false;
+						}}
+					>
+						關閉
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<div
+			class={desktop
+				? 'flex min-h-0 flex-1 flex-col p-4'
+				: ''}
+		>
+			{#if connectionState === 'loading'}
+				<div class="rounded-container bg-surface-100-900 p-4 text-sm opacity-70">
+					正在確認 ChatGPT 連結與最近一次 Codex 用量…
+				</div>
+			{:else if connectionState === 'disconnected'}
+				<div class="rounded-container preset-tonal-warning-500 p-4 text-sm">
+					<p class="font-medium">
+						需要先連結 ChatGPT
+					</p>
+					<p class="mt-1 opacity-70">
+						AskAI 使用你自己的 ChatGPT / Codex 額度；連結完成後再回到這題即可使用。
+					</p>
+					<a
+						href="/profile"
+						class="btn preset-filled-primary-500 mt-3"
+					>
+						前往個人資料連結 ChatGPT
+					</a>
+				</div>
+			{:else if connectionState === 'error'}
+				<div class="rounded-container preset-tonal-error-500 p-4 text-sm">
+					<p>
+						暫時無法確認 ChatGPT 連結狀態。
+					</p>
+					<button
+						type="button"
+						class="btn preset-tonal mt-3"
+						onclick={() => {
+							void loadConnectionStatus();
+						}}
+					>
+						重新檢查
+					</button>
+				</div>
+			{:else if connectionState === 'connected'}
+				{#if messages.length === 0}
+					<div class="mb-4">
+						<p class="text-sm opacity-70">
+							可以直接輸入問題，或從常用追問開始：
+						</p>
+						<div class="mt-3 flex flex-wrap gap-2">
+							{#each getQuickPrompts() as prompt}
+								<button
+									type="button"
+									class="btn preset-tonal text-left text-sm"
+									disabled={sending}
+									onclick={() => {
+										void sendMessageText(prompt);
+									}}
+								>
+									{prompt}
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+
+				<div
+					bind:this={messageScroller}
+					class={desktop
+						? 'min-h-0 flex-1 space-y-3 overflow-y-auto pr-1'
+						: 'max-h-[32rem] space-y-3 overflow-y-auto pr-1'}
+					aria-live="polite"
+				>
+					{#each messages as message}
+						<div
+							class={getMessageClass(message.role)}
+						>
+							<div class="mb-2 flex items-center justify-between gap-2">
+								<p class="text-xs font-semibold opacity-60">
+									{message.role === 'user'
+										? '你'
+										: 'AI 助教'}
+								</p>
+
+								{#if message.role === 'assistant'}
+									<button
+										type="button"
+										class="btn preset-tonal px-2 py-1 text-xs"
+										onclick={() => {
+											void copyAssistantMessage(message.content);
+										}}
+									>
+										複製
+									</button>
+								{/if}
+							</div>
+
+							{#if message.role === 'assistant'}
+								<AiMarkdown content={message.content} />
+							{:else}
+								<p class="whitespace-pre-wrap break-words">
+									{message.content}
+								</p>
+							{/if}
+						</div>
+					{/each}
+
+					{#if sending}
+						<div class="rounded-container bg-surface-100-900 p-3 text-sm">
+							<div class="flex flex-wrap items-center justify-between gap-3">
+								<p class="opacity-60">
+									AI 正在思考並準備回答…
+								</p>
+								<button
+									type="button"
+									class="btn preset-tonal-error-500 px-3 py-1.5 text-sm"
+									disabled={stopping}
+									onclick={() => {
+										void stopGeneration();
+									}}
+								>
+									{stopping ? '停止中…' : '停止產生'}
+								</button>
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				{#if noticeMessage}
+					<div
+						class="mt-3 rounded-container preset-tonal-success-500 p-3 text-sm"
+						role="status"
+					>
+						{noticeMessage}
+					</div>
+				{/if}
+
+				{#if errorMessage}
+					<div
+						class="mt-3 rounded-container preset-tonal-error-500 p-3 text-sm"
+						role="alert"
+					>
+						<p>{errorMessage}</p>
+
+						{#if retryable && lastFailedMessage}
+							<button
+								type="button"
+								class="btn preset-tonal mt-3"
+								disabled={sending}
+								onclick={() => {
+									void retryLastMessage();
+								}}
+							>
+								重試上一個問題
+							</button>
+						{/if}
+					</div>
+				{/if}
+
+				<form
+					class={desktop
+						? 'mt-4 border-t border-surface-300-700 pt-4'
+						: 'mt-4 flex flex-col gap-3 sm:flex-row sm:items-end'}
+					onsubmit={(event) => {
+						event.preventDefault();
+						void sendMessage();
+					}}
+				>
+					<label class="label block min-w-0 flex-1">
+						<span class="label-text">
+							追問題目
+						</span>
+						<textarea
+							class="textarea mt-2 min-h-24 w-full"
+							bind:value={input}
+							maxlength="8000"
+							placeholder="輸入與目前題目相關的疑問…"
+							disabled={sending}
+						></textarea>
+					</label>
+
+					{#if !sending}
+						<button
+							type="submit"
+							class="btn preset-filled-primary-500 mt-3 w-full"
+							disabled={!input.trim()}
+						>
+							送出
+						</button>
+					{/if}
+				</form>
+			{/if}
+		</div>
+	</section>
+{/snippet}
+
 {#if page.data.user}
 	<div
 		class="mt-5 border-t border-surface-300-700 pt-5"
 	>
-		{#if !opened}
-			<div class="flex flex-wrap items-center justify-between gap-3">
-				<div>
-					<p class="font-semibold">
-						還有疑問？
-					</p>
-					<p class="mt-1 text-sm opacity-60">
-						使用你自己的 ChatGPT / Codex 額度針對這題繼續追問。
-					</p>
-				</div>
-
-				<button
-					type="button"
-					class="btn preset-filled-primary-500"
-					onclick={() => {
-						void openTutor();
-					}}
-				>
-					詢問 AI
-				</button>
+		<div class="flex flex-wrap items-center justify-between gap-3">
+			<div>
+				<p class="font-semibold">
+					還有疑問？
+				</p>
+				<p class="mt-1 text-sm opacity-60">
+					使用你自己的 ChatGPT / Codex 額度針對這題繼續追問。
+				</p>
 			</div>
-		{:else}
-			<section
-				class="rounded-container border border-surface-300-700 bg-surface-50-950 p-4"
-				aria-label="AI 題目解析對話"
+
+			<button
+				type="button"
+				class="btn preset-filled-primary-500"
+				onclick={() => {
+					void openTutor();
+				}}
 			>
-				<header
-					class="flex flex-wrap items-start justify-between gap-3"
-				>
-					<div>
-						<h3 class="font-semibold">
-							AI 題目助教
-						</h3>
-						<p class="mt-1 text-xs opacity-60">
-							AI 回答可能有誤，請以題庫內容與可靠來源為準。
-						</p>
+				{opened ? 'AI 助教已開啟' : '詢問 AI'}
+			</button>
+		</div>
 
-						{#if connectionState === 'connected' && status}
-							<p class="mt-2 text-xs opacity-60">
-								{#if status.planType}
-									ChatGPT {formatPlanType(status.planType)} ·
-								{/if}
-								{#if status.usage?.primary}
-									{formatUsageWindow(status.usage.primary.windowMinutes)} {formatRemaining(status.usage.primary.usedPercent)}
-								{:else if status.usageError}
-									用量資料可能不是最新
-								{:else}
-									Codex 用量尚未提供
-								{/if}
-							</p>
-						{/if}
-					</div>
+		{#if opened}
+			<div class="mt-4 lg:hidden">
+				{@render tutorPanel(false)}
+			</div>
 
-					<div class="flex flex-wrap gap-2">
-						{#if messages.length > 0}
-							<button
-								type="button"
-								class="btn preset-tonal"
-								disabled={sending}
-								onclick={resetConversation}
-							>
-								新對話
-							</button>
-						{/if}
-
-						<button
-							type="button"
-							class="btn preset-tonal"
-							disabled={sending}
-							onclick={() => {
-								opened = false;
-							}}
-						>
-							收合
-						</button>
-					</div>
-				</header>
-
-				{#if connectionState === 'loading'}
-					<div class="mt-4 rounded-container bg-surface-100-900 p-4 text-sm opacity-70">
-						正在確認 ChatGPT 連結與最近一次 Codex 用量…
-					</div>
-				{:else if connectionState === 'disconnected'}
-					<div class="mt-4 rounded-container preset-tonal-warning-500 p-4 text-sm">
-						<p class="font-medium">
-							需要先連結 ChatGPT
-						</p>
-						<p class="mt-1 opacity-70">
-							AskAI 使用你自己的 ChatGPT / Codex 額度；連結完成後再回到這題即可使用。
-						</p>
-						<a
-							href="/profile"
-							class="btn preset-filled-primary-500 mt-3"
-						>
-							前往個人資料連結 ChatGPT
-						</a>
-					</div>
-				{:else if connectionState === 'error'}
-					<div class="mt-4 rounded-container preset-tonal-error-500 p-4 text-sm">
-						<p>
-							暫時無法確認 ChatGPT 連結狀態。
-						</p>
-						<button
-							type="button"
-							class="btn preset-tonal mt-3"
-							onclick={() => {
-								void loadConnectionStatus();
-							}}
-						>
-							重新檢查
-						</button>
-					</div>
-				{:else if connectionState === 'connected'}
-					{#if messages.length === 0}
-						<div class="mt-4">
-							<p class="text-sm opacity-70">
-								可以直接輸入問題，或從常用追問開始：
-							</p>
-							<div class="mt-3 flex flex-wrap gap-2">
-								{#each getQuickPrompts() as prompt}
-									<button
-										type="button"
-										class="btn preset-tonal text-left text-sm"
-										disabled={sending}
-										onclick={() => {
-											void sendMessageText(prompt);
-										}}
-									>
-										{prompt}
-									</button>
-								{/each}
-							</div>
-						</div>
-					{/if}
-
-					{#if messages.length > 0 || sending}
-						<div
-							bind:this={messageScroller}
-							class="mt-4 max-h-[32rem] space-y-3 overflow-y-auto pr-1"
-							aria-live="polite"
-						>
-							{#each messages as message, index}
-								<div
-									class={getMessageClass(message.role)}
-								>
-									<div class="mb-2 flex items-center justify-between gap-2">
-										<p class="text-xs font-semibold opacity-60">
-											{message.role === 'user'
-												? '你'
-												: 'AI 助教'}
-										</p>
-
-										{#if message.role === 'assistant'}
-											<button
-												type="button"
-												class="btn preset-tonal px-2 py-1 text-xs"
-												onclick={() => {
-													void copyAssistantMessage(message.content);
-												}}
-											>
-												複製
-											</button>
-										{/if}
-									</div>
-
-									{#if message.role === 'assistant'}
-										<AiMarkdown content={message.content} />
-									{:else}
-										<p class="whitespace-pre-wrap break-words">
-											{message.content}
-										</p>
-									{/if}
-								</div>
-							{/each}
-
-							{#if sending}
-								<div class="rounded-container bg-surface-100-900 p-3 text-sm opacity-60">
-									AI 正在思考並準備回答…
-								</div>
-							{/if}
-						</div>
-					{/if}
-
-					{#if errorMessage}
-						<div
-							class="mt-4 rounded-container preset-tonal-error-500 p-3 text-sm"
-							role="alert"
-						>
-							<p>{errorMessage}</p>
-
-							{#if connectionState === 'disconnected'}
-								<a
-									href="/profile"
-									class="btn preset-tonal mt-3"
-								>
-									重新連結 ChatGPT
-								</a>
-							{:else if retryable && lastFailedMessage}
-								<button
-									type="button"
-									class="btn preset-tonal mt-3"
-									disabled={sending}
-									onclick={() => {
-										void retryLastMessage();
-									}}
-								>
-									重試上一個問題
-								</button>
-							{/if}
-						</div>
-					{/if}
-
-					<form
-						class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end"
-						onsubmit={(event) => {
-							event.preventDefault();
-							void sendMessage();
-						}}
-					>
-						<label class="label min-w-0 flex-1">
-							<span class="label-text">
-								追問題目
-							</span>
-							<textarea
-								class="textarea min-h-24"
-								bind:value={input}
-								maxlength="8000"
-								placeholder="輸入你不懂的地方…"
-								disabled={sending}
-							></textarea>
-						</label>
-
-						<button
-							type="submit"
-							class="btn preset-filled-primary-500"
-							disabled={
-								sending ||
-								!input.trim()
-							}
-						>
-							{sending ? '送出中…' : '送出'}
-						</button>
-					</form>
-				{/if}
-			</section>
+			<aside
+				class="fixed inset-y-0 right-0 z-50 hidden w-[min(28rem,42vw)] border-l border-surface-300-700 shadow-xl lg:block"
+				aria-label="AI 題目助教側邊欄"
+			>
+				{@render tutorPanel(true)}
+			</aside>
 		{/if}
 	</div>
 {/if}
