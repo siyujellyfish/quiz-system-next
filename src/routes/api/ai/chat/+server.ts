@@ -7,20 +7,22 @@ import type {
 } from './$types';
 
 import {
-	CodexSandboxError
-} from '$lib/server/integrations/codex-sandbox';
+	AskAiError,
+	sendAskAiMessage
+} from '$lib/server/ai/ask-ai.service';
 import {
-	ChatgptNotConnectedError,
-	sendChatgptMessage
-} from '$lib/server/profile/chatgpt.service';
+	getCurrentSessionTokenHash
+} from '$lib/server/auth/session';
 
 const MAX_MESSAGE_LENGTH = 8000;
-const MAX_CONTEXT_LENGTH = 24000;
-const MAX_CONVERSATION_ID_LENGTH = 255;
+const MAX_AI_CONTEXT_TOKEN_LENGTH = 4096;
+const UUID_PATTERN =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const POST: RequestHandler = async ({
 	locals,
-	request
+	request,
+	cookies
 }) => {
 	if (!locals.user) {
 		return json(
@@ -68,13 +70,17 @@ export const POST: RequestHandler = async ({
 		typeof body.message === 'string'
 			? body.message.trim()
 			: '';
-	const context =
-		typeof body.context === 'string'
-			? body.context.trim()
-			: null;
+	const questionId =
+		typeof body.questionId === 'string'
+			? body.questionId.trim()
+			: '';
 	const conversationId =
 		typeof body.conversationId === 'string'
 			? body.conversationId.trim()
+			: null;
+	const aiContextToken =
+		typeof body.aiContextToken === 'string'
+			? body.aiContextToken.trim()
 			: null;
 
 	if (
@@ -92,14 +98,10 @@ export const POST: RequestHandler = async ({
 		);
 	}
 
-	if (
-		context &&
-		context.length > MAX_CONTEXT_LENGTH
-	) {
+	if (!UUID_PATTERN.test(questionId)) {
 		return json(
 			{
-				error:
-					`context must not exceed ${MAX_CONTEXT_LENGTH} characters`
+				error: 'questionId is invalid'
 			},
 			{
 				status: 400
@@ -109,8 +111,7 @@ export const POST: RequestHandler = async ({
 
 	if (
 		conversationId &&
-		conversationId.length >
-			MAX_CONVERSATION_ID_LENGTH
+		!UUID_PATTERN.test(conversationId)
 	) {
 		return json(
 			{
@@ -122,62 +123,78 @@ export const POST: RequestHandler = async ({
 		);
 	}
 
-	try {
-		const response = await sendChatgptMessage(
-			locals.user.id,
+	if (
+		aiContextToken &&
+		aiContextToken.length >
+			MAX_AI_CONTEXT_TOKEN_LENGTH
+	) {
+		return json(
 			{
-				threadId: conversationId,
-				message,
-				context
+				error: 'aiContextToken is invalid'
+			},
+			{
+				status: 400
 			}
 		);
+	}
 
-		return json({
-			conversationId: response.threadId,
-			message: response.message
-		});
+	const sessionTokenHash =
+		getCurrentSessionTokenHash(cookies);
+
+	if (!sessionTokenHash) {
+		return json(
+			{
+				error: 'Unauthorized'
+			},
+			{
+				status: 401
+			}
+		);
+	}
+
+	try {
+		return json(
+			await sendAskAiMessage({
+				userId: locals.user.id,
+				sessionTokenHash,
+				questionId,
+				conversationId,
+				aiContextToken:
+					conversationId
+						? null
+						: aiContextToken,
+				message
+			})
+		);
 	} catch (caughtError) {
-		if (
-			caughtError instanceof
-			ChatgptNotConnectedError
-		) {
+		if (caughtError instanceof AskAiError) {
 			return json(
 				{
-					error:
-						'請先在個人資料連結 ChatGPT。'
+					error: caughtError.message,
+					code: caughtError.code,
+					retryable:
+						caughtError.retryable,
+					resetAt:
+						caughtError.resetAt
 				},
 				{
-					status: 409
-				}
-			);
-		}
-
-		if (
-			caughtError instanceof
-			CodexSandboxError
-		) {
-			return json(
-				{
-					error: caughtError.message
-				},
-				{
-					status:
-						caughtError.status >= 400 &&
-						caughtError.status < 600
-							? caughtError.status
-							: 503
+					status: caughtError.status
 				}
 			);
 		}
 
 		console.error(
-			'Unable to complete Codex chat request',
+			'Unable to complete AskAI request',
 			caughtError
 		);
 
 		return json(
 			{
-				error: 'AI 對話暫時無法使用。'
+				error:
+					'AI 題目助教暫時無法使用，請稍後重試。',
+				code: 'AI_TEMPORARY_UNAVAILABLE',
+				retryable: true,
+				resetAt: null
 			},
 			{
 				status: 503
