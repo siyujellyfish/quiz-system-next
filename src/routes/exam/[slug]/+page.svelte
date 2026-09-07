@@ -25,9 +25,14 @@
 
 	import ExamQuestionNavigator
 		from '$lib/components/quiz/ExamQuestionNavigator.svelte';
-
+	import QuestionAiTutor
+		from '$lib/components/quiz/QuestionAiTutor.svelte';
 	import QuestionCard
 		from '$lib/components/quiz/QuestionCard.svelte';
+	import QuestionExplanation
+		from '$lib/components/quiz/QuestionExplanation.svelte';
+	import QuizWorkspace
+		from '$lib/components/quiz/QuizWorkspace.svelte';
 
 	import {
 		parseExamSession
@@ -601,6 +606,135 @@
 			</div>
 		</section>
 	</div>
+{:else if reviewMode && session.result}
+	{@const reviewAnswerResult = getReviewAnswerResult()}
+	<QuizWorkspace
+		showExplanation={Boolean(reviewAnswerResult)}
+		storageKey={`quiz-system-workspace-exam-review-${data.bank.slug}`}
+	>
+		{#snippet toolbar()}
+			<div class="flex min-h-14 flex-wrap items-center gap-2 px-3 py-2 sm:px-4">
+				<div class="mr-1 min-w-0">
+					<p class="quiz-eyebrow">ANSWER REVIEW</p>
+					<p class="text-sm font-semibold">
+						第 {session.currentIndex + 1} / {session.questions.length} 題
+					</p>
+				</div>
+
+				{#if reviewAnswerResult}
+					<span
+						class="badge"
+						class:preset-tonal-success={reviewAnswerResult.correct}
+						class:preset-tonal-error={!reviewAnswerResult.correct}
+					>
+						{reviewAnswerResult.correct ? '✓ 正確' : '✕ 錯誤'}
+					</span>
+				{/if}
+
+				<span class="hidden font-mono text-sm opacity-60 md:inline">
+					{formatDuration(elapsedSeconds)}
+				</span>
+
+				<div class="ml-auto flex flex-wrap items-center justify-end gap-2">
+					<button
+						type="button"
+						class="btn preset-tonal px-3 py-2"
+						disabled={session.currentIndex === 0}
+						onclick={previousQuestion}
+					>
+						上一題
+					</button>
+					<button
+						type="button"
+						class="btn preset-tonal px-3 py-2"
+						onclick={() => {
+							showQuestionGrid = true;
+						}}
+					>
+						題號
+					</button>
+					<button
+						type="button"
+						class="btn preset-filled-primary-500"
+						disabled={
+							session.currentIndex >=
+								session.questions.length - 1
+						}
+						onclick={nextQuestion}
+					>
+						下一題
+					</button>
+					<button
+						type="button"
+						class="btn preset-tonal px-3 py-2"
+						onclick={backToResult}
+					>
+						返回成績
+					</button>
+				</div>
+			</div>
+		{/snippet}
+
+		{#snippet question()}
+			<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
+				<div class="mb-3 flex items-center justify-between gap-3">
+					<p class="quiz-eyebrow">QUESTION {session.currentIndex + 1}</p>
+					<strong class="text-sm">
+						{session.currentIndex + 1} / {session.questions.length}
+					</strong>
+				</div>
+
+				{#if question}
+					<QuestionCard
+						{question}
+						{selectedOptionId}
+						answerResult={reviewAnswerResult}
+						onSelect={selectOption}
+					/>
+				{/if}
+
+				{#if errorMessage}
+					<p
+						class="mt-4 text-sm text-error-700-300"
+						role="alert"
+					>
+						{errorMessage}
+					</p>
+				{/if}
+			</div>
+		{/snippet}
+
+		{#snippet explanation()}
+			{#if reviewAnswerResult && question}
+				<div class="mx-auto w-full max-w-5xl p-4 md:p-5">
+					<div class="flex items-center justify-between gap-3">
+						<div>
+							<p class="quiz-eyebrow">ANSWER REVIEW</p>
+							<h2 class="mt-1 text-lg font-bold">
+								{reviewAnswerResult.correct ? '作答正確' : '查看解析'}
+							</h2>
+						</div>
+						<span
+							class="badge"
+							class:preset-tonal-success={reviewAnswerResult.correct}
+							class:preset-tonal-error={!reviewAnswerResult.correct}
+						>
+							{reviewAnswerResult.correct ? '✓ 正確' : '✕ 錯誤'}
+						</span>
+					</div>
+
+					<QuestionExplanation
+						explanation={reviewAnswerResult.explanation}
+					/>
+
+					<QuestionAiTutor
+						{question}
+						answerResult={reviewAnswerResult}
+					/>
+				</div>
+			{/if}
+		{/snippet}
+	</QuizWorkspace>
 {:else}
 	<div class="app-page">
 		<section class="app-panel overflow-hidden">
@@ -608,9 +742,7 @@
 				class="flex flex-wrap items-center justify-between gap-4 border-b border-surface-300-700 px-5 py-4 md:px-6"
 			>
 				<div>
-					<p class="quiz-eyebrow">
-						{reviewMode ? 'ANSWER REVIEW' : 'EXAM MODE'}
-					</p>
+					<p class="quiz-eyebrow">EXAM MODE</p>
 					<h1 class="mt-1 text-2xl font-bold">
 						{data.bank.name}
 					</h1>
@@ -620,26 +752,15 @@
 					<div class="font-mono text-lg font-semibold tabular-nums">
 						{formatDuration(elapsedSeconds)}
 					</div>
-
-					{#if reviewMode}
-						<button
-							type="button"
-							class="btn preset-tonal"
-							onclick={backToResult}
-						>
-							返回成績
-						</button>
-					{:else}
-						<button
-							type="button"
-							class="btn preset-filled-primary-500"
-							onclick={() => {
-								showSubmitConfirm = true;
-							}}
-						>
-							交卷
-						</button>
-					{/if}
+					<button
+						type="button"
+						class="btn preset-filled-primary-500"
+						onclick={() => {
+							showSubmitConfirm = true;
+						}}
+					>
+						交卷
+					</button>
 				</div>
 			</header>
 
@@ -660,11 +781,6 @@
 						<QuestionCard
 							{question}
 							{selectedOptionId}
-							answerResult={
-								reviewMode
-									? getReviewAnswerResult()
-									: null
-							}
 							onSelect={selectOption}
 						/>
 					{/if}
@@ -716,7 +832,7 @@
 					<section class="quiz-side-panel sticky top-14">
 						<ExamQuestionNavigator
 							{session}
-							{reviewMode}
+							reviewMode={false}
 							onSelect={goToQuestion}
 							getButtonClass={getQuestionButtonClass}
 						/>
@@ -810,13 +926,13 @@
 >
 	<Portal>
 		<Dialog.Backdrop
-			class="fixed inset-0 z-50 bg-black/60 lg:hidden"
+			class="fixed inset-0 z-50 bg-black/60"
 		/>
 		<Dialog.Positioner
-			class="fixed inset-0 z-50 flex items-end p-4 lg:hidden"
+			class="fixed inset-0 z-50 flex items-end p-4 sm:items-center sm:justify-center"
 		>
 			<Dialog.Content
-				class="card max-h-[85vh] w-full overflow-y-auto bg-surface-50-950 p-5 shadow-xl"
+				class="card max-h-[85vh] w-full max-w-2xl overflow-y-auto bg-surface-50-950 p-5 shadow-xl"
 			>
 				<div class="mb-4 flex items-center justify-between gap-3">
 					<Dialog.Title class="text-lg font-bold">
