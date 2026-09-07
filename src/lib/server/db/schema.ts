@@ -7,10 +7,10 @@ import {
 	primaryKey,
 	smallint,
 	text,
+	timestamp,
 	uniqueIndex,
 	uuid,
-	varchar,
-	timestamp
+	varchar
 } from "drizzle-orm/pg-core";
 import { sql } from 'drizzle-orm';
 
@@ -69,6 +69,75 @@ export const userSessions = pgTable(
 
 		index('user_sessions_expires_at_idx')
 			.on(table.expiresAt)
+	]
+);
+
+export const externalAccounts = pgTable(
+	'external_accounts',
+	{
+		id: uuid('id')
+			.defaultRandom()
+			.primaryKey(),
+
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, {
+				onDelete: 'cascade'
+			}),
+
+		provider: varchar('provider', {
+			length: 32
+		}).notNull(),
+
+		providerAccountId: varchar('provider_account_id', {
+			length: 255
+		}).notNull(),
+
+		displayName: varchar('display_name', {
+			length: 255
+		}),
+
+		email: varchar('email', {
+			length: 320
+		}),
+
+		planType: varchar('plan_type', {
+			length: 64
+		}),
+
+		codexProfileId: varchar('codex_profile_id', {
+			length: 255
+		}),
+
+		createdAt: timestamp('created_at', {
+			withTimezone: true,
+			mode: 'date'
+		})
+			.defaultNow()
+			.notNull(),
+
+		updatedAt: timestamp('updated_at', {
+			withTimezone: true,
+			mode: 'date'
+		})
+			.defaultNow()
+			.notNull()
+	},
+	(table) => [
+		uniqueIndex('external_accounts_user_provider_uidx')
+			.on(
+				table.userId,
+				table.provider
+			),
+
+		uniqueIndex('external_accounts_provider_account_uidx')
+			.on(
+				table.provider,
+				table.providerAccountId
+			),
+
+		index('external_accounts_user_id_idx')
+			.on(table.userId)
 	]
 );
 
@@ -322,6 +391,9 @@ export const examAttempts = pgTable(
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+
+export type ExternalAccount = typeof externalAccounts.$inferSelect;
+export type NewExternalAccount = typeof externalAccounts.$inferInsert;
 
 export type QuestionBank = typeof questionBanks.$inferSelect;
 export type NewQuestionBank = typeof questionBanks.$inferInsert;

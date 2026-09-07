@@ -33,9 +33,9 @@ export const GET: RequestHandler = async ({
 		error(404, '找不到指定的題庫');
 	}
 
-	const filename = `${exported.bank.slug}-questions.json`;
+	const filename = `${exported.bank.slug}-import.json`;
 	const content = `${JSON.stringify(
-		exported.questions,
+		exported,
 		null,
 		2
 	)}\n`;

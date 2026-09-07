@@ -58,6 +58,7 @@ export class PracticeAnswerError extends Error {
 type AnswerOption = {
 	id: string;
 	isCorrect: boolean;
+	explanation: string | null;
 };
 
 
@@ -159,6 +160,8 @@ function createAnswerResult(
 		correct:
 			selectedOption.isCorrect,
 		correctOptionIds,
+		explanation:
+			options[0]?.explanation ?? null,
 		completed: false
 	};
 }
@@ -173,7 +176,8 @@ export async function checkQuestionAnswer(
 		await db
 			.select({
 				id: questionOptions.id,
-				isCorrect: questionOptions.isCorrect
+				isCorrect: questionOptions.isCorrect,
+				explanation: questions.explanation
 			})
 			.from(questionOptions)
 			.innerJoin(
@@ -212,7 +216,8 @@ async function checkQuestionAnswerByBankSlug(
 		await db
 			.select({
 				id: questionOptions.id,
-				isCorrect: questionOptions.isCorrect
+				isCorrect: questionOptions.isCorrect,
+				explanation: questions.explanation
 			})
 			.from(questionOptions)
 			.innerJoin(

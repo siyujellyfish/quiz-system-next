@@ -57,7 +57,9 @@ export type QuizAnswerResult = {
 	selectedOptionId: string | null;
 	correct: boolean;
 	correctOptionIds: string[];
+	explanation: string | null;
 	completed: boolean;
+	aiContextToken?: string | null;
 };
 
 
@@ -87,6 +89,7 @@ export type ExamQuestionResult = {
 	selectedOptionId: string | null;
 	correctOptionIds: string[];
 	correct: boolean;
+	explanation: string | null;
 };
 
 

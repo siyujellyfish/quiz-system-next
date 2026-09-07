@@ -64,6 +64,9 @@ export const actions: Actions = {
 		const prompt = String(
 			formData.get('prompt') ?? ''
 		);
+		const explanation = String(
+			formData.get('explanation') ?? ''
+		);
 		const options = parseAdminQuestionOptions(
 			formData.get('options')
 		);
@@ -72,6 +75,7 @@ export const actions: Actions = {
 			return fail(400, {
 				values: {
 					prompt,
+					explanation,
 					options: []
 				},
 				errors: undefined,
@@ -81,6 +85,7 @@ export const actions: Actions = {
 
 		const validation = validateAdminQuestionForm({
 			prompt,
+			explanation,
 			options
 		});
 

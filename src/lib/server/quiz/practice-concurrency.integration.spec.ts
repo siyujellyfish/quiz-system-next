@@ -170,6 +170,7 @@ describe('practice answer concurrency', () => {
 			correctOptionIds: [
 				firstCorrectOptionId
 			],
+			explanation: null,
 			completed: false,
 			currentIndex: 1,
 			answeredCount: 1,

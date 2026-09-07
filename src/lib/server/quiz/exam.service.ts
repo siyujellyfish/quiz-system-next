@@ -30,6 +30,7 @@ import {
 type ExamSourceQuestion = {
 	id: string;
 	prompt: string;
+	explanation: string | null;
 	options: Array<{
 		id: string;
 		content: string;
@@ -59,6 +60,7 @@ async function getExamSourceQuestions(
 		.select({
 			questionId: questions.id,
 			prompt: questions.prompt,
+			explanation: questions.explanation,
 			optionId: questionOptions.id,
 			optionContent: questionOptions.content,
 			isCorrect: questionOptions.isCorrect
@@ -106,6 +108,7 @@ async function getExamSourceQuestions(
 			{
 				id: row.questionId,
 				prompt: row.prompt,
+				explanation: row.explanation,
 				options: [{
 					id: row.optionId,
 					content: row.optionContent,
@@ -263,7 +266,8 @@ export async function gradeExam(
 					questionId: question.id,
 					selectedOptionId,
 					correctOptionIds,
-					correct
+					correct,
+					explanation: question.explanation
 				};
 			}
 		);

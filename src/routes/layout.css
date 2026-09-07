@@ -7,6 +7,10 @@
 @import '@skeletonlabs/skeleton/themes/cerberus';
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 
+:root {
+	--ask-ai-sidebar-width: min(28rem, 42vw);
+}
+
 html,
 body {
 	min-height: 100%;
@@ -15,6 +19,35 @@ body {
 body {
 	margin: 0;
 	@apply bg-surface-100-900 text-surface-950-50 antialiased;
+}
+
+.app-page-shell {
+	transition: margin-right 180ms ease;
+}
+
+@media (min-width: 64rem) {
+	body:has(aside[aria-label='AI 題目助教側邊欄'])
+		.app-page-shell {
+		margin-right: var(--ask-ai-sidebar-width);
+	}
+
+	aside[aria-label='AI 題目助教側邊欄'] {
+		top: 4rem !important;
+		right: 0 !important;
+		bottom: 0 !important;
+		width: var(--ask-ai-sidebar-width) !important;
+		height: calc(100dvh - 4rem) !important;
+		max-height: calc(100dvh - 4rem) !important;
+		overflow: hidden !important;
+		box-sizing: border-box;
+		box-shadow: none !important;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.app-page-shell {
+		transition: none;
+	}
 }
 
 @layer components {

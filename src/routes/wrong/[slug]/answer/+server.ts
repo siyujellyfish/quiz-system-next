@@ -10,6 +10,12 @@ import type {
 
 
 import {
+	issueAiContextToken
+} from '$lib/server/ai/context-token';
+import {
+	getCurrentSessionTokenHash
+} from '$lib/server/auth/session';
+import {
 	PracticeAnswerError
 } from '$lib/server/quiz/answer.service';
 
@@ -34,7 +40,8 @@ export const POST: RequestHandler =
 	async ({
 		locals,
 		params,
-		request
+		request,
+		cookies
 	}) => {
 		if (!locals.user) {
 			error(
@@ -98,8 +105,29 @@ export const POST: RequestHandler =
 					body.questionId,
 					body.selectedOptionId
 				);
+			const sessionTokenHash =
+				getCurrentSessionTokenHash(cookies);
 
-			return json(result);
+			if (!sessionTokenHash) {
+				error(
+					401,
+					'登入工作階段已失效，請重新登入'
+				);
+			}
+
+			return json({
+				...result,
+				aiContextToken:
+					issueAiContextToken({
+						sessionTokenHash,
+						userId: locals.user.id,
+						questionId:
+							body.questionId,
+						selectedOptionId:
+							result.selectedOptionId,
+						mode: 'wrong'
+					})
+			});
 		} catch (caughtError) {
 			if (
 				caughtError instanceof

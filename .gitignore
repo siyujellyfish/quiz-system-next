@@ -24,3 +24,6 @@ vite.config.ts.timestamp-*
 
 # Local/private question bank data
 /src/data/*-questions.json
+.env*
+
+/ec-council*
