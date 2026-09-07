@@ -3,6 +3,7 @@
 		page
 	} from '$app/state';
 	import {
+		onMount,
 		tick
 	} from 'svelte';
 
@@ -15,7 +16,7 @@
 		from './AiMarkdown.svelte';
 
 	type ChatMessage = {
-		role: 'user' | 'assistant';
+		role: 'user' | 'assistant' | 'notice';
 		content: string;
 	};
 
@@ -51,6 +52,18 @@
 		answerResult: QuizAnswerResult;
 	};
 
+	const ASK_AI_LEASE_IDLE_MS =
+		2 * 60 * 1000;
+	const STATUS_REFRESH_INTERVAL_MS =
+		60 * 1000;
+	const LONG_CONVERSATION_WARNING_TURNS = 6;
+	const LONG_CONVERSATION_STRONG_TURNS = 8;
+	const SIDEBAR_MIN_WIDTH = 320;
+	const SIDEBAR_MAX_WIDTH = 640;
+	const SIDEBAR_STORAGE_KEY =
+		'quiz-system-ask-ai-sidebar-width';
+	const STOPPED_MESSAGE = '已停止產生回答。';
+
 	let {
 		question,
 		answerResult
@@ -74,12 +87,26 @@
 	let activeQuestionId = $state<string | null>(null);
 	let messageScroller = $state<HTMLDivElement | null>(null);
 	let activeGenerationId = $state<string | null>(null);
+	let openButton = $state<HTMLButtonElement | null>(null);
 	let activeAbortController:
 		AbortController | null = null;
+	let leaseReleaseTimer:
+		ReturnType<typeof setTimeout> | null = null;
+	let lastStatusLoadedAt = 0;
+
+	let assistantTurnCount = $derived(
+		messages.filter(
+			(message) => message.role === 'assistant'
+		).length
+	);
 
 	$effect(() => {
 		if (activeQuestionId === question.id) {
 			return;
+		}
+
+		if (activeQuestionId && opened) {
+			void releaseSession();
 		}
 
 		activeQuestionId = question.id;
@@ -104,12 +131,147 @@
 		}
 	});
 
+	onMount(() => {
+		const storedWidth = Number.parseInt(
+			localStorage.getItem(
+				SIDEBAR_STORAGE_KEY
+			) ?? '',
+			10
+		);
+
+		if (
+			Number.isFinite(storedWidth) &&
+			storedWidth >= SIDEBAR_MIN_WIDTH &&
+			storedWidth <= SIDEBAR_MAX_WIDTH
+		) {
+			document.documentElement.style.setProperty(
+				'--ask-ai-sidebar-width',
+				`${storedWidth}px`
+			);
+		}
+
+		const handleKeydown = (event: KeyboardEvent) => {
+			if (
+				event.key === 'Escape' &&
+				opened &&
+				!sending
+			) {
+				event.preventDefault();
+				void closeTutor();
+			}
+		};
+		const handlePageHide = () => {
+			if (opened) {
+				releaseSessionWithBeacon();
+			}
+		};
+
+		window.addEventListener(
+			'keydown',
+			handleKeydown
+		);
+		window.addEventListener(
+			'pagehide',
+			handlePageHide
+		);
+
+		return () => {
+			window.removeEventListener(
+				'keydown',
+				handleKeydown
+			);
+			window.removeEventListener(
+				'pagehide',
+				handlePageHide
+			);
+			clearLeaseReleaseTimer();
+
+			if (opened) {
+				releaseSessionWithBeacon();
+			}
+		};
+	});
+
 	async function scrollToBottom() {
 		await tick();
 
 		if (messageScroller) {
 			messageScroller.scrollTop =
 				messageScroller.scrollHeight;
+		}
+	}
+
+	function getVisibleComposer() {
+		return Array.from(
+			document.querySelectorAll<HTMLTextAreaElement>(
+				'textarea[data-ask-ai-composer]'
+			)
+		).find(
+			(element) => element.offsetParent !== null
+		) ?? null;
+	}
+
+	async function focusComposer() {
+		await tick();
+		getVisibleComposer()?.focus();
+	}
+
+	function clearLeaseReleaseTimer() {
+		if (leaseReleaseTimer) {
+			clearTimeout(leaseReleaseTimer);
+			leaseReleaseTimer = null;
+		}
+	}
+
+	function scheduleSessionRelease() {
+		clearLeaseReleaseTimer();
+
+		if (!opened) {
+			return;
+		}
+
+		leaseReleaseTimer = setTimeout(() => {
+			void releaseSession();
+		}, ASK_AI_LEASE_IDLE_MS);
+	}
+
+	async function releaseSession() {
+		clearLeaseReleaseTimer();
+
+		try {
+			await fetch(
+				'/api/ai/session/release',
+				{
+					method: 'POST',
+					headers: {
+						accept: 'application/json'
+					},
+					keepalive: true
+				}
+			);
+		} catch (caughtError) {
+			console.error(
+				'Unable to release AskAI session',
+				caughtError
+			);
+		}
+	}
+
+	function releaseSessionWithBeacon() {
+		clearLeaseReleaseTimer();
+
+		try {
+			navigator.sendBeacon(
+				'/api/ai/session/release',
+				new Blob(
+					['{}'],
+					{
+						type: 'application/json'
+					}
+				)
+			);
+		} catch {
+			// Best-effort release during page teardown.
 		}
 	}
 
@@ -123,7 +285,9 @@
 			'leading-relaxed',
 			role === 'user'
 				? 'bg-primary-500/15'
-				: 'bg-surface-100-900'
+				: role === 'notice'
+					? 'border border-surface-300-700 bg-surface-100-900/60 text-center opacity-70'
+					: 'bg-surface-100-900'
 		].join(' ');
 	}
 
@@ -233,6 +397,7 @@
 			connectionState = status.connected
 				? 'connected'
 				: 'disconnected';
+			lastStatusLoadedAt = Date.now();
 		} catch (caughtError) {
 			console.error(
 				'Unable to load AskAI status',
@@ -254,6 +419,19 @@
 		) {
 			await loadConnectionStatus();
 		}
+
+		await focusComposer();
+	}
+
+	async function closeTutor() {
+		if (sending) {
+			return;
+		}
+
+		await releaseSession();
+		opened = false;
+		await tick();
+		openButton?.focus();
 	}
 
 	async function ensureAiContextToken() {
@@ -314,6 +492,25 @@
 			: base;
 	}
 
+	function appendStopMarker() {
+		const lastMessage = messages.at(-1);
+
+		if (
+			lastMessage?.role === 'notice' &&
+			lastMessage.content === STOPPED_MESSAGE
+		) {
+			return;
+		}
+
+		messages = [
+			...messages,
+			{
+				role: 'notice',
+				content: STOPPED_MESSAGE
+			}
+		];
+	}
+
 	async function sendMessageText(
 		text: string,
 		appendUserMessage = true
@@ -328,6 +525,7 @@
 			return;
 		}
 
+		clearLeaseReleaseTimer();
 		const generationId = crypto.randomUUID();
 		const abortController =
 			new AbortController();
@@ -381,6 +579,7 @@
 				ApiErrorPayload & {
 					conversationId?: unknown;
 					message?: unknown;
+					usageUpdated?: unknown;
 				};
 
 			if (!response.ok) {
@@ -390,8 +589,7 @@
 						: null;
 
 				if (code === 'GENERATION_CANCELLED') {
-					noticeMessage =
-						'已停止產生回答。';
+					appendStopMarker();
 					return;
 				}
 
@@ -454,14 +652,20 @@
 			input = '';
 			lastFailedMessage = null;
 			retryable = false;
-			void loadConnectionStatus(false);
+
+			if (
+				payload.usageUpdated === true ||
+				Date.now() - lastStatusLoadedAt >=
+					STATUS_REFRESH_INTERVAL_MS
+			) {
+				void loadConnectionStatus(false);
+			}
 		} catch (caughtError) {
 			if (
 				caughtError instanceof DOMException &&
 				caughtError.name === 'AbortError'
 			) {
-				noticeMessage =
-					'已停止產生回答。';
+				appendStopMarker();
 				return;
 			}
 
@@ -480,6 +684,7 @@
 			}
 			sending = false;
 			stopping = false;
+			scheduleSessionRelease();
 		}
 	}
 
@@ -521,7 +726,7 @@
 				);
 			}
 
-			noticeMessage = '已停止產生回答。';
+			appendStopMarker();
 		} catch (caughtError) {
 			errorMessage =
 				caughtError instanceof Error
@@ -541,6 +746,21 @@
 
 		input = '';
 		await sendMessageText(message);
+	}
+
+	function handleComposerKeydown(
+		event: KeyboardEvent
+	) {
+		if (
+			event.key !== 'Enter' ||
+			event.shiftKey ||
+			event.isComposing
+		) {
+			return;
+		}
+
+		event.preventDefault();
+		void sendMessage();
 	}
 
 	async function retryLastMessage() {
@@ -569,6 +789,61 @@
 		}
 	}
 
+	function startSidebarResize(
+		event: PointerEvent
+	) {
+		if (event.button !== 0) {
+			return;
+		}
+
+		event.preventDefault();
+		let lastWidth = 0;
+
+		const handleMove = (moveEvent: PointerEvent) => {
+			const maxWidth = Math.min(
+				SIDEBAR_MAX_WIDTH,
+				Math.floor(window.innerWidth * 0.6)
+			);
+			lastWidth = Math.min(
+				maxWidth,
+				Math.max(
+					SIDEBAR_MIN_WIDTH,
+					window.innerWidth - moveEvent.clientX
+				)
+			);
+			document.documentElement.style.setProperty(
+				'--ask-ai-sidebar-width',
+				`${lastWidth}px`
+			);
+		};
+		const handleUp = () => {
+			window.removeEventListener(
+				'pointermove',
+				handleMove
+			);
+			window.removeEventListener(
+				'pointerup',
+				handleUp
+			);
+
+			if (lastWidth > 0) {
+				localStorage.setItem(
+					SIDEBAR_STORAGE_KEY,
+					String(Math.round(lastWidth))
+				);
+			}
+		};
+
+		window.addEventListener(
+			'pointermove',
+			handleMove
+		);
+		window.addEventListener(
+			'pointerup',
+			handleUp
+		);
+	}
+
 	function resetConversation() {
 		conversationId = null;
 		messages = [];
@@ -577,6 +852,7 @@
 		noticeMessage = null;
 		retryable = false;
 		lastFailedMessage = null;
+		void focusComposer();
 	}
 </script>
 
@@ -634,7 +910,7 @@
 						class="btn preset-tonal px-3 py-2 text-sm"
 						disabled={sending}
 						onclick={() => {
-							opened = false;
+							void closeTutor();
 						}}
 					>
 						關閉
@@ -716,32 +992,36 @@
 						<div
 							class={getMessageClass(message.role)}
 						>
-							<div class="mb-2 flex items-center justify-between gap-2">
-								<p class="text-xs font-semibold opacity-60">
-									{message.role === 'user'
-										? '你'
-										: 'AI 助教'}
-								</p>
+							{#if message.role === 'notice'}
+								<p>{message.content}</p>
+							{:else}
+								<div class="mb-2 flex items-center justify-between gap-2">
+									<p class="text-xs font-semibold opacity-60">
+										{message.role === 'user'
+											? '你'
+											: 'AI 助教'}
+									</p>
+
+									{#if message.role === 'assistant'}
+										<button
+											type="button"
+											class="btn preset-tonal px-2 py-1 text-xs"
+											onclick={() => {
+												void copyAssistantMessage(message.content);
+											}}
+										>
+											複製
+										</button>
+									{/if}
+								</div>
 
 								{#if message.role === 'assistant'}
-									<button
-										type="button"
-										class="btn preset-tonal px-2 py-1 text-xs"
-										onclick={() => {
-											void copyAssistantMessage(message.content);
-										}}
-									>
-										複製
-									</button>
+									<AiMarkdown content={message.content} />
+								{:else}
+									<p class="whitespace-pre-wrap break-words">
+										{message.content}
+									</p>
 								{/if}
-							</div>
-
-							{#if message.role === 'assistant'}
-								<AiMarkdown content={message.content} />
-							{:else}
-								<p class="whitespace-pre-wrap break-words">
-									{message.content}
-								</p>
 							{/if}
 						</div>
 					{/each}
@@ -798,6 +1078,27 @@
 					</div>
 				{/if}
 
+				{#if assistantTurnCount >= LONG_CONVERSATION_WARNING_TURNS}
+					<div class="mt-3 rounded-container preset-tonal-warning-500 p-3 text-sm">
+						<p class="font-medium">
+							{assistantTurnCount >= LONG_CONVERSATION_STRONG_TURNS
+								? '這個對話已經很長，建議建立新對話。'
+								: `目前已進行 ${assistantTurnCount} 輪追問。`}
+						</p>
+						<p class="mt-1 opacity-70">
+							建立新的本題對話可降低後續 Codex context 用量並讓回答維持聚焦。
+						</p>
+						<button
+							type="button"
+							class="btn preset-tonal mt-2"
+							disabled={sending}
+							onclick={resetConversation}
+						>
+							建立新對話
+						</button>
+					</div>
+				{/if}
+
 				<form
 					class={desktop
 						? 'mt-4 border-t border-surface-300-700 pt-4'
@@ -812,12 +1113,17 @@
 							追問題目
 						</span>
 						<textarea
+							data-ask-ai-composer
 							class="textarea mt-2 min-h-24 w-full"
 							bind:value={input}
 							maxlength="8000"
 							placeholder="輸入與目前題目相關的疑問…"
 							disabled={sending}
+							onkeydown={handleComposerKeydown}
 						></textarea>
+						<span class="mt-1 block text-xs opacity-50">
+							Enter 送出 · Shift+Enter 換行
+						</span>
 					</label>
 
 					{#if !sending}
@@ -850,6 +1156,7 @@
 			</div>
 
 			<button
+				bind:this={openButton}
 				type="button"
 				class="btn preset-filled-primary-500"
 				onclick={() => {
@@ -866,9 +1173,15 @@
 			</div>
 
 			<aside
-				class="fixed inset-y-0 right-0 z-50 hidden w-[min(28rem,42vw)] border-l border-surface-300-700 shadow-xl lg:block"
+				class="fixed inset-y-0 right-0 z-50 hidden border-l border-surface-300-700 shadow-xl lg:block"
 				aria-label="AI 題目助教側邊欄"
 			>
+				<button
+					type="button"
+					class="absolute inset-y-0 left-0 z-10 w-2 -translate-x-1/2 cursor-col-resize bg-transparent p-0"
+					aria-label="調整 AI 側邊欄寬度"
+					onpointerdown={startSidebarResize}
+				></button>
 				{@render tutorPanel(true)}
 			</aside>
 		{/if}
