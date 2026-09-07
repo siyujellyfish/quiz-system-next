@@ -10,7 +10,6 @@ import {
 	getCodexAccount,
 	getCodexDeviceLoginStatus,
 	getCodexSandboxName,
-	getCodexUsage,
 	isCodexSandboxConfigured,
 	logoutCodexAccount,
 	sendCodexChat,
@@ -42,8 +41,7 @@ export class ChatgptNotConnectedError extends Error {
 function profileFromStoredConnection(
 	connection: NonNullable<
 		Awaited<ReturnType<typeof getChatgptConnection>>
-	>,
-	usageError: boolean
+	>
 ): ChatgptProfileConnection {
 	return {
 		displayName:
@@ -54,7 +52,7 @@ function profileFromStoredConnection(
 		planType: connection.planType,
 		usage: null,
 		usageAvailable: false,
-		usageError
+		usageError: false
 	};
 }
 
@@ -123,99 +121,20 @@ export async function getChatgptDeviceLoginStatus(
 	};
 }
 
+/**
+ * Profile navigation must stay fast and deterministic. Do not resume a
+ * persistent Vercel Sandbox from a page load; only read the connection
+ * metadata that was persisted after a successful device-code login.
+ */
 export async function getChatgptProfileConnection(
 	userId: string
 ): Promise<ChatgptProfileConnection | null> {
 	const storedConnection =
 		await getChatgptConnection(userId);
 
-	if (!isCodexSandboxConfigured()) {
-		return storedConnection
-			? profileFromStoredConnection(
-				storedConnection,
-				false
-			)
-			: null;
-	}
-
-	let account: CodexSandboxAccount | null;
-
-	try {
-		account = await getCodexAccount(userId);
-	} catch (caughtError) {
-		if (
-			caughtError instanceof
-			CodexSandboxNotFoundError
-		) {
-			if (storedConnection) {
-				await deleteChatgptConnection(userId);
-			}
-
-			return null;
-		}
-
-		console.error(
-			'Unable to load ChatGPT account from Vercel Sandbox',
-			caughtError
-		);
-
-		return storedConnection
-			? profileFromStoredConnection(
-				storedConnection,
-				true
-			)
-			: null;
-	}
-
-	if (!account) {
-		if (storedConnection) {
-			await deleteChatgptConnection(userId);
-		}
-
-		return null;
-	}
-
-	const connection = await persistCodexAccount(
-		userId,
-		account
-	);
-
-	try {
-		const usage = await getCodexUsage(userId);
-		const usageAvailable =
-			usage.primary !== null ||
-			usage.secondary !== null;
-
-		return {
-			displayName:
-				connection.displayName ??
-				connection.email ??
-				'ChatGPT 使用者',
-			email: connection.email,
-			planType: connection.planType,
-			usage,
-			usageAvailable,
-			usageError: false
-		};
-	} catch (caughtError) {
-		if (
-			caughtError instanceof
-			CodexSandboxNotFoundError
-		) {
-			await deleteChatgptConnection(userId);
-			return null;
-		}
-
-		console.error(
-			'Unable to load Codex usage from Vercel Sandbox',
-			caughtError
-		);
-
-		return profileFromStoredConnection(
-			connection,
-			true
-		);
-	}
+	return storedConnection
+		? profileFromStoredConnection(storedConnection)
+		: null;
 }
 
 export async function disconnectChatgptAccount(
